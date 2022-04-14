@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "camera.h"
+#include "object.h"
 
 
 namespace Engine {
@@ -15,15 +16,28 @@ namespace Engine {
 		struct map_color {
 			float x, y, z;
 		};
+		map_color c[3];
 		Engine(){
-			glEnable(GL_DEPTH_TEST);
+			c[0].x = 1;
+			c[0].y = 0;
+			c[0].z = 0;
+
+			c[1].x = 0;
+			c[1].y = 1;
+			c[1].z = 0;
+
+			c[2].x = 0;
+			c[2].y = 0;
+			c[2].z = 0;
+
+			/*glEnable(GL_DEPTH_TEST);
 			glDepthMask(GL_TRUE);
 			glClearDepth(1.f);
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
 			glFrustum(-1, 1, -1, 1, 1, 5000);
 			glMatrixMode(GL_MODELVIEW);
-			glLoadIdentity();
+			glLoadIdentity();*/
 		}
 		void LoadCamera(glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp) {
 			view = glm::lookAt(cameraPos, cameraFront + cameraPos, cameraUp);
@@ -39,29 +53,25 @@ namespace Engine {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
-		void LoadMapMemory(map_color* map_t, int size) {
-			map = map_t;
-			this->size = size;
-		}
 
-		void Push() {
+		void Push(Object::map_color* map, int size) {
 			glPushMatrix();
 			glLoadMatrixf(glm::value_ptr(view));
 
-			glEnableClientState(GL_VERTEX_ARRAY);
-			glVertexPointer(3, GL_FLOAT, 0, map);
-			glDrawArrays(GL_TRIANGLES, 0, size);
-			glDisableClientState(GL_VERTEX_ARRAY);
+			glBegin(GL_TRIANGLES);
+			glColor3f(1.0f, 0.0f, 0.0f); gl
+			glEnd();
 
 			glPopMatrix();
 			glFlush();
 		}
 		~Engine(){
-			delete[] map;
+			
 		}
 	private:
 		glm::mat4 view;
-		map_color* map;
 		int size = 0;
+		
+
 	};
 }
