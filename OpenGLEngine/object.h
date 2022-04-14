@@ -11,6 +11,9 @@ public:
 	Object(int size):size(size){
 		map = new map_color[size];
 	}
+	Object() :size(size) {
+		map = new map_color[0];
+	}
 	~Object() {
 		delete[] map;
 	}
@@ -22,5 +25,9 @@ public:
 		this->size += size;
 		delete[] map;
 		return map_t;
+	}
+
+	map_color* return_map() {
+		return map;
 	}
 };
