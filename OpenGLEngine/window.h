@@ -23,7 +23,6 @@ namespace Engine {
 		}
 		void Display() {
 			window.display();
-			
 		}
 		
 	};

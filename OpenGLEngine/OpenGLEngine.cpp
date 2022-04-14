@@ -13,5 +13,8 @@
 int main() {
 	Engine::Window window(100, 100);
 
+	while (true) {
+
+	}
 	return 0;
 }
