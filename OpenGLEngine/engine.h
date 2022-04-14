@@ -9,7 +9,7 @@
 
 
 namespace Engine {
-	class Engine: public Window, public Camera
+	class Engine: public Camera
 	{
 	public:
 		struct map_color {

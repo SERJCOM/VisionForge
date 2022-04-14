@@ -1,20 +1,22 @@
 ﻿#include <iostream>
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <math.h>
-#include <SFML/Window/Mouse.hpp>
-#include <ctime>
-#include "PerlinNoise.hpp"
-#include <vector>
 #include "window.h"
+#include "engine.h"
+#include "camera.h"
+
 
 int main() {
-	Engine::Window window(100, 100);
+	Engine::Window window(1280, 720);
+	Engine::Engine engine;
+	Camera camera;
+	camera.cameraPos = camera.SetMatrix(0.0f, 1.0f, 0.0f);
+	camera.cameraFront = camera.SetMatrix(0.0f, 0.0f, 0.0f);
+	camera.cameraUp = camera.SetMatrix(0.0f, 1.0f, 0.0f);
 
-	while (true) {
-
+	engine.LoadCamera(camera.cameraPos, camera.cameraFront, camera.cameraUp);
+	while (window.running) {
+		engine.ClearBuffers();
+		engine.Push();
+		window.Display();
 	}
 	return 0;
 }

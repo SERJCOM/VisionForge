@@ -6,5 +6,11 @@
 
 class Camera {
 public:
+	glm::vec3 cameraPos;
+	glm::vec3 cameraFront;
+	glm::vec3 cameraUp;
 
+	glm::vec3 SetMatrix(float x, float y, float z) {
+		return glm::vec3(x,	y, z);
+	}
 };
