@@ -146,6 +146,7 @@
     <ClCompile Include="OpenGLEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="camera.h" />
     <ClInclude Include="engine.h" />
     <ClInclude Include="window.h" />
   </ItemGroup>

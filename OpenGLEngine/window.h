@@ -16,6 +16,11 @@ namespace Engine {
 			window.setActive(true);
 	
 		}
+		Window() {
+			window.create(sf::VideoMode(720, 1280), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
+			window.setVerticalSyncEnabled(true);
+			window.setActive(true);
+		}
 		void Display() {
 			window.display();
 			
