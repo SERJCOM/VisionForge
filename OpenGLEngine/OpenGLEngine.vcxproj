@@ -152,6 +152,15 @@
   <ItemGroup>
     <ClCompile Include="src\OpenGLEngine.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\skybox.jpg" />
+    <Image Include="textures\skybox1.jpg" />
+    <Image Include="textures\skybox2.jpg" />
+    <Image Include="textures\skybox3.jpg" />
+    <Image Include="textures\skybox4.jpg" />
+    <Image Include="textures\skybox5.jpg" />
+    <Image Include="textures\skybox6.jpg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

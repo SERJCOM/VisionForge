@@ -36,4 +36,27 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\skybox.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="textures\skybox1.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="textures\skybox2.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="textures\skybox3.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="textures\skybox4.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="textures\skybox5.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="textures\skybox6.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

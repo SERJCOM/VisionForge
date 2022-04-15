@@ -7,7 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "camera.h"
 #include "object.h"
-
+#include "texture.h"
 
 namespace Engine {
 	class Engine: public Camera
@@ -58,6 +58,9 @@ namespace Engine {
 			glPushMatrix();
 			glLoadMatrixf(glm::value_ptr(view));
 
+			glDepthMask(GL_FALSE);
+			
+
 			glEnableClientState(GL_VERTEX_ARRAY);
 			glEnableClientState(GL_COLOR_ARRAY);
 			glVertexPointer(3, GL_FLOAT, 0, map);
@@ -66,16 +69,26 @@ namespace Engine {
 			glDisableClientState(GL_VERTEX_ARRAY);
 			glDisableClientState(GL_COLOR_ARRAY);
 			//
+
+			glBindTexture(GL_TEXTURE_CUBE_MAP, SkyBoxID);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+			glDepthMask(GL_TRUE);
+
 			glPopMatrix();
 			glFlush();
 		}
+
+		void SetSkyBox(unsigned int SkyBoxID) {
+			this->SkyBoxID = SkyBoxID;
+		}
+
 		~Engine(){
 			
 		}
 	private:
 		glm::mat4 view;
 		int size = 0;
-		
+		unsigned int SkyBoxID;
 
 	};
 }

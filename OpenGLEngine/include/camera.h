@@ -27,6 +27,6 @@ public:
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) cameraPos -= cameraspeed * cameraFront;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraspeed;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraspeed;
-		std::cout << cameraPos.x << " " <<  cameraPos.y << " " << cameraPos.z << std::endl;
+		//std::cout << cameraPos.x << " " <<  cameraPos.y << " " << cameraPos.z << std::endl;
 	}
 };

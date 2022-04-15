@@ -3,6 +3,7 @@
 #include "engine.h"
 #include "camera.h"
 #include "object.h"
+#include "texture.h"
 #include <math.h>
 
 int main() {
@@ -27,6 +28,10 @@ int main() {
 	camera.cameraPos = camera.SetMatrix(-1.0f, 0.0f, -2.0f);
 	camera.cameraFront = camera.SetMatrix(0.0f, 0.0f, 1.0f);
 	camera.cameraUp = camera.SetMatrix(0.0f, 1.0f, 0.0f);
+
+	Engine::Texture texture;
+
+	engine.SetSkyBox(texture.LoadSkyBox());
 
 	while (window.running) {
 		camera.CameraMove();
