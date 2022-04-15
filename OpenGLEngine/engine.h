@@ -65,7 +65,7 @@ namespace Engine {
 			glDrawArrays(GL_TRIANGLES, 0, size);
 			glDisableClientState(GL_VERTEX_ARRAY);
 			glDisableClientState(GL_COLOR_ARRAY);
-
+			//
 			glPopMatrix();
 			glFlush();
 		}
