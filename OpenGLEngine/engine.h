@@ -28,16 +28,16 @@ namespace Engine {
 
 			c[2].x = 0;
 			c[2].y = 0;
-			c[2].z = 0;
+			c[2].z = 1;
 
-			/*glEnable(GL_DEPTH_TEST);
+			glEnable(GL_DEPTH_TEST);
 			glDepthMask(GL_TRUE);
 			glClearDepth(1.f);
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
 			glFrustum(-1, 1, -1, 1, 1, 5000);
 			glMatrixMode(GL_MODELVIEW);
-			glLoadIdentity();*/
+			glLoadIdentity();
 		}
 		void LoadCamera(glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp) {
 			view = glm::lookAt(cameraPos, cameraFront + cameraPos, cameraUp);
@@ -56,13 +56,15 @@ namespace Engine {
 
 		void Push(Object::map_color* map, int size) {
 			glPushMatrix();
-			//glLoadMatrixf(glm::value_ptr(view));
+			glLoadMatrixf(glm::value_ptr(view));
 
-			glBegin(GL_TRIANGLES);
-			glColor3f(1.0f, 0.0f, 0.0f); glVertex2f(0.0f, 1.0f);
-			glColor3f(0.0f, 1.0f, 0.0f); glVertex2f(0.87f, -0.5f);
-			glColor3f(0.0f, 0.0f, 1.0f); glVertex2f(-0.87f, -0.5f);
-			glEnd();
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glEnableClientState(GL_COLOR_ARRAY);
+			glVertexPointer(3, GL_FLOAT, 0, map);
+			glColorPointer(3, GL_FLOAT, 0, c);
+			glDrawArrays(GL_TRIANGLES, 0, size);
+			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableClientState(GL_COLOR_ARRAY);
 
 			glPopMatrix();
 			glFlush();
