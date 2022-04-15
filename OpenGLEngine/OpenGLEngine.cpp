@@ -23,7 +23,6 @@ int main() {
 	object.map[2].x = -0.8;
 	object.map[2].y = -0.5;
 	object.map[2].z = 0;
-	float i = 0;
 
 	camera.cameraPos = camera.SetMatrix(-1.0f, 0.0f, -2.0f);
 	camera.cameraFront = camera.SetMatrix(0.0f, 0.0f, 1.0f);
@@ -35,7 +34,6 @@ int main() {
 		engine.ClearBuffers();
 		engine.Push(object.map, 3);
 		window.Display();
-		i += 0.1;
 	}
 	return 0;
 }
