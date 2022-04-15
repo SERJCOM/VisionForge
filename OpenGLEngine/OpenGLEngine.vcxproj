@@ -146,11 +146,11 @@
     <ClCompile Include="OpenGLEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="camera.h" />
-    <ClInclude Include="engine.h" />
+    <ClInclude Include="include\camera.h" />
+    <ClInclude Include="include\engine.h" />
+    <ClInclude Include="include\object.h" />
     <ClInclude Include="include\texture.h" />
-    <ClInclude Include="object.h" />
-    <ClInclude Include="window.h" />
+    <ClInclude Include="include\window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
