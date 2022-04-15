@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="engine.h" />
+    <ClInclude Include="include\texture.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="window.h" />
   </ItemGroup>
