@@ -1,8 +1,8 @@
 ﻿#include <iostream>
-#include "include/window.h"
-#include "include/engine.h"
-#include "include/camera.h"
-#include "include/object.h"
+#include "window.h"
+#include "engine.h"
+#include "camera.h"
+#include "object.h"
 #include <math.h>
 
 int main() {
