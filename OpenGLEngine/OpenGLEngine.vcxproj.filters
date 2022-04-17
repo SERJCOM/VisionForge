@@ -32,5 +32,43 @@
     <ClInclude Include="object.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="include\window.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shader.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\OpenGLEngine.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\skybox.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="textures\skybox1.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="textures\skybox2.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="textures\skybox3.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="textures\skybox4.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="textures\skybox5.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="textures\skybox6.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\shader.frag" />
+    <None Include="shaders\shader.vert" />
   </ItemGroup>
 </Project>
