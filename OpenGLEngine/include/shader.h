@@ -9,14 +9,14 @@
 class Shader {
 public:
     unsigned int ID;
-    Shader(const char* vertexPath, const char* fragmentPath) {
+    Shader() {
 
         glewInit();
 
         std::string vertexCode, fragmentCode;
 
-        std::ifstream vShaderFile(vertexPath);
-        std::ifstream fShaderFile(fragmentPath);
+        std::ifstream vShaderFile("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.vert");
+        std::ifstream fShaderFile("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.frag");
         std::stringstream vShaderStream, fShaderStream;
 
         vShaderStream << vShaderFile.rdbuf();
@@ -25,7 +25,6 @@ public:
         vShaderFile.close();
         fShaderFile.close();
 
-        // Êîíâåðòèðóåì äàííûå èç ïîòîêà â ñòðîêîâûå ïåðåìåííûå
         vertexCode = vShaderStream.str();
         fragmentCode = fShaderStream.str();
 
