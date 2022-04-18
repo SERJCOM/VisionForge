@@ -149,6 +149,7 @@
     <ClInclude Include="include\shader.h" />
     <ClInclude Include="include\texture.h" />
     <ClInclude Include="include\window.h" />
+    <ClInclude Include="init.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\OpenGLEngine.cpp" />

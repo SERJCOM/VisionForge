@@ -3,6 +3,7 @@
 #include <SFML/Graphics/Image.hpp>
 #include <GL/glew.h>
 
+
 namespace Engine {
 	class Texture {
 	public:
