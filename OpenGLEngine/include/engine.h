@@ -15,8 +15,6 @@ namespace Engine {
 	class Engine : public Camera
 	{
 	public:
-		
-
 		struct map_color {
 			float x, y, z;
 		};
@@ -36,9 +34,17 @@ namespace Engine {
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();
 
-		
-			object1.Create();
+			float vertices1[] = {
+				-0.5f, -0.5f, 0.0f, // левая вершина
+				 0.5f, -0.5f, 0.0f, // правая вершина
+				 0.0f,  0.5f, 0.0f  // верхняя вершина   
+			};
 
+
+			object1.LoadArray(vertices1, sizeof(vertices1) / sizeof(float));
+		
+			
+			object1.Create();
 		}
 
 		void ClearBuffers(float r, float g, float b) {
@@ -51,7 +57,6 @@ namespace Engine {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
-
 		void Push() {
 			shader.use();
 			glBindVertexArray(object1.getVAO());
@@ -59,11 +64,5 @@ namespace Engine {
 			glFlush();
 		}
 
-		~Engine() {
-			
-		}
-
-	private:
-		int size = 0;
 	};
-}
+};

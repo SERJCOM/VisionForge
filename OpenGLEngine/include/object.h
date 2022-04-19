@@ -3,21 +3,17 @@
 #include <GL/glew.h>
 class Object {
 public:
-	int size = 0;
+	int size;
 	unsigned int VBO, VAO;
-	float vertices[9];
+	
+	float* vertices;
 
-	Object() {
-		float vertices1[] = {
-		-0.5f, -0.5f, 0.0f, // левая вершина
-		 0.5f, -0.5f, 0.0f, // правая вершина
-		 0.0f,  0.5f, 0.0f  // верхняя вершина   
-		};
-
-		for (int i = 0; i < sizeof(vertices1) / sizeof(float); i++) {
-			vertices[i] = vertices1[i];
-		}
-	}
+	
+	/*Object() {
+		vertices = new float[0];
+		size = sizeof(vertices) / sizeof(float);
+		std::cout << size << std::endl;
+	}*/
 
 	void Create() {
 		glGenVertexArrays(1, &VAO);
@@ -26,7 +22,8 @@ public:
 		glBindVertexArray(VAO);
 
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * size, vertices, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
@@ -34,7 +31,6 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
-
 
 	unsigned int getVBO() {
 		return VBO;
@@ -44,28 +40,43 @@ public:
 		return VAO;
 	}
 
-	/*Object(int size):size(size){
-		vertices = new float[size];
-	}
-	Object(){
-		vertices = new float[0];
-	}*/
 	~Object() {
-		/*delete[] vertices;*/
 		glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
 	}
 
-	float* change_length(float* mapold, int size) {
-		std::cout << size << std::endl;
-		float* map_t = new float[this->size + size];
-		for (int i = 0; i < this->size;i++) {
-			map_t[i] = mapold[i];
-		}
-		this->size += size;
-		delete[] vertices;
-		return map_t;
+	void LoadArray(float* array, int size) {
+		vertices = array;
+		this->size = size;
 	}
+
+	/*float* change_length(int size) {
+		if (size <= this->size) {
+			return vertices;
+		}
+		float* pNewArray = new float[size];
+		std::cout << "new sizew: " << sizeof(vertices) / sizeof(float) << std::endl;
+		memcpy(pNewArray, vertices, sizeof(float) * this->size);
+		std::cout << "new size0: " << sizeof(pNewArray) / sizeof(float) << std::endl;
+		delete[] vertices;
+		this->size = size;
+		return pNewArray;
+	}
+
+	void LoadArray(float* array, int size) {
+		int sizeold = this->size;
+		std::cout << "the old size: " << sizeold << std::endl;
+		vertices = change_length(size);
+		if (size < sizeold) {
+			for (int i = 0; i < size; i++) {
+				vertices[i] = array[i];
+			}
+		}
+		else {
+			memcpy(vertices, array, 36);
+			std::cout << "new size: " << sizeof(vertices) / sizeof(float) << std::endl;
+		}
+	}*/
 
 	float* return_vert() {
 		return vertices;

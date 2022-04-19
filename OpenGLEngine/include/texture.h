@@ -38,5 +38,19 @@ namespace Engine {
 			glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
 			return skyboxID;
 		}
+
+		unsigned int LoadTexture() {
+			sf::Image texture_im;
+			texture_im.loadFromFile("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/skybox1.jpg");
+
+			unsigned int texture;
+			glGenTextures(1, &texture);
+			glBindTexture(GL_TEXTURE_2D, texture);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture_im.getSize().x, texture_im.getSize().y, 0, GL_RGB, GL_UNSIGNED_BYTE, texture_im.getPixelsPtr());
+			glGenerateMipmap(GL_TEXTURE_2D);
+
+
+		}
 	};
 }
