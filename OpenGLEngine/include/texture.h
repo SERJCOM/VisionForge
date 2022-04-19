@@ -41,23 +41,20 @@ public:
 
 	void LoadTexture() {
 		sf::Image texture_im;
-		texture_im.loadFromFile("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/skybox1.jpg");
-
+		if (!texture_im.loadFromFile("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/8_9.jpg")) {
+			std::cout << "failed to load the texture" << std::endl;
+		}
 
 		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glBindTexture(GL_TEXTURE_2D, texture); 
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture_im.getSize().x, texture_im.getSize().y, 0, GL_RGB, GL_UNSIGNED_BYTE, texture_im.getPixelsPtr());
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // установка метода наложения текстуры GL_REPEAT (стандартный метод наложения)
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-		// Установка параметров фильтрации текстуры
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		
-		//glGenerateMipmap(GL_TEXTURE_2D);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture_im.getSize().x, texture_im.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_im.getPixelsPtr());
 	}
 
 
