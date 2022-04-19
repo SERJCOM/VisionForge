@@ -15,11 +15,13 @@ public:
 	void Create() {
 
 		float vertices[] = {
-				 0.5f,  0.5f, 0.0f,  // верхн€€ права€
-				 0.5f, -0.5f, 0.0f,  // нижн€€ права€
-				-0.5f, -0.5f, 0.0f,  // нижн€€ лева€
-				-0.5f,  0.5f, 0.0f   // верхн€€ лева€
+			// координаты        // цвета            // текстурные координаты
+			0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // верхн€€ права€
+			0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // нижн€€ права€
+		   -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // нижн€€ лева€
+		   -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // верхн€€ лева€ 
 		};
+
 		unsigned int indices[] = {  // помните, что мы начинаем с 0!
 			0, 1, 3,  // первый треугольник
 			1, 2, 3   // второй треугольник
@@ -37,15 +39,14 @@ public:
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
 
-		glBindVertexArray(0);
-			
-		/*glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(1);*/
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glEnableVertexAttribArray(2);
 
 		/*for (int i = 0; i < atrArray.size(); i++) {
 			glVertexAttribPointer(atrArray[i].location, atrArray[i].size, GL_FLOAT, GL_FALSE, atrArray[i].stride, (void*)atrArray[i].firststride);
@@ -54,6 +55,7 @@ public:
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
+
 	}
 
 	unsigned int getVBO() {
