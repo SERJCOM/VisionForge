@@ -21,6 +21,7 @@ namespace Engine {
 
 		Shader shader;
 		Object object1;
+		Texture texture1;
 
 		Engine() {
 			glEnable(GL_TEXTURE_2D);
@@ -34,16 +35,24 @@ namespace Engine {
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();
 
+			texture1.LoadTexture();
+
 			float vertices1[] = {
-				-0.5f, -0.5f, 0.0f, // левая вершина
-				 0.5f, -0.5f, 0.0f, // правая вершина
-				 0.0f,  0.5f, 0.0f  // верхняя вершина   
+				// координаты        // цвета            // текстурные координаты
+				0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // верхняя правая
+				0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // нижняя правая
+			   -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // нижняя левая
+			   -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // верхняя левая 
 			};
 
+			unsigned int indices[] = {  // помните, что мы начинаем с 0!
+					0, 1, 3, // первый треугольник
+					1, 2, 3  // второй треугольник
+			};
 
 			object1.LoadArray(vertices1, sizeof(vertices1) / sizeof(float));
-		
-			
+			object1.LoadArrayEBO(indices, sizeof(indices) / sizeof(float));
+			object1.AddAtribute(2, 2, 8 * sizeof(float), 6 * sizeof(float));
 			object1.Create();
 		}
 
@@ -59,6 +68,7 @@ namespace Engine {
 
 		void Push() {
 			shader.use();
+			glBindTexture(GL_TEXTURE_2D, texture1.texture);
 			glBindVertexArray(object1.getVAO());
 			glDrawArrays(GL_TRIANGLES, 0, 3);
 			glFlush();

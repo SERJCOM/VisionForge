@@ -1,21 +1,19 @@
 #pragma once
 #include <iostream>
 #include <GL/glew.h>
+#include <vector>
+
 class Object {
 public:
 	int size;
-	unsigned int VBO, VAO;
+	int sizeIndec;
+	unsigned int VBO, VAO, EBO;
 	
 	float* vertices;
-
-	
-	/*Object() {
-		vertices = new float[0];
-		size = sizeof(vertices) / sizeof(float);
-		std::cout << size << std::endl;
-	}*/
+	unsigned int* indices;
 
 	void Create() {
+		
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
 
@@ -25,9 +23,21 @@ public:
 		
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * size, vertices, GL_STATIC_DRAW);
 
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
 			
+		/*glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);*/
+
+		/*for (int i = 0; i < atrArray.size(); i++) {
+			glVertexAttribPointer(atrArray[i].location, atrArray[i].size, GL_FLOAT, GL_FALSE, atrArray[i].stride, (void*)atrArray[i].firststride);
+			glEnableVertexAttribArray(atrArray[i].location);
+		}*/
+
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
@@ -50,35 +60,20 @@ public:
 		this->size = size;
 	}
 
-	/*float* change_length(int size) {
-		if (size <= this->size) {
-			return vertices;
-		}
-		float* pNewArray = new float[size];
-		std::cout << "new sizew: " << sizeof(vertices) / sizeof(float) << std::endl;
-		memcpy(pNewArray, vertices, sizeof(float) * this->size);
-		std::cout << "new size0: " << sizeof(pNewArray) / sizeof(float) << std::endl;
-		delete[] vertices;
-		this->size = size;
-		return pNewArray;
+	void LoadArrayEBO(unsigned int* array, int size) {
+		indices = array;
+		this->sizeIndec = size;
 	}
 
-	void LoadArray(float* array, int size) {
-		int sizeold = this->size;
-		std::cout << "the old size: " << sizeold << std::endl;
-		vertices = change_length(size);
-		if (size < sizeold) {
-			for (int i = 0; i < size; i++) {
-				vertices[i] = array[i];
-			}
-		}
-		else {
-			memcpy(vertices, array, 36);
-			std::cout << "new size: " << sizeof(vertices) / sizeof(float) << std::endl;
-		}
-	}*/
-
-	float* return_vert() {
-		return vertices;
+	void AddAtribute(int location, int size, int stride, int firststride) {
+		atrArray.push_back({ location, size, stride,firststride });
 	}
+
+private:
+	int atributesCount = 0; // the count of atributes. By default 1 
+	struct atribute {
+		int location, size, stride , firststride;
+	};
+	std::vector <atribute> atrArray;
+
 };
