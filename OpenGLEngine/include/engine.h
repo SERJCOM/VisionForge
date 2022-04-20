@@ -32,6 +32,22 @@ namespace Engine {
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();
 
+			float vertices[] = {
+				// координаты        // цвета            // текстурные координаты
+				0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // верхняя правая
+				0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // нижняя правая
+			   -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // нижняя левая
+			   -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // верхняя левая 
+			};
+
+			unsigned int indices[] = {  // помните, что мы начинаем с 0!
+				0, 1, 3,  // первый треугольник
+				1, 2, 3   // второй треугольник
+			};
+
+			object1.LoadArray(vertices, sizeof(vertices) / sizeof(float));
+			object1.LoadArrayEBO(indices, sizeof(indices) / sizeof(int));
+
 			object1.Create();
 			texture1.LoadTexture();
 

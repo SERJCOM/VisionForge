@@ -2,6 +2,9 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <vector>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class Object {
 public:
@@ -13,19 +16,6 @@ public:
 	unsigned int* indices;
 
 	void Create() {
-
-		float vertices[] = {
-			// координаты        // цвета            // текстурные координаты
-			0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // верхн€€ права€
-			0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // нижн€€ права€
-		   -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // нижн€€ лева€
-		   -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // верхн€€ лева€ 
-		};
-
-		unsigned int indices[] = {  // помните, что мы начинаем с 0!
-			0, 1, 3,  // первый треугольник
-			1, 2, 3   // второй треугольник
-		};
 		
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
@@ -33,11 +23,13 @@ public:
 
 		glBindVertexArray(VAO);
 
+		std::cout << sizeof(vertices) << std::endl;
+
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * size, vertices, GL_STATIC_DRAW);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * sizeIndec, indices, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
