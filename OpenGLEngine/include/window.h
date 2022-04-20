@@ -24,6 +24,15 @@ namespace Engine {
 		void Display() {
 			window.display();
 		}
+
+		float GetWindowWidth() {
+			return window.getSize().x;
+		}
+
+		float GetWindowHeight() {
+			return window.getSize().y;
+		}
+
 		bool running = true;
 	};
 }

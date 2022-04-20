@@ -15,6 +15,8 @@ public:
 	float* vertices;
 	unsigned int* indices;
 
+
+
 	void Create() {
 		
 		glGenVertexArrays(1, &VAO);
@@ -40,10 +42,10 @@ public:
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 		glEnableVertexAttribArray(2);
 
-		/*for (int i = 0; i < atrArray.size(); i++) {
+		for (int i = 0; i < atrArray.size(); i++) {
 			glVertexAttribPointer(atrArray[i].location, atrArray[i].size, GL_FLOAT, GL_FALSE, atrArray[i].stride, (void*)atrArray[i].firststride);
 			glEnableVertexAttribArray(atrArray[i].location);
-		}*/
+		}
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
@@ -77,11 +79,50 @@ public:
 		atrArray.push_back({ location, size, stride,firststride });
 	}
 
+	void SetWidthHeight(float& width, float& height) {
+		this->width = width;
+		this->height = height;
+	}
+
+	glm::mat4 modelVatrix(float angle) {
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
+		return model;
+	}
+
+	glm::mat4 viewMatrix(float x, float y, float z) {
+		glm::mat4 view = glm::mat4(1.0f);
+		view = glm::translate(view, glm::vec3(x, y, z));
+		return view;
+	}
+
+	glm::mat4 projectionMatrix() {
+		glm::mat4 projection;
+		projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+		return projection;
+	}
+
+	void SetMatrixShader(glm::mat4 model, glm::mat4 view, glm::mat4 projection, unsigned int ID) {
+		int modelLoc = glGetUniformLocation(ID, "model");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		int viewLoc = glGetUniformLocation(ID, "view");
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+		int projLoc = glGetUniformLocation(ID, "projection");
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+	}
+
+	
+
 private:
 	int atributesCount = 0; // the count of atributes. By default 1 
 	struct atribute {
 		int location, size, stride , firststride;
 	};
 	std::vector <atribute> atrArray;
+	float width, height;
+
+
 
 };

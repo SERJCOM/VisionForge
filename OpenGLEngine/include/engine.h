@@ -20,7 +20,7 @@ namespace Engine {
 		Object object1;
 		Texture texture1;
 
-		Engine() {
+		Engine(){
 			glEnable(GL_TEXTURE_2D);
 			glEnable(GL_TEXTURE_CUBE_MAP);
 			glEnable(GL_DEPTH_TEST);
@@ -28,21 +28,19 @@ namespace Engine {
 			glClearDepth(1.f);
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
-			glFrustum(-1, 1, -1, 1, 1, 5000);
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();
 
 			float vertices[] = {
-				// координаты        // цвета            // текстурные координаты
-				0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // верхняя правая
-				0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // нижняя правая
-			   -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // нижняя левая
-			   -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // верхняя левая 
+				0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   
+				0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   
+			   -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   
+			   -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    
 			};
 
-			unsigned int indices[] = {  // помните, что мы начинаем с 0!
-				0, 1, 3,  // первый треугольник
-				1, 2, 3   // второй треугольник
+			unsigned int indices[] = {  
+				0, 1, 3,  
+				1, 2, 3   
 			};
 
 			object1.LoadArray(vertices, sizeof(vertices) / sizeof(float));
@@ -59,6 +57,7 @@ namespace Engine {
 		}
 
 		void Push() {
+			object1.SetMatrixShader(object1.modelVatrix(-55.0f), object1.viewMatrix(0, 0, -3), object1.projectionMatrix(), shader.ID);
 			shader.use();
 			glBindTexture(GL_TEXTURE_2D, texture1.texture);
 			glBindVertexArray(object1.VAO);
