@@ -5,15 +5,12 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "camera.h"
-#include "object.h"
-#include "texture.h"
 #include "shader.h"
 #include <SFML/Graphics/Image.hpp>
 
 
 namespace Engine {
-	class Engine : public Camera, public Shader
+	class Engine : public Shader
 	{
 	public:
 
@@ -35,9 +32,15 @@ namespace Engine {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
-		void DrawObject(unsigned int VAO, unsigned int texture) {
-			
+		void SetCamera(glm::mat4 view) {
+			setMat4("view", view);
+		}
+
+		void StartDrawing() {
 			use();
+		}
+
+		void DrawObject(unsigned int VAO, unsigned int texture) {
 			glBindTexture(GL_TEXTURE_2D, texture);
 			glBindVertexArray(VAO);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

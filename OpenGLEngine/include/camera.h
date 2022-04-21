@@ -9,24 +9,10 @@
 
 class Camera {
 public:
-	glm::vec3 cameraPos;
-	glm::vec3 cameraFront;
-	glm::vec3 cameraUp;
+	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+	glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-	float cameraspeed = 0.1;
-
-
-	glm::vec3 SetMatrix(float x, float y, float z) {
-		return glm::vec3(x,	y, z);
-	}
-
-	void CameraMove() {
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) { 
-			cameraPos+= cameraspeed *cameraFront; 
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) cameraPos -= cameraspeed * cameraFront;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraspeed;
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraspeed;
-		//std::cout << cameraPos.x << " " <<  cameraPos.y << " " << cameraPos.z << std::endl;
-	}
+	glm::mat4 view = glm::lookAt(cameraPos, cameraTarget, cameraUp);
 };

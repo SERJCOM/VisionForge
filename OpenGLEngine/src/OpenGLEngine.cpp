@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "object.h"
 #include <math.h>
+#include "texture.h"
 
 int main() {
 	Engine::Window window(800, 600);
@@ -39,9 +40,13 @@ int main() {
 	Texture texture2;
 	texture2.LoadTexture("8_9.jpg");
 
+	Camera camera;
+
 	float i = 0;
 	while (window.running) {
 		engine.ClearBuffers();
+		engine.StartDrawing();
+		engine.SetCamera(camera.view);
 
 		object1.SetMatrixShader(object1.modelMatrix(i), object1.viewMatrix(-1, 0, -i*0.1), object1.projectionMatrix(), engine.ID);
 		engine.DrawObject(object1.VAO, texture1.texture);
