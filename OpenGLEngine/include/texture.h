@@ -39,9 +39,9 @@ public:
 		return skyboxID;
 	}
 
-	void LoadTexture() {
+	void LoadTexture(std::string name) {
 		sf::Image texture_im;
-		if (!texture_im.loadFromFile("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/8_9.jpg")) {
+		if (!texture_im.loadFromFile(("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/" + name).c_str())) {
 			std::cout << "failed to load the texture" << std::endl;
 		}
 
@@ -56,6 +56,5 @@ public:
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture_im.getSize().x, texture_im.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_im.getPixelsPtr());
 	}
-
 
 };

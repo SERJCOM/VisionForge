@@ -13,12 +13,9 @@
 
 
 namespace Engine {
-	class Engine : public Camera
+	class Engine : public Camera, public Shader
 	{
 	public:
-		Shader shader;
-		Object object1;
-		Texture texture1;
 
 		Engine(){
 			glEnable(GL_TEXTURE_2D);
@@ -31,24 +28,6 @@ namespace Engine {
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();
 
-			float vertices[] = {
-				0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   
-				0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   
-			   -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   
-			   -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    
-			};
-
-			unsigned int indices[] = {  
-				0, 1, 3,  
-				1, 2, 3   
-			};
-
-			object1.LoadArray(vertices, sizeof(vertices) / sizeof(float));
-			object1.LoadArrayEBO(indices, sizeof(indices) / sizeof(int));
-
-			object1.Create();
-			texture1.LoadTexture();
-
 		}
 
 		void ClearBuffers() {
@@ -56,16 +35,15 @@ namespace Engine {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
-		void Push() {
-			object1.SetMatrixShader(object1.modelVatrix(-55.0f), object1.viewMatrix(0, 0, -3), object1.projectionMatrix(), shader.ID);
-			shader.use();
-			glBindTexture(GL_TEXTURE_2D, texture1.texture);
-			glBindVertexArray(object1.VAO);
+		void DrawObject(unsigned int VAO, unsigned int texture) {
+			
+			use();
+			glBindTexture(GL_TEXTURE_2D, texture);
+			glBindVertexArray(VAO);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);
 			glFlush();
 		}
-
 		
 	};
 };
