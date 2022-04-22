@@ -12,6 +12,7 @@ int main() {
 
 	Object object1;
 	Object object2;
+	Object object3;
 	float vertices[] = {
 				0.5f,  0.5f, 0.0f,      1.0f, 1.0f,
 				0.5f, -0.5f, 0.0f,      1.0f, 0.0f,
@@ -40,19 +41,23 @@ int main() {
 	Texture texture2;
 	texture2.LoadTexture("8_9.jpg");
 
+
 	Camera camera;
 
 	float i = 0;
 	while (window.running) {
 		engine.ClearBuffers();
 		engine.StartDrawing();
-		engine.SetCamera(camera.view);
+		camera.move();
+		camera.looking(&window.window);
+		camera.view = camera.updateView();
 
-		object1.SetMatrixShader(object1.modelMatrix(i), object1.viewMatrix(-1, 0, -i*0.1), object1.projectionMatrix(), engine.ID);
+		object1.SetMatrixShader(object1.modelMatrix(-3, 1, -3, i), camera.view, object1.projectionMatrix(), engine.ID);
 		engine.DrawObject(object1.VAO, texture1.texture);
 
-		object2.SetMatrixShader(object2.modelMatrix(i * 1.5), object2.viewMatrix(1, 0, -3), object2.projectionMatrix(), engine.ID);
+		object2.SetMatrixShader(object2.modelMatrix(2, -1, -1, i * 1.5), camera.view, object2.projectionMatrix(), engine.ID);
 		engine.DrawObject(object2.VAO, texture2.texture);
+
 
 		window.Display();
 		i++;

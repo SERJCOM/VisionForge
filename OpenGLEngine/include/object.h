@@ -82,9 +82,11 @@ public:
 		this->height = height;
 	}
 
-	glm::mat4 modelMatrix(float angle) {
+	glm::mat4 modelMatrix(float x, float y, float z, float angle) {
 		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(x, y, z));
 		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
+		
 		return model;
 	}
 
