@@ -28,12 +28,13 @@ public:
 
 	void looking(sf::Window* window) {
 
+		window->setMouseCursorVisible(false);
 		sf::Vector2i localPosition = sf::Mouse::getPosition(*window);
 		float xpos = localPosition.x;
-		float ypos = localPosition.y;
+		float ypos = localPosition.y;		
 
-		float xoffset = xpos - lastX;
-		float yoffset = lastY - ypos;
+		float xoffset = lastX - xpos;
+		float yoffset = ypos - lastY;
 
 		const float sensitivity = 0.05f;
 		xoffset *= sensitivity;
@@ -56,8 +57,10 @@ public:
 		direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 		cameraFront = glm::normalize(direction);
 
-		lastX = xpos;
-		lastY = ypos;
+		sf::Vector2i Position;
+		Position.x = 400;
+		Position.y = 300;
+		sf::Mouse::setPosition(Position, *window);
 	}
 
 	glm::mat4 updateView() {
