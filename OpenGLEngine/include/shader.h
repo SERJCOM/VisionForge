@@ -9,14 +9,12 @@
 class Shader {
 public:
     unsigned int ID;
-    Shader() {
-
-        glewInit();
+    Shader(std::string vertf, std::string fragf) {
 
         std::string vertexCode, fragmentCode;
 
-        std::ifstream vShaderFile("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.vert");
-        std::ifstream fShaderFile("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.frag");
+        std::ifstream vShaderFile(vertf.c_str());
+        std::ifstream fShaderFile(fragf.c_str());
         std::stringstream vShaderStream, fShaderStream;
 
         vShaderStream << vShaderFile.rdbuf();
@@ -74,6 +72,10 @@ public:
     void setMat4(const std::string& name, const glm::mat4& mat) const
     {
         glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    }
+    void setVec3(const std::string& name, glm::vec3 color) const
+    {
+        glUniform3f(glGetUniformLocation(ID, name.c_str()), color.r, color.g, color.b);
     }
 
 private:

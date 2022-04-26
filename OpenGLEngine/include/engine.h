@@ -10,11 +10,12 @@
 
 
 namespace Engine {
-	class Engine : public Shader
+	class Engine
 	{
 	public:
 
 		Engine(){
+			glewInit();
 			glEnable(GL_TEXTURE_2D);
 			glEnable(GL_TEXTURE_CUBE_MAP);
 			glEnable(GL_DEPTH_TEST);
@@ -28,22 +29,22 @@ namespace Engine {
 		}
 
 		void ClearBuffers() {
-			glClearColor(0.2, 0.8, 1, 1.0f);
+			glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
-		void SetCamera(glm::mat4 view) {
-			setMat4("view", view);
-		}
-
-		void StartDrawing() {
-			use();
-		}
 
 		void DrawObject(unsigned int VAO, unsigned int texture) {
 			glBindTexture(GL_TEXTURE_2D, texture);
 			glBindVertexArray(VAO);
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+			glBindVertexArray(0);
+			glFlush();
+		}
+
+		void DrawObject(unsigned int VAO) {
+			glBindVertexArray(VAO);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
 			glBindVertexArray(0);
 			glFlush();
 		}

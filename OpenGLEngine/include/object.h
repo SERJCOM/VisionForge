@@ -11,14 +11,13 @@ public:
 	int size;
 	int sizeIndec;
 	unsigned int VBO, VAO, EBO;
-	
+
 	float* vertices;
 	unsigned int* indices;
 
 
 
 	void Create() {
-		
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
 		glGenBuffers(1, &EBO);
@@ -33,12 +32,9 @@ public:
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * sizeIndec, indices, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
 
-
-		/*glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(2);*/
 
 		for (int i = 0; i < atrArray.size(); i++) {
 			glVertexAttribPointer(atrArray[i].location, atrArray[i].size, GL_FLOAT, GL_FALSE, atrArray[i].stride, (void*)atrArray[i].firststride);
@@ -86,7 +82,7 @@ public:
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(x, y, z));
 		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
-		
+
 		return model;
 	}
 
@@ -113,12 +109,21 @@ public:
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 	}
 
-	
+	void SetTextureMode(bool flag, unsigned int ID) {
+		glUniform1d(glGetUniformLocation(ID, "texturePermit"), flag);
+	}
+
+	void SetBasicColor(unsigned int ID) {
+		glm::vec3 color = glm::vec3(1.0f, 0.5f, 0.3f);
+		glUniform3f(glGetUniformLocation(ID, "lightColor"), 0.3f, 0.5f, 0.9f);
+	}
+
+
 
 private:
 	int atributesCount = 0; // the count of atributes. By default 1 
 	struct atribute {
-		int location, size, stride , firststride;
+		int location, size, stride, firststride;
 	};
 	std::vector <atribute> atrArray;
 	float width, height;
