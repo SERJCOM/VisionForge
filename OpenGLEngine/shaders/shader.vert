@@ -13,7 +13,6 @@ out vec3 colorOut;
 out vec3 NormalOut;
 out vec3 PosFrag;
 
-
  
 void main()
 {

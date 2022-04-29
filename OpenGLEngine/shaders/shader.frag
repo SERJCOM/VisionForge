@@ -5,30 +5,31 @@ in vec3 colorOut;
 in vec3 NormalOut;
 in vec3 PosFrag;
 
-vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
-
-uniform vec3 lightPos;
 uniform vec3 cameraPos;
 
-float specularStrength = 0.5;
+struct PointLight{
+	vec3 lightColor; // цвет источника света
+	vec3 lightPos;
+};
 
+uniform PointLight POINTLIGHT;
 
-vec3 norm = normalize(NormalOut);
-vec3 lightDir = normalize(lightPos - PosFrag);  
-
-vec3 diffuse  = max(dot(norm, lightDir), 0.0) * colorOut;
-
-
-vec3 viewDir = normalize(cameraPos - PosFrag);
-vec3 reflectDir = reflect(-lightDir, norm);  
-
-float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-vec3 specular = specularStrength * spec * lightColor;  
+vec3 calcPointLight(PointLight light, vec3 normal, vec3 fragPos){
+	float ambientStrength = 0.1; // коаф фона 
+	vec3 ambient = ambientStrength * light.lightColor;
+	vec3 lightDir = normalize(light.lightPos - PosFrag);  
+	float diff = max(dot(normal, lightDir), 0.0);
+	vec3 diffuse = diff * light.lightColor;
+	vec3 result = (ambient + diffuse) * vec3(1.0f, 0.0f, 0.5f);
+	return result;
+	
+}
 
 void main()
 {
-   
-    vec3 background = vec3(colorOut * lightColor * 0.3);
-    vec3 result = vec3((background + diffuse + specular) * colorOut);
-    gl_FragColor = vec4(result, 1.0);
+	vec3 norm = normalize(NormalOut);
+	vec3 viewDir = normalize(cameraPos - PosFrag);
+
+	gl_FragColor = vec4(calcPointLight(POINTLIGHT, norm, PosFrag), 1.0);
 }
+

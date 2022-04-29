@@ -33,8 +33,8 @@ public:
 		float xpos = localPosition.x;
 		float ypos = localPosition.y;		
 
-		float xoffset = lastX - xpos;
-		float yoffset = ypos - lastY;
+		float xoffset = -(lastX - xpos);
+		float yoffset = -(ypos - lastY);
 
 		const float sensitivity = 0.05f;
 		xoffset *= sensitivity;
