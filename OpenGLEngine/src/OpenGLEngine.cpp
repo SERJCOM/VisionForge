@@ -94,15 +94,18 @@ int main() {
 		camera.looking(&window.window);
 		camera.view = camera.updateView();
 
-        shader.setVec3("POINTLIGHT.lightColor", light.lightColor);
-        shader.setVec3("POINTLIGHT.lightPos",   light.lightPos);
+        shader.setVec3("DAMPINGLIGHT.lightColor", light.lightColor);
+        shader.setVec3("DAMPINGLIGHT.lightPos",   light.lightPos);
+        shader.setFloat("DAMPINGLIGHT.constant", 1.0f);
+        shader.setFloat("DAMPINGLIGHT.linear", 0.09f);
+        shader.setFloat("DAMPINGLIGHT.quadratic", 0.032f);
 
         shader.setVec3("cameraPos", camera.cameraPos);
 
 		object1.SetMatrixShader(object1.modelMatrix(0.0f, 0.0f, 0.0f, 0.0f), camera.view, object1.projectionMatrix(), shader.ID);
 		engine.DrawObject(object1.VAO);
 
-        object2.SetMatrixShader(object2.modelMatrix(1.0f, 0.0f, 1.0f, 0.0f), camera.view, object2.projectionMatrix(), shader.ID);
+        object2.SetMatrixShader(object2.modelMatrix(2.0f, 0.0f, 1.0f, 0.0f), camera.view, object2.projectionMatrix(), shader.ID);
         engine.DrawObject(object2.VAO);
 
         object3.SetMatrixShader(object3.modelMatrix(1.0f, 2.0f, 3.0f, 0.0f), camera.view, object3.projectionMatrix(), shader.ID);
