@@ -14,7 +14,7 @@ namespace Engine {
 	{
 	public:
 
-		Engine(){
+		Engine() {
 			glewInit();
 			glEnable(GL_TEXTURE_2D);
 			glEnable(GL_TEXTURE_CUBE_MAP);
@@ -48,6 +48,6 @@ namespace Engine {
 			glBindVertexArray(0);
 			glFlush();
 		}
-		
+
 	};
 };
