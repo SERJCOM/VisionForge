@@ -13,13 +13,14 @@ public:
 	void LoadSkyBox() {
 
 		std::string path[6];
-		path[0] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/putin.jpg";
-		path[1] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/putin.jpg";
-		path[2] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/putin.jpg";
-		path[3] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/putin.jpg";
-		path[4] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/putin.jpg";
-		path[5] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/putin.jpg";
+		path[0] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/right.jpg";
+		path[1] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/left.jpg";
+		path[2] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/top.jpg";
+		path[3] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/bottom.jpg";
+		path[4] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/front.jpg";
+		path[5] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/back.jpg";
 
+		
 		glGenTextures(1, &skyboxID);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
 
@@ -30,15 +31,17 @@ public:
 			}
 			glTexImage2D(
 				GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-				0, GL_RGBA8, image.getSize().x, image.getSize().y, 0, GL_RGBA8, GL_UNSIGNED_BYTE, image.getPixelsPtr()
+				0, GL_RGB, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr()
 			);
 
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+			
 		}
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	}
 
 	void LoadTexture(std::string name) {

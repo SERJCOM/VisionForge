@@ -18,7 +18,7 @@ namespace Engine {
 			glewInit();
 			glEnable(GL_TEXTURE_CUBE_MAP);
 			glEnable(GL_DEPTH_TEST);
-			
+
 
 		}
 
@@ -28,12 +28,12 @@ namespace Engine {
 		}
 
 
-		void DrawObject(unsigned int VAO, unsigned int texture) {
-			glBindTexture(GL_TEXTURE_2D, texture);
+		void DrawSkyBox(unsigned int VAO, unsigned int texture) {
 			glBindVertexArray(VAO);
+			glActiveTexture(GL_TEXTURE8);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 			glBindVertexArray(0);
-			glFlush();
 		}
 
 		void DrawObject(unsigned int VAO) {

@@ -57,18 +57,18 @@ vec3 CalcFlashLight(Light light, vec3 view, vec3 FragPos, vec3 normal){
 	
 	if(theta > light.cutOff){
         float distance = length(light.lightPos - FragPos);
-	float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-	
-	float ambientStrength = 0.1; // коаф фона 
-	vec3 ambient = ambientStrength * light.lightColor;
-	vec3 lightDir = normalize(light.lightPos - PosFrag);  
-	float diff = max(dot(normal, lightDir), 0.0);
-	vec3 diffuse = diff * light.lightColor;
-	
-	ambient *= attenuation; 
-	diffuse *= attenuation;
+		float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+		
+		float ambientStrength = 0.1; // 
+		vec3 ambient = ambientStrength * light.lightColor;
+		vec3 lightDir = normalize(light.lightPos - PosFrag);  
+		float diff = max(dot(normal, lightDir), 0.0);
+		vec3 diffuse = diff * light.lightColor;
+		
+		ambient *= attenuation; 
+		diffuse *= attenuation;
 
-	vec3 result = (ambient + diffuse) * vec3(1.0f, 0.0f, 0.5f);
+		vec3 result = (ambient + diffuse) * vec3(1.0f, 0.0f, 0.5f);
 		return result;
 	}
 	return light.lightColor * 0.1;

@@ -18,7 +18,11 @@ int main() {
 
     Engine::Window window(800, 600);
     Engine::Engine engine;
-
+    Shader shader("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.frag");
+    Shader sksh("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/skybox.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/skybox.frag");
+    Camera camera;
+    
+    Light light;
     Object object1;
     Object sk;
 
@@ -110,15 +114,6 @@ int main() {
         1.0f, -1.0f,  1.0f
     };
 
-    unsigned int skyboxVAO, skyboxVBO;
-    glGenVertexArrays(1, &skyboxVAO);
-    glGenBuffers(1, &skyboxVBO);
-    glBindVertexArray(skyboxVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
     Texture skt;
     skt.LoadSkyBox();
 
@@ -126,12 +121,12 @@ int main() {
     object1.AddAtribute(1, 3, 6 * sizeof(float), 3 * sizeof(float));
     object1.Create();
 
-    Shader shader("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.frag");
-    Shader sksh("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/skybox.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/skybox.frag");
-    Camera camera;
-    float i = 0;
-    Light light;
+    sk.LoadArray(skyboxVertices, sizeof(skyboxVertices) / sizeof(float));
+    sk.stride = 3;
+    sk.Create();
 
+    
+    float i = 0;
     sksh.use();
     sksh.setInt("skybox", 0);
 
@@ -153,20 +148,13 @@ int main() {
         object1.SetMatrixShader(object1.modelMatrix(0.0f, 0.0f, 0.0f, 0.0f), camera.view, object1.projectionMatrix(), shader.ID);
         engine.DrawObject(object1.VAO);
 
-
+        // S K Y B O X 
         glDepthFunc(GL_LEQUAL);
         sksh.use();
-        glm::mat4 view = glm::mat4(glm::mat3(camera.updateView()));
-        sksh.setMat4("view", view);
-        sksh.setMat4("projection", glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f));
-
-        glBindVertexArray(skyboxVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, skt.skyboxID);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
+        sk.SetMatrixShader(glm::mat4(glm::mat3(camera.updateView())), glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f), sksh.ID);
+        engine.DrawSkyBox(sk.VAO, skt.skyboxID);
         glDepthFunc(GL_LESS);
-
+        // S K Y B O X 
 
         window.Display();
         i += 0.01;

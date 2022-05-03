@@ -10,31 +10,25 @@ class Object {
 public:
 	int size;
 	int sizeIndec;
-	unsigned int VBO, VAO, EBO;
+	unsigned int VBO, VAO;
 
 	float* vertices;
 	unsigned int* indices;
 
-
+	int stride = 6;
 
 	void Create() {
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
-		glGenBuffers(1, &EBO);
 
 		glBindVertexArray(VAO);
 
-		std::cout << sizeof(vertices) << std::endl;
 
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * size, vertices, GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * sizeIndec, indices, GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
-
 
 		for (int i = 0; i < atrArray.size(); i++) {
 			glVertexAttribPointer(atrArray[i].location, atrArray[i].size, GL_FLOAT, GL_FALSE, atrArray[i].stride, (void*)atrArray[i].firststride);
@@ -44,14 +38,6 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 
-	}
-
-	unsigned int getVBO() {
-		return VBO;
-	}
-
-	unsigned int getVAO() {
-		return VAO;
 	}
 
 	~Object() {
@@ -102,6 +88,14 @@ public:
 		int modelLoc = glGetUniformLocation(ID, "model");
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
+		int viewLoc = glGetUniformLocation(ID, "view");
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+		int projLoc = glGetUniformLocation(ID, "projection");
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+	}
+
+	void SetMatrixShader(glm::mat4 view, glm::mat4 projection, unsigned int ID) {
 		int viewLoc = glGetUniformLocation(ID, "view");
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
