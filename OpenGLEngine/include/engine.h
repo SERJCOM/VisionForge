@@ -16,15 +16,9 @@ namespace Engine {
 
 		Engine() {
 			glewInit();
-			glEnable(GL_TEXTURE_2D);
 			glEnable(GL_TEXTURE_CUBE_MAP);
 			glEnable(GL_DEPTH_TEST);
-			glDepthMask(GL_TRUE);
-			glClearDepth(1.f);
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-			glMatrixMode(GL_MODELVIEW);
-			glLoadIdentity();
+			
 
 		}
 

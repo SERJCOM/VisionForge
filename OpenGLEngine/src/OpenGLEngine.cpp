@@ -20,8 +20,7 @@ int main() {
     Engine::Engine engine;
 
     Object object1;
-    Object object2;
-    Object object3;
+    Object sk;
 
     float vertices[] = {
     -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -66,26 +65,75 @@ int main() {
     -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
     -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
     };
+    float skyboxVertices[] = {
+        // координаты         
+       -1.0f,  1.0f, -1.0f,
+       -1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f,  1.0f, -1.0f,
+       -1.0f,  1.0f, -1.0f,
+
+       -1.0f, -1.0f,  1.0f,
+       -1.0f, -1.0f, -1.0f,
+       -1.0f,  1.0f, -1.0f,
+       -1.0f,  1.0f, -1.0f,
+       -1.0f,  1.0f,  1.0f,
+       -1.0f, -1.0f,  1.0f,
+
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+
+       -1.0f, -1.0f,  1.0f,
+       -1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f, -1.0f,  1.0f,
+       -1.0f, -1.0f,  1.0f,
+
+       -1.0f,  1.0f, -1.0f,
+        1.0f,  1.0f, -1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+       -1.0f,  1.0f,  1.0f,
+       -1.0f,  1.0f, -1.0f,
+
+       -1.0f, -1.0f, -1.0f,
+       -1.0f, -1.0f,  1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+       -1.0f, -1.0f,  1.0f,
+        1.0f, -1.0f,  1.0f
+    };
+
+    unsigned int skyboxVAO, skyboxVBO;
+    glGenVertexArrays(1, &skyboxVAO);
+    glGenBuffers(1, &skyboxVBO);
+    glBindVertexArray(skyboxVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+    Texture skt;
+    skt.LoadSkyBox();
 
     object1.LoadArray(vertices, sizeof(vertices) / sizeof(float));
     object1.AddAtribute(1, 3, 6 * sizeof(float), 3 * sizeof(float));
     object1.Create();
 
-    object2.LoadArray(vertices, sizeof(vertices) / sizeof(float));
-    object2.AddAtribute(1, 3, 6 * sizeof(float), 3 * sizeof(float));
-    object2.Create();
-
-    object3.LoadArray(vertices, sizeof(vertices) / sizeof(float));
-    object3.AddAtribute(1, 3, 6 * sizeof(float), 3 * sizeof(float));
-    object3.Create();
-
     Shader shader("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.frag");
-
+    Shader sksh("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/skybox.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/skybox.frag");
     Camera camera;
-
     float i = 0;
-
     Light light;
+
+    sksh.use();
+    sksh.setInt("skybox", 0);
 
     while (window.running) {
         engine.ClearBuffers();
@@ -105,11 +153,19 @@ int main() {
         object1.SetMatrixShader(object1.modelMatrix(0.0f, 0.0f, 0.0f, 0.0f), camera.view, object1.projectionMatrix(), shader.ID);
         engine.DrawObject(object1.VAO);
 
-        object2.SetMatrixShader(object2.modelMatrix(2.0f, 0.0f, 1.0f, 0.0f), camera.view, object2.projectionMatrix(), shader.ID);
-        engine.DrawObject(object2.VAO);
 
-        object3.SetMatrixShader(object3.modelMatrix(1.0f, 2.0f, 3.0f, 0.0f), camera.view, object3.projectionMatrix(), shader.ID);
-        engine.DrawObject(object3.VAO);
+        glDepthFunc(GL_LEQUAL);
+        sksh.use();
+        glm::mat4 view = glm::mat4(glm::mat3(camera.updateView()));
+        sksh.setMat4("view", view);
+        sksh.setMat4("projection", glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f));
+
+        glBindVertexArray(skyboxVAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, skt.skyboxID);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+        glDepthFunc(GL_LESS);
 
 
         window.Display();
