@@ -43,5 +43,12 @@ namespace Engine {
 			glFlush();
 		}
 
+		void DrawObject(unsigned int VAO, unsigned int texture) {
+			glBindVertexArray(VAO);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+			glFlush();
+		}
+
 	};
 };
