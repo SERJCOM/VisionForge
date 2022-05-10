@@ -33,10 +33,13 @@
     <ClInclude Include="include\shader.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="init.h">
+    <ClInclude Include="include\light.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="include\light.h">
+    <ClInclude Include="include\mesh.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="include\init.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

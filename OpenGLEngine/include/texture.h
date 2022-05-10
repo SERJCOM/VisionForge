@@ -13,7 +13,7 @@ public:
 	void LoadSkyBox() {
 
 		std::string path[6];
-		path[0] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/right.jpg";
+		path[0] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/putin.jpeg";
 		path[1] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/left.jpg";
 		path[2] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/top.jpg";
 		path[3] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/bottom.jpg";
@@ -26,7 +26,7 @@ public:
 
 		for (int i = 0; i < 6; i++) {
 			sf::Image image;
-			if (!image.loadFromFile(path[i].c_str())) {
+			if (!image.loadFromFile(path[0].c_str())) {
 				std::cout << "failed to load the texture" << std::endl;
 			}
 			glTexImage2D(
