@@ -8,14 +8,16 @@ int main() {
     Engine::Engine engine;
     Shader shader("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/cube.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/cube.frag");
     Shader sksh("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/skybox.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/skybox.frag");
-    Shader shad("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.frag");
+    Shader shad("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/obj.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/obj.frag");
     
     Camera camera;
     Light light;
 
-    Object object1;
-    Object object2;
+   
     Object sk;
+    
+    Model m("D:/prog/obj/backpack.obj");
+
 
     float vertices[] = {
     -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -108,15 +110,8 @@ int main() {
     Texture skt;
     skt.LoadSkyBox();
 
-    object1.LoadArray(vertices, sizeof(vertices) / sizeof(float));
-    object1.AddAtribute(1, 3, 6 * sizeof(float), 3 * sizeof(float));
-    object1.Create();
 
-   
-
-    object2.LoadArray(vertices, sizeof(vertices) / sizeof(float));
-    object2.AddAtribute(1, 3, 6 * sizeof(float), 3 * sizeof(float));
-    object2.Create();
+ 
 
     sk.LoadArray(skyboxVertices, sizeof(skyboxVertices) / sizeof(float));
     sk.stride = 3;
@@ -134,24 +129,21 @@ int main() {
         camera.looking(&window.window);
         camera.view = camera.updateView();
 
-        shader.use();
-        shader.setVec3("cameraPos", camera.cameraPos);
-
-        object1.SetMatrixShader(object1.modelMatrix(0.0f, 0.0f, 0.0f, 0.0f), camera.view, object1.projectionMatrix(), shader.ID);
-        engine.DrawObject(object1.VAO, skt.skyboxID);
-
        
 
         shad.use();
-        shad.setVec3("LIGHT.lightColor", light.lightColor);
-        shad.setVec3("LIGHT.lightPos", light.lightPos);
-        shad.setFloat("LIGHT.constant", 1.0f);
-        shad.setFloat("LIGHT.linear", 0.09f);
-        shad.setFloat("LIGHT.quadratic", 0.032f);
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        glm::mat4 view = camera.view;
+        shad.setMat4("projection", projection);
+        shad.setMat4("view", view);
 
-        shad.setVec3("cameraPos", camera.cameraPos);
-        object2.SetMatrixShader(object2.modelMatrix(i , 0, -3.0f, 0.0f), camera.view, object2.projectionMatrix(), shad.ID);
-        engine.DrawObject(object2.VAO);
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(5.0f, 5.0f, 5.0f)); // смещаем вниз чтобы быть в центре сцены
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// объект слишком большой для нашей сцены, поэтому немного уменьшим его
+        shad.setMat4("model", model);
+        m.Draw(shad);
+
+       
 
         // S K Y B O X 
         glDepthFunc(GL_LEQUAL);
