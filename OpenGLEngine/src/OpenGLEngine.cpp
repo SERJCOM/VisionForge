@@ -11,15 +11,12 @@ int main() {
     Shader shad("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/obj.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/obj.frag");
     
     Camera camera;
-    Light light;
-
    
     Object sk;
     
-    Model m("D:/prog/obj/sphere.obj");
+    Model m("D:/prog/obj/Grass_Block.obj");
 
 
-   
     float skyboxVertices[] = {
         // координаты         
        -1.0f,  1.0f, -1.0f,
@@ -98,6 +95,7 @@ int main() {
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(5.0f, 5.0f, 5.0f)); // смещаем вниз чтобы быть в центре сцены
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// объект слишком большой для нашей сцены, поэтому немного уменьшим его
+        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         shad.setMat4("model", model);
         m.Draw(shad);
 
