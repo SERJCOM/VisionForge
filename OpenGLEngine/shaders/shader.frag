@@ -1,12 +1,15 @@
 #version 330 core
-out vec4 gl_FragColor;
+out vec4 FragColor;
   
 in vec3 colorOut;
 in vec3 NormalOut;
 in vec3 PosFrag;
+in vec2 TexCoords;
 
 uniform vec3 cameraPos;
-
+uniform sampler2D texture_diffuse1;
+uniform vec3 lightPos;
+bool lightFlag = false;
 struct Light{
 	vec3 lightColor; // цвет источника света
 	vec3 lightPos;
@@ -52,6 +55,7 @@ vec3 CalcDampingLight(Light light, vec3 FragPos, vec3 normal){
 }
 
 vec3 CalcFlashLight(Light light, vec3 view, vec3 FragPos, vec3 normal){
+	
 	vec3 lightDir = normalize(light.lightPos - FragPos);
 	float theta = dot(lightDir, normalize(-light.direction)); 
 	
@@ -74,13 +78,20 @@ vec3 CalcFlashLight(Light light, vec3 view, vec3 FragPos, vec3 normal){
 	return light.lightColor * 0.1;
 }
 
+
+
 void main()
 {
-	vec3 norm = normalize(NormalOut);
-	vec3 viewDir = normalize(cameraPos - PosFrag);
+	vec3 result;
 
-	vec3 result = CalcDampingLight(LIGHT,PosFrag, norm);
+	//vec3 norm = normalize(NormalOut);
+	//vec3 viewDir = normalize(cameraPos - PosFrag);
+	//result = CalcDampingLight(LIGHT,PosFrag, norm);
 	
-	gl_FragColor = vec4(result, 1.0);
+	vec3 norm = normalize(NormalOut);
+	vec3 t = texture(texture_diffuse1, TexCoords).rgb;
+	
+	
+	FragColor = vec4(max(dot(norm, normalize(lightPos - PosFrag)) , 0.0 ) * t, 1.0f);
 }
 

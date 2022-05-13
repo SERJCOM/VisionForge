@@ -8,13 +8,13 @@ int main() {
     Engine::Engine engine;
    
     Shader sksh("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/skybox.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/skybox.frag");
-    Shader shad("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/obj.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/obj.frag");
+    Shader shad("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.frag");
     
     Camera camera;
    
     Object sk;
     
-    Model m("D:/prog/obj/Grass_Block.obj");
+    Model m("D:/prog/obj/scene.gltf");
 
 
     float skyboxVertices[] = {
@@ -93,10 +93,11 @@ int main() {
         shad.setMat4("view", view);
 
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(5.0f, 5.0f, 5.0f)); // смещаем вниз чтобы быть в центре сцены
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // смещаем вниз чтобы быть в центре сцены
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// объект слишком большой для нашей сцены, поэтому немного уменьшим его
-        model = glm::rotate(model, glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         shad.setMat4("model", model);
+        shad.setVec3("lightPos", glm::vec3(sin(i) * 4, 3.0f, cos(i) *4));
         m.Draw(shad);
 
        

@@ -13,12 +13,12 @@ public:
 	void LoadSkyBox() {
 
 		std::string path[6];
-		path[0] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/right.jpg";
-		path[1] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/left.jpg";
-		path[2] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/top.jpg";
-		path[3] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/bottom.jpg";
-		path[4] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/front.jpg";
-		path[5] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/back.jpg";
+		path[0] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/posx.jpg";
+		path[1] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/negx.jpg";
+		path[2] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/posy.jpg";
+		path[3] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/negy.jpg";
+		path[4] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/posz.jpg";
+		path[5] = "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/textures/negz.jpg";
 
 		
 		glGenTextures(1, &skyboxID);
