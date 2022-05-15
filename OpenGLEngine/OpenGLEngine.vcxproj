@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClInclude Include="include\camera.h" />
     <ClInclude Include="include\engine.h" />
+    <ClInclude Include="include\framebuffer.h" />
     <ClInclude Include="include\init.h" />
     <ClInclude Include="include\light.h" />
     <ClInclude Include="include\mesh.h" />

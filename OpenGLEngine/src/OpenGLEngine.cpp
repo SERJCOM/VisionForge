@@ -6,7 +6,7 @@ int main() {
     Camera camera;
     Shader sksh("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/skybox.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/skybox.frag");
     Shader shad("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.frag");
-    
+
     Object sk;
     float skyboxVertices[] = {
         // координаты         
@@ -57,23 +57,23 @@ int main() {
     sk.LoadArray(skyboxVertices, sizeof(skyboxVertices) / sizeof(float));
     sk.stride = 3;
     sk.Create();
-    
+
     Model m("D:/prog/obj/scene.gltf");
     Model ural("D:/prog/obj/ural/scene.gltf");
-   
-    
+
+
     float i = 0;
     sksh.use();
     sksh.setInt("skybox", 0);
 
     while (window.running) {
         engine.ClearBuffers();
-        
+
         camera.move();
         camera.looking(&window.window);
         camera.view = camera.updateView();
 
-       
+
 
         shad.use();
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
@@ -96,9 +96,9 @@ int main() {
         shad.setMat4("model", model);
         m.Draw(shad);
 
-        
 
-       
+
+
 
         // S K Y B O X 
         glDepthFunc(GL_LEQUAL);
