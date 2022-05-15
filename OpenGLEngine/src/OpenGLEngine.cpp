@@ -1,22 +1,13 @@
 ﻿#include "init.h"
 
 int main() {
-
-
-
     Engine::Window window(800, 600);
     Engine::Engine engine;
-   
+    Camera camera;
     Shader sksh("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/skybox.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/skybox.frag");
     Shader shad("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.frag");
     
-    Camera camera;
-   
     Object sk;
-    
-    Model m("D:/prog/obj/scene.gltf");
-
-
     float skyboxVertices[] = {
         // координаты         
        -1.0f,  1.0f, -1.0f,
@@ -61,17 +52,15 @@ int main() {
        -1.0f, -1.0f,  1.0f,
         1.0f, -1.0f,  1.0f
     };
-
     Texture skt;
     skt.LoadSkyBox();
-
-
- 
-
     sk.LoadArray(skyboxVertices, sizeof(skyboxVertices) / sizeof(float));
     sk.stride = 3;
     sk.Create();
-
+    
+    Model m("D:/prog/obj/scene.gltf");
+    Model ural("D:/prog/obj/ural/scene.gltf");
+   
     
     float i = 0;
     sksh.use();
@@ -91,14 +80,23 @@ int main() {
         glm::mat4 view = camera.view;
         shad.setMat4("projection", projection);
         shad.setMat4("view", view);
+        shad.setVec3("lightPos", glm::vec3(sin(i) * 4, 3.0f, cos(i) * 4));
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // смещаем вниз чтобы быть в центре сцены
+        model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));	// объект слишком большой для нашей сцены, поэтому немного уменьшим его
+        model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        shad.setMat4("model", model);
+        ural.Draw(shad);
+
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(8.0f, 0.0f, 0.0f)); // смещаем вниз чтобы быть в центре сцены
         model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// объект слишком большой для нашей сцены, поэтому немного уменьшим его
         model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         shad.setMat4("model", model);
-        shad.setVec3("lightPos", glm::vec3(sin(i) * 4, 3.0f, cos(i) *4));
         m.Draw(shad);
+
+        
 
        
 
