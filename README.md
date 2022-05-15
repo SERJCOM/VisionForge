@@ -1,6 +1,6 @@
-# OpenGLEngine
+# Lithium Engine 
 ![Иллюстрация к проекту](https://github.com/SERJCOM/img/blob/main/logoza.ru.png)
-A small OpenGl Engine
+This engine can help you to create a game. 
 
 ## Screenshots
 
