@@ -24,12 +24,39 @@ public:
     std::vector<Vertex>       vertices;
     std::vector<unsigned int> indices;
     std::vector<texture> textures;
+    PolygonVertexArray::PolygonFace* polygonFaces;
+    PolygonVertexArray::PolygonFace* face;
+    PolygonVertexArray* polygonVertexArray;
+    PolyhedronMesh* polyhedronMesh;
+    ConvexMeshShape* convexMeshShape;
 
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<texture> textures){
         this->vertices = vertices;
         this->indices = indices;
         this->textures = textures;
         
+        setupMesh();
+    }
+
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<texture> textures, aiMesh* mesh, PhysicsCommon *physicsCommon, RigidBody* body) {
+        this->vertices = vertices;
+        this->indices = indices;
+        this->textures = textures;
+        polygonFaces = new  PolygonVertexArray::PolygonFace[mesh->mNumFaces];
+        face = polygonFaces;
+
+        for (int i = 0; i < mesh->mNumFaces; i++) {
+            face->indexBase = i * 3;
+            face->nbVertices = 3;
+            face++;
+        }
+        polygonVertexArray = new PolygonVertexArray(mesh->mNumVertices, vertices, 7 * sizeof(float), indices, sizeof(int), 6, polygonFaces, PolygonVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,PolygonVertexArray::IndexDataType::INDEX_INTEGER_TYPE);
+
+
+        PolyhedronMesh* polyhedronMesh = physicsCommon->createPolyhedronMesh(polygonVertexArray);
+        ConvexMeshShape* convexMeshShape = physicsCommon->createConvexMeshShape(polyhedronMesh);
+        Transform transform = Transform::identity();
+        Collider* collider = body->addCollider(convexMeshShape, transform);
         setupMesh();
     }
     void Draw(Shader shader) {     
@@ -54,6 +81,7 @@ public:
         glBindVertexArray(0);
         glActiveTexture(GL_TEXTURE0);
     }
+
 private:
     unsigned int VAO, VBO, EBO;
 
@@ -95,9 +123,18 @@ public:
     std::vector<Mesh> meshes;
     std::string directory;
     vector<texture> textures_loaded;
+    PhysicsCommon* physicsCommon;
+    RigidBody* body;
     bool gammaCorrection;
     Model(std::string path)
     {
+        loadModel(path);
+    }
+
+    Model(std::string path, PhysicsCommon* physicsCommon, RigidBody* body)
+    {
+        this->physicsCommon = physicsCommon;
+        this->body = body;
         loadModel(path);
     }
     void Draw(Shader& shader)
@@ -105,6 +142,8 @@ public:
         for (unsigned int i = 0; i < meshes.size(); i++)
             meshes[i].Draw(shader);
     }
+
+
 private:
     void loadModel(std::string path)
     {
@@ -126,6 +165,7 @@ private:
         
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
+            
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
             meshes.push_back(processMesh(mesh, scene));
         }
@@ -173,9 +213,6 @@ private:
             }
 
             vertices.push_back(vertex);
-
-            
-
         }
 
        
@@ -187,6 +224,10 @@ private:
             for (unsigned int j = 0; j < face.mNumIndices; j++)
                 indices.push_back(face.mIndices[j]);
         }
+
+        
+
+
         
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
        
@@ -194,7 +235,7 @@ private:
         vector<texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-        return Mesh(vertices, indices, textures);
+        return Mesh(vertices, indices, textures, mesh, physicsCommon, body);
     }
 
     vector<texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)

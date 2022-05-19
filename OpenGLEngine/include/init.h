@@ -1,4 +1,5 @@
 #pragma once
+//#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include "window.h"
 #include "engine.h"
@@ -15,3 +16,8 @@
 #include "mesh.h"
 #include <vector>
 #include <GL/glew.h>
+
+#include <reactphysics3d/reactphysics3d.h> 
+#include "model.h"
+
+using namespace reactphysics3d;
