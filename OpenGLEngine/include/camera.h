@@ -6,18 +6,24 @@
 #include <SFML/Window/Mouse.hpp>
 #include <SFML/Window/Keyboard.hpp>
 
-
+using	std::cout;
+using	std::endl;
 
 class Camera {
 public:
-	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-	glm::vec3 cameraFront = glm::vec3(-1.0f, 0.0f, 0.0f);
+	glm::vec3 cameraPos = glm::vec3(-1.0f, 0.0f, 0.0f);
+	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::mat4 view;
 
-	float lastX = 400, lastY = 300;
-	float yaw = 0, pitch = 0;
+	
 
+	Camera(sf::Window* window) {
+		sf::Vector2i Position;
+		Position.x = 400;
+		Position.y = 300;
+		sf::Mouse::setPosition(Position, *window);
+	}
 	void move() {
 		const float cameraSpeed = 0.05f;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) cameraPos += cameraSpeed * cameraFront;
@@ -29,10 +35,9 @@ public:
 	void looking(sf::Window* window) {
 
 		window->setMouseCursorVisible(false);
-		sf::Vector2i localPosition = sf::Mouse::getPosition(*window);
-		float xpos = localPosition.x;
-		float ypos = localPosition.y;		
-
+		
+		
+			 
 		float xoffset = -(lastX - xpos);
 		float yoffset = -(ypos - lastY);
 
@@ -57,6 +62,11 @@ public:
 		direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 		cameraFront = glm::normalize(direction);
 
+		sf::Vector2i localPosition = sf::Mouse::getPosition(*window);
+		xpos = localPosition.x;
+		ypos = localPosition.y;
+		//cout << xpos << " " << ypos << endl;
+
 		sf::Vector2i Position;
 		Position.x = 400;
 		Position.y = 300;
@@ -67,5 +77,8 @@ public:
 		return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	}
 
-
+private:
+	float lastX = 400, lastY = 300;
+	float yaw = 0, pitch = 0;
+	float xpos = 400, ypos = 300;
 };

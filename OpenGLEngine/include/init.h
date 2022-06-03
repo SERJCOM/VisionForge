@@ -17,7 +17,5 @@
 #include <vector>
 #include <GL/glew.h>
 
-#include <reactphysics3d/reactphysics3d.h> 
-#include "model.h"
-
-using namespace reactphysics3d;
+using	std::cout;
+using	std::endl;
