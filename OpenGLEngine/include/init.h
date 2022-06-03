@@ -16,6 +16,9 @@
 #include "mesh.h"
 #include <vector>
 #include <GL/glew.h>
+#include <reactphysics3d/reactphysics3d.h> 
+
 
 using	std::cout;
 using	std::endl;
+using namespace reactphysics3d;
