@@ -70,12 +70,12 @@ int main() {
     Transform transform(position, orientation);
     RigidBody* body = world->createRigidBody(transform);
     body->setType(BodyType::KINEMATIC);
-    
+
     Vector3 halfExtents(20.0, 1.0, 20.0);
     BoxShape* boxShape = physicsCommon.createBoxShape(halfExtents);
     transform = Transform::identity();
-    Collider* collider = body -> addCollider(boxShape, transform);
-        
+    Collider* collider = body->addCollider(boxShape, transform);
+
 
 
     position = Vector3(0, 20, 0);
@@ -111,19 +111,32 @@ int main() {
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(sin(i) * 8, 5.0f, cos(i) * 8));
 
-     
-
-        const Transform& transform = body->getTransform();
-        const Vector3& position = transform.getPosition();
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
-        shad.setMat4("model", model);
-        box.Draw(shad);
-
-        const Transform& transform1 = body1->getTransform();
+        const Transform& transform1 = body->getTransform();
         const Vector3& position1 = transform1.getPosition();
         model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(position1.x, position1.y, position1.z));
+        shad.setMat4("model", model);
+        box.Draw(shad);
+
+        const Transform& transform = body1->getTransform();
+        const Vector3& position = transform.getPosition();
+        const Quaternion& orientation = transform.getOrientation();
+        glm::vec4 orient[3];
+        glm::mat4 orientMat;
+        for (int i = 0; i < 3; i++) {
+           orient[i].x = orientation.getMatrix().getRow(i).x;
+           orient[i].y = orientation.getMatrix().getRow(i).y;
+           orient[i ].z = orientation.getMatrix().getRow(i).z;
+           orient[i ].w = 0;
+        }
+        orientMat = glm::mat4(orient[0].x, orient[0].y, orient[0].z, orient[0].w, 
+            orient[1].x, orient[1].y, orient[1].z, orient[1].w,
+            orient[2].x, orient[2].y, orient[2].z, orient[2].w,
+            0.0,    0.0,    0.0,    1.0);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
+        model = orientMat * model;
+        
         shad.setMat4("model", model);
         box1.Draw(shad);
 
