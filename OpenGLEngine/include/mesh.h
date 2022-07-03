@@ -1,10 +1,12 @@
 #pragma once
 
-#include "init.h"
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
+#include <iostream>
+#include <reactphysics3d/reactphysics3d.h> 
+#include "shader.h"
+#include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+using namespace reactphysics3d;
 
 struct Vertex {
     glm::vec3 Position;
@@ -24,9 +26,18 @@ public:
     std::vector<unsigned int> indices;
     std::vector<texture> textures;
     glm::mat4 model;
-    
-    
+    glm::vec3 PhysicPosition;
+    glm::vec3 ColliderSize;
 
+    glm::vec3 meshScale = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 meshRotate = glm::vec3(0.0f, 0.0f, 0.0f);
+    float angle = 0;
+   
+
+    PhysicsWorld* world;
+    RigidBody* body;
+    bool AlwaysUpdateMatrix = true; 
+    
 
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<texture> textures){
         this->vertices = vertices;
@@ -35,11 +46,96 @@ public:
         setupMesh();
     }
 
+    
+
+    void SetupPhysic(PhysicsWorld* physworld) {
+        this->world = physworld;
+    }
+    void CreateRigidBody(){
+        
+        //Vector3 position(PhysicPosition.x, PhysicPosition.y, PhysicPosition.z);
+        Vector3 position(10,10, 10);
+        Quaternion orientation = Quaternion::identity();
+        Transform transform(position, orientation);
+        
+        body = world->createRigidBody(transform);
+        body->setType(BodyType::KINEMATIC);
+    }
+
+
+    void RotateMesh(float angle1) {
+
+        this->angle += angle1;
+
+        Transform currentTransform = body->getTransform();
+
+        Quaternion orientation = currentTransform.getOrientation();
+        
+
+        //cout << orientation.x << " " << orientation.y << " " << orientation.z << " " << orientation.w << endl;
+        //cout << currentTransform.getPosition().x << " " << currentTransform.getPosition().y << " " << currentTransform.getPosition().z << endl;
+       
+        glm::vec3 normpos = glm::normalize(glm::vec3(currentTransform.getPosition().x, currentTransform.getPosition().y, currentTransform.getPosition().z));
+        cout << normpos.x << " " << normpos.y << " " << normpos.z << endl;
+        orientation.x = sin(angle / 2) * normpos.x ;
+
+        orientation.y = sin(angle / 2) * normpos.y;
+
+        orientation.z = sin(angle / 2) * normpos.z;
+
+        orientation.w = cos(angle / 2);
+
+       
+        currentTransform.setOrientation(orientation);
+        body->setTransform(currentTransform);
+    }
+
+    void SetNewRotateMesh(glm::vec3 rotate) {  // полностью обновить поворот меша
+        meshRotate = rotate;
+        Transform currentTransform = body->getTransform();
+        currentTransform.setOrientation(Quaternion::fromEulerAngles(meshRotate.x, meshRotate.y, meshRotate.x));
+        body->setTransform(currentTransform);
+    }
+
+
+    void CreateCollider(PhysicsCommon &physicsCommon) {
+        Vector3 halfExtents(ColliderSize.x, ColliderSize.y, ColliderSize.z);
+        BoxShape* boxShape = physicsCommon.createBoxShape(halfExtents);
+        Transform transform = Transform::identity();
+        collider = body->addCollider(boxShape, transform);
+    }
+
+    void ObjectKinematic(bool paramert) {
+        if (paramert)    body->setType(BodyType::KINEMATIC);
+        else    body->setType(BodyType::DYNAMIC);
+    }
+
     void SetMatrix(Shader* shad) {
+        const Transform& transform = body->getTransform();
+        const Vector3& position = transform.getPosition();
+        const Quaternion& orientation = transform.getOrientation();
+        glm::vec4 orient[3];
+        glm::mat4 orientMat;
+        for (int i = 0; i < 3; i++) {
+            orient[i].x = orientation.getMatrix().getRow(i).x;
+            orient[i].y = orientation.getMatrix().getRow(i).y;
+            orient[i].z = orientation.getMatrix().getRow(i).z;
+            orient[i].w = 0;
+        }
+        orientMat = glm::mat4(orient[0].x, orient[0].y, orient[0].z, orient[0].w,
+            orient[1].x, orient[1].y, orient[1].z, orient[1].w,
+            orient[2].x, orient[2].y, orient[2].z, orient[2].w,
+            0.0, 0.0, 0.0, 1.0);
+        model = orientMat;
+        model = glm::scale(model, meshScale);
+        //cout << position.x << " " << position.y << " " << position.z << endl;
+        model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
+       
         shad->setMat4("model", model);
     }
 
     void Draw(Shader shader) {     
+        //cout << meshRotate.x << " " << meshRotate.y << " " << meshRotate.z << endl;
         glActiveTexture(GL_TEXTURE0);
 
         unsigned int diffuseNr = 1;
@@ -55,6 +151,7 @@ public:
             glBindTexture(GL_TEXTURE_2D, textures[i].id);
         }
 
+        this->SetMatrix(&shader);
         
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
@@ -64,6 +161,9 @@ public:
 
 private:
     unsigned int VAO, VBO, EBO;
+    
+    Collider* collider;
+    Shader* shader;
 
     void setupMesh(){
         glGenVertexArrays(1, &VAO);
@@ -97,152 +197,3 @@ private:
 
 
 
-class Model
-{
-public: 
-    std::vector<Mesh> meshes;
-    std::string directory;
-    std::vector<texture> textures_loaded;
-    
-    bool gammaCorrection;
-    Model(std::string path)
-    {
-        loadModel(path);
-    }
-
-    
-    void Draw(Shader& shader)
-    {
-        for (unsigned int i = 0; i < meshes.size(); i++)
-            meshes[i].Draw(shader);
-    }
-
-
-private:
-    void loadModel(std::string path)
-    {
-        Assimp::Importer import;
-        const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
-
-        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-        {
-            std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
-            return;
-        }
-        directory = path.substr(0, path.find_last_of('/'));
-
-        processNode(scene->mRootNode, scene);
-    }
-
-    void processNode(aiNode* node, const aiScene* scene)
-    {
-        
-        for (unsigned int i = 0; i < node->mNumMeshes; i++)
-        {
-            std::cout << node->mName.C_Str() << " " <<  std::endl;
-            aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            meshes.push_back(processMesh(mesh, scene));
-            
-        }
-       
-        for (unsigned int i = 0; i < node->mNumChildren; i++)
-        {
-            processNode(node->mChildren[i], scene);
-        }
-    }
-
-    Mesh processMesh(aiMesh* mesh, const aiScene* scene)
-    {
-        
-        std::vector<Vertex> vertices;
-        std::vector<unsigned int> indices;
-        std::vector<texture> textures;
-
-        
-        for (unsigned int i = 0; i < mesh->mNumVertices; i++)
-        {
-            Vertex vertex;
-            glm::vec3 vector;
-            
-            vector.x = mesh->mVertices[i].x;
-            vector.y = mesh->mVertices[i].y;
-            vector.z = mesh->mVertices[i].z;
-            vertex.Position = vector;
-
-            vector.x = mesh->mNormals[i].x;
-            vector.y = mesh->mNormals[i].y;
-            vector.z = mesh->mNormals[i].z;
-            vertex.Normal = vector;
-
-            if (mesh->mTextureCoords[0]) 
-            {
-                glm::vec2 vec;
-
-                
-                vec.x = mesh->mTextureCoords[0][i].x;
-                vec.y = mesh->mTextureCoords[0][i].y;
-                vertex.TexCoords = vec;
-            }
-            else {
-                vertex.TexCoords = glm::vec2(0.0f, 0.0f);
-            }
-
-            vertices.push_back(vertex);
-        }
-
-       
-
-        for (unsigned int i = 0; i < mesh->mNumFaces; i++)
-        {
-            aiFace face = mesh->mFaces[i];
-            
-            for (unsigned int j = 0; j < face.mNumIndices; j++)
-                indices.push_back(face.mIndices[j]);
-        }
-
-        
-
-
-        
-        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-       
-
-        std::vector<texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-
-        return Mesh(vertices, indices, textures);
-    }
-
-    std::vector<texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
-    {
-        std::vector<texture> textures;
-        for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
-        {
-            aiString str;
-            mat->GetTexture(type, i, &str);
-
-            bool skip = false;
-            for (unsigned int j = 0; j < textures_loaded.size(); j++)
-            {
-                if (std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
-                {
-                    textures.push_back(textures_loaded[j]);
-                    skip = true; 
-                    break;
-                }
-            }
-            if (!skip)
-            {  
-                texture texturee;
-                texturee.id = LoadTextureFromFile(str.C_Str(), this->directory);
-                texturee.type = typeName;
-                texturee.path = str.C_Str();
-                textures.push_back(texturee);
-                textures_loaded.push_back(texturee); 
-            }
-        }
-        return textures;
-    }
-    
-    
-};

@@ -1,11 +1,11 @@
 #pragma once
-#include "init.h"
+#include <iostream>
+#include "light.h"
+#include "texture.h"
+#include "mesh.h"
 
-class ModelObject {
-public:
-	int countFaces;
-	std::vector<Vertex>       vertices;
-	std::vector<unsigned int> indices;
+class Model
+{
 
 
 };

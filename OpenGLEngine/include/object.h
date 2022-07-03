@@ -1,122 +1,198 @@
 #pragma once
-#include "init.h"
+#include <iostream>
+#include "model.h"
+#include "mesh.h"
+#include "light.h"
+#include "shader.h"
+#include "texture.h"
+#include <string>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <map>
+/// <summary>
+/// инструкция пользования классом Object
+/// 1)	загрузить модель 
+/// 2)	выбрать размер, положение в пространтстве, координаты
+/// 3)	
+/// </summary>
 
 class Object {
 public:
-	int size;
-	int sizeIndec;
-	unsigned int VBO, VAO;
+    std::vector<Mesh> meshes;
+    std::string directory;
+    std::vector<texture> textures_loaded;
+    std::map <std::string, int> meshNames;
+    bool gammaCorrection;
 
-	float* vertices;
-	unsigned int* indices;
+    Object(std::string path, PhysicsWorld* physworld)
+    {
+        this->physworld = physworld;
+        loadModel(path);
+    }
 
-	int stride = 6;
+    void Draw(Shader& shader)
+    {
 
-	void Create() {
-		glGenVertexArrays(1, &VAO);
-		glGenBuffers(1, &VBO);
+        for (unsigned int i = 0; i < meshes.size(); i++)
+            meshes[i].Draw(shader);
+    }
 
-		glBindVertexArray(VAO);
+    void SetNewMeshScale(std::string name, glm::vec3 size) {
+        meshes[meshNames[name]].meshScale = size;
+    }
 
+    void SetNewMeshRotate(std::string name, glm::vec3 rotate) {
+        meshes[meshNames[name]].SetNewRotateMesh(rotate);
+    }
+   
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * size, vertices, GL_STATIC_DRAW);
+    void SetMeshRotate(std::string name, float angle) {
+        meshes[meshNames[name]].RotateMesh(angle);
+    }
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
+    void EnablePhysics(bool enable) { this->PhysicBool = enable; }
 
-		for (int i = 0; i < atrArray.size(); i++) {
-			glVertexAttribPointer(atrArray[i].location, atrArray[i].size, GL_FLOAT, GL_FALSE, atrArray[i].stride, (void*)atrArray[i].firststride);
-			glEnableVertexAttribArray(atrArray[i].location);
-		}
+    static float DegToRad(float angle) {
+        return angle * 3.13 / 180;
+    }
 
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
-
-	}
-
-	~Object() {
-		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &VBO);
-	}
-
-	void LoadArray(float* array, int size) {
-		vertices = array;
-		this->size = size;
-	}
-
-	void LoadArrayEBO(unsigned int* array, int size) {
-		indices = array;
-		this->sizeIndec = size;
-	}
-
-	void AddAtribute(int location, int size, int stride, int firststride) {
-		atrArray.push_back({ location, size, stride,firststride });
-	}
-
-	void SetWidthHeight(float& width, float& height) {
-		this->width = width;
-		this->height = height;
-	}
-
-	glm::mat4 modelMatrix(float x, float y, float z, float angle) {
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(x, y, z));
-		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));
-
-		return model;
-	}
-
-	glm::mat4 viewMatrix(float x, float y, float z) {
-		glm::mat4 view = glm::mat4(1.0f);
-		view = glm::translate(view, glm::vec3(x, y, z));
-		return view;
-	}
-
-	glm::mat4 projectionMatrix() {
-		glm::mat4 projection;
-		projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-		return projection;
-	}
-
-	void SetMatrixShader(glm::mat4 model, glm::mat4 view, glm::mat4 projection, unsigned int ID) {
-		int modelLoc = glGetUniformLocation(ID, "model");
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-		int viewLoc = glGetUniformLocation(ID, "view");
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-
-		int projLoc = glGetUniformLocation(ID, "projection");
-		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-	}
-
-	void SetMatrixShader(glm::mat4 view, glm::mat4 projection, unsigned int ID) {
-		int viewLoc = glGetUniformLocation(ID, "view");
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-
-		int projLoc = glGetUniformLocation(ID, "projection");
-		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-	}
-
-	void SetTextureMode(bool flag, unsigned int ID) {
-		glUniform1d(glGetUniformLocation(ID, "texturePermit"), flag);
-	}
-
-	void SetBasicColor(unsigned int ID) {
-		glm::vec3 color = glm::vec3(1.0f, 0.5f, 0.3f);
-		glUniform3f(glGetUniformLocation(ID, "lightColor"), 0.3f, 0.5f, 0.9f);
-	}
-
-
-
+    /*void SetPhysicsWorld(PhysicsWorld* physworld) { 
+        cout << "SetPhysicsWorld\n";
+        this->physworld = physworld; 
+        cout << "adress1 " << physworld << endl;
+    }*/
 private:
-	int atributesCount = 0; // the count of atributes. By default 1 
-	struct atribute {
-		int location, size, stride, firststride;
-	};
-	std::vector <atribute> atrArray;
-	float width, height;
+    bool PhysicBool = true;
+    PhysicsWorld* physworld;
+    void loadModel(std::string path)
+    {
+        Assimp::Importer import;
+        const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+
+        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+        {
+            std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+            return;
+        }
+        directory = path.substr(0, path.find_last_of('/'));
+
+        processNode(scene->mRootNode, scene);
+    }
+
+    void processNode(aiNode* node, const aiScene* scene)
+    {
+
+        for (unsigned int i = 0; i < node->mNumMeshes; i++)
+        {
+            std::cout << node->mName.C_Str() << " " << std::endl;
+            aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+            meshes.push_back(processMesh(mesh, scene));
+            meshNames[node->mName.C_Str()] = i;
+            if (PhysicBool == true) {
+                meshes[meshes.size() - 1].SetupPhysic(physworld);
+                meshes[meshes.size() - 1].CreateRigidBody();
+            }
+        }
+
+        for (unsigned int i = 0; i < node->mNumChildren; i++)
+        {
+            processNode(node->mChildren[i], scene);
+        }
+    }
+
+    Mesh processMesh(aiMesh* mesh, const aiScene* scene)
+    {
+
+        std::vector<Vertex> vertices;
+        std::vector<unsigned int> indices;
+        std::vector<texture> textures;
 
 
+        for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+        {
+            Vertex vertex;
+            glm::vec3 vector;
+
+            vector.x = mesh->mVertices[i].x;
+            vector.y = mesh->mVertices[i].y;
+            vector.z = mesh->mVertices[i].z;
+            vertex.Position = vector;
+
+            vector.x = mesh->mNormals[i].x;
+            vector.y = mesh->mNormals[i].y;
+            vector.z = mesh->mNormals[i].z;
+            vertex.Normal = vector;
+
+            if (mesh->mTextureCoords[0])
+            {
+                glm::vec2 vec;
+
+
+                vec.x = mesh->mTextureCoords[0][i].x;
+                vec.y = mesh->mTextureCoords[0][i].y;
+                vertex.TexCoords = vec;
+            }
+            else {
+                vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+            }
+
+            vertices.push_back(vertex);
+        }
+
+
+
+        for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+        {
+            aiFace face = mesh->mFaces[i];
+
+            for (unsigned int j = 0; j < face.mNumIndices; j++)
+                indices.push_back(face.mIndices[j]);
+        }
+
+
+
+
+
+        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+
+
+        std::vector<texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+
+        
+        return Mesh(vertices, indices, textures);
+    }
+
+    std::vector<texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
+    {
+        std::vector<texture> textures;
+        for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+        {
+            aiString str;
+            mat->GetTexture(type, i, &str);
+
+            bool skip = false;
+            for (unsigned int j = 0; j < textures_loaded.size(); j++)
+            {
+                if (std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
+                {
+                    textures.push_back(textures_loaded[j]);
+                    skip = true;
+                    break;
+                }
+            }
+            if (!skip)
+            {
+                texture texturee;
+                texturee.id = LoadTextureFromFile(str.C_Str(), this->directory);
+                texturee.type = typeName;
+                texturee.path = str.C_Str();
+                textures.push_back(texturee);
+                textures_loaded.push_back(texturee);
+            }
+        }
+        return textures;
+    }
 
 };
