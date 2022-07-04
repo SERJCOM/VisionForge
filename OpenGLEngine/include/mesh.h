@@ -30,7 +30,7 @@ public:
     glm::vec3 ColliderSize;
 
     glm::vec3 meshScale = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 meshRotate = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 angleRotate = glm::vec3(0.0f, 0.0f, 0.0f);
     float angle = 0;
    
 
@@ -54,7 +54,7 @@ public:
     void CreateRigidBody(){
         
         //Vector3 position(PhysicPosition.x, PhysicPosition.y, PhysicPosition.z);
-        Vector3 position(10,10, 10);
+        Vector3 position(0,0, 0);
         Quaternion orientation = Quaternion::identity();
         Transform transform(position, orientation);
         
@@ -63,38 +63,20 @@ public:
     }
 
 
-    void RotateMesh(float angle1) {
-
-        this->angle += angle1;
+    void RotateMesh(float anglex, float angley, float anglez) {
+        angleRotate.x += anglex;
+        angleRotate.y += angley;
+        angleRotate.z += anglez;
 
         Transform currentTransform = body->getTransform();
-
         Quaternion orientation = currentTransform.getOrientation();
-        
 
-        //cout << orientation.x << " " << orientation.y << " " << orientation.z << " " << orientation.w << endl;
-        //cout << currentTransform.getPosition().x << " " << currentTransform.getPosition().y << " " << currentTransform.getPosition().z << endl;
-       
-        glm::vec3 normpos = glm::normalize(glm::vec3(currentTransform.getPosition().x, currentTransform.getPosition().y, currentTransform.getPosition().z));
-        cout << normpos.x << " " << normpos.y << " " << normpos.z << endl;
-        orientation.x = sin(angle / 2) * normpos.x ;
+        //orientation.setAllValues(vector.x * sin(glm::radians(angle) / 2), vector.y * sin(glm::radians(angle) / 2), vector.z * sin(glm::radians(angle) / 2), cos(glm::radians(angle) / 2));
+        orientation = Quaternion::fromEulerAngles(angleRotate.x, angleRotate.y, angleRotate.z);
 
-        orientation.y = sin(angle / 2) * normpos.y;
-
-        orientation.z = sin(angle / 2) * normpos.z;
-
-        orientation.w = cos(angle / 2);
-
-       
         currentTransform.setOrientation(orientation);
-        body->setTransform(currentTransform);
-    }
-
-    void SetNewRotateMesh(glm::vec3 rotate) {  // полностью обновить поворот меша
-        meshRotate = rotate;
-        Transform currentTransform = body->getTransform();
-        currentTransform.setOrientation(Quaternion::fromEulerAngles(meshRotate.x, meshRotate.y, meshRotate.x));
-        body->setTransform(currentTransform);
+        
+        body->setTransform(currentTransform); 
     }
 
 
@@ -111,9 +93,9 @@ public:
     }
 
     void SetMatrix(Shader* shad) {
-        const Transform& transform = body->getTransform();
-        const Vector3& position = transform.getPosition();
-        const Quaternion& orientation = transform.getOrientation();
+        Transform transform = body->getTransform();
+        Vector3 position = transform.getPosition();
+        Quaternion orientation = transform.getOrientation();
         glm::vec4 orient[3];
         glm::mat4 orientMat;
         for (int i = 0; i < 3; i++) {
@@ -126,11 +108,10 @@ public:
             orient[1].x, orient[1].y, orient[1].z, orient[1].w,
             orient[2].x, orient[2].y, orient[2].z, orient[2].w,
             0.0, 0.0, 0.0, 1.0);
-        model = orientMat;
-        model = glm::scale(model, meshScale);
-        //cout << position.x << " " << position.y << " " << position.z << endl;
+        model = glm::mat4(1);
         model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
-       
+        model =  model * orientMat;
+        model = glm::scale(model, meshScale);
         shad->setMat4("model", model);
     }
 

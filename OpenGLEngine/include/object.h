@@ -42,13 +42,10 @@ public:
         meshes[meshNames[name]].meshScale = size;
     }
 
-    void SetNewMeshRotate(std::string name, glm::vec3 rotate) {
-        meshes[meshNames[name]].SetNewRotateMesh(rotate);
-    }
    
 
-    void SetMeshRotate(std::string name, float angle) {
-        meshes[meshNames[name]].RotateMesh(angle);
+    void SetMeshRotate(std::string name, float anglex, float angley, float anglez) {
+        meshes[meshNames[name]].RotateMesh(anglex, angley, anglez);
     }
 
     void EnablePhysics(bool enable) { this->PhysicBool = enable; }
