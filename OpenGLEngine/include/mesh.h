@@ -31,6 +31,7 @@ public:
 
     glm::vec3 meshScale = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 angleRotate = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 meshPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     float angle = 0;
    
 
@@ -54,7 +55,7 @@ public:
     void CreateRigidBody(){
         
         //Vector3 position(PhysicPosition.x, PhysicPosition.y, PhysicPosition.z);
-        Vector3 position(0,0, 0);
+        Vector3 position(meshPosition.x, meshPosition.y, meshPosition.z);
         Quaternion orientation = Quaternion::identity();
         Transform transform(position, orientation);
         
@@ -67,18 +68,26 @@ public:
         angleRotate.x += anglex;
         angleRotate.y += angley;
         angleRotate.z += anglez;
-
         Transform currentTransform = body->getTransform();
         Quaternion orientation = currentTransform.getOrientation();
-
-        //orientation.setAllValues(vector.x * sin(glm::radians(angle) / 2), vector.y * sin(glm::radians(angle) / 2), vector.z * sin(glm::radians(angle) / 2), cos(glm::radians(angle) / 2));
         orientation = Quaternion::fromEulerAngles(angleRotate.x, angleRotate.y, angleRotate.z);
-
         currentTransform.setOrientation(orientation);
-        
         body->setTransform(currentTransform); 
     }
 
+    void MoveObject(glm::vec3 position) {
+        meshPosition += position;
+        Transform currentTransform = body->getTransform();
+        Vector3 pos;
+        pos.setAllValues(meshPosition.x, meshPosition.y, meshPosition.z);
+        currentTransform.setPosition(pos);
+        body->setTransform(currentTransform);
+    }
+
+    void SetObjectPosition(glm::vec3 position) {
+        meshPosition = glm::vec3(0.0f);
+        MoveObject(position);
+    }
 
     void CreateCollider(PhysicsCommon &physicsCommon) {
         Vector3 halfExtents(ColliderSize.x, ColliderSize.y, ColliderSize.z);

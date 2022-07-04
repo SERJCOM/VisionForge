@@ -77,6 +77,7 @@ int main() {
         shad.setVec3("lightPos", glm::vec3(sin(i) * 8, 5.0f, cos(i) * 8));
         
         box.SetMeshRotate("Cube", 0, 0.05, 0);
+        box.SetMeshPosition("Cube" ,10.0, 20, 10);
         box.Draw(shad);
 
         window.Display();

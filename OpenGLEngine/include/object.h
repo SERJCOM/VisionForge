@@ -48,6 +48,15 @@ public:
         meshes[meshNames[name]].RotateMesh(anglex, angley, anglez);
     }
 
+    void MoveObject(std::string name, float x, float y, float z) {
+       
+        meshes[meshNames[name]].MoveObject(glm::vec3(x,y,z));
+    }
+
+    void SetMeshPosition(std::string name, float x, float y, float z) {
+        meshes[meshNames[name]].SetObjectPosition(glm::vec3(x, y, z));
+    }
+
     void EnablePhysics(bool enable) { this->PhysicBool = enable; }
 
     static float DegToRad(float angle) {
