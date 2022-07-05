@@ -54,7 +54,7 @@ int main() {
     };
     
     
-    Object box("D:/prog/obj/colider/box.obj", world);
+    Object box("D:/prog/obj/fighter/scene.gltf", world);
     
    
 
@@ -65,7 +65,7 @@ int main() {
         camera.move();
         camera.looking(&window.window);
         camera.view = camera.updateView();
-        cout << camera.cameraPos.x << " " << camera.cameraPos.y << " " << camera.cameraPos.z << endl;
+        //cout << camera.cameraPos.x << " " << camera.cameraPos.y << " " << camera.cameraPos.z << endl;
         world->update(timeStep);
 
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
@@ -76,8 +76,9 @@ int main() {
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(sin(i) * 8, 5.0f, cos(i) * 8));
         
-        box.SetMeshRotate("Cube", 0, 0.05, 0);
-        box.SetMeshPosition("Cube" ,10.0, 20, 10);
+        box.SetMeshRotate("Sketchfab_model", 0, 0.05, 0);
+        box.SetMeshPosition("Sketchfab_model" ,10.0, 20, 10);
+
         box.Draw(shad);
 
         window.Display();

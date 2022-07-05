@@ -10,12 +10,60 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <map>
+
 /// <summary>
 /// инструкция пользования классом Object
 /// 1)	загрузить модель 
 /// 2)	выбрать размер, положение в пространтстве, координаты
 /// 3)	
 /// </summary>
+
+struct Tree {
+    std::vector <Tree> children;
+    std::string name;
+    int meshIndex;
+    std::map <std::string, int>* meshNames;
+
+    void createChild(std::string name, int index) {
+        Tree child;
+        child.name = name;
+        child.meshIndex = index;
+        children.push_back(child);
+    }
+
+    Tree* findNodeByName(std::string name) {
+        for (int i = 0; i < children.size(); i++) {
+            if (children[i].name == name) {
+                return &children[i];
+            }
+        }
+        return nullptr;
+    }
+
+    void GetIndexFromChildren(std::vector <int>* array, Tree* node) {
+
+        array->push_back(meshNames->operator[](node->name)); // достать индекс по ключу node->name и засунуть это значение в вектор
+
+        for (int i = 0; i < node->children.size(); i++) {
+            GetIndexFromChildren(array, &node->children[i]);
+            std::cout << node->children[i].name << std::endl;
+        }
+
+    }
+
+    std::vector <int>* GetIndexFromNode(std::string name, std::map <std::string, int>* meshNames) {
+        this->meshNames = meshNames;
+        Tree* firstNode = findNodeByName(name);
+
+        if (firstNode == nullptr) { return nullptr; }
+        else {
+            std::vector <int>* array;
+            GetIndexFromChildren(array, firstNode);
+            return array;
+        }
+    }
+
+};
 
 class Object {
 public:
@@ -57,6 +105,11 @@ public:
         meshes[meshNames[name]].SetObjectPosition(glm::vec3(x, y, z));
     }
 
+    void SetAllNodesPosition(std::string name, float x, float y, float z) {
+        findRootNodeName_Position(name, )
+    }
+
+
     void EnablePhysics(bool enable) { this->PhysicBool = enable; }
 
     static float DegToRad(float angle) {
@@ -71,6 +124,29 @@ public:
 private:
     bool PhysicBool = true;
     PhysicsWorld* physworld;
+    int number = 0;
+    std::string rootName;
+    Tree nodeTree;
+    aiNode* Rootnode;
+
+    void findRootNodeName_Position(std::string name, aiNode* node, float x, float y, float z) {
+        if (node->mName.C_Str() == name.c_str()) {
+            SetNodePosition(node, x, y, z);
+        }
+        else {
+            for (int i = 0; i < node->mNumChildren; i++) {
+                findRootNodeName_Position(name, node, x, y, z);
+            }
+        }
+    }
+
+    void SetNodePosition(aiNode* node, float x, float y, float z) {
+        for (int i = 0; i < node->mNumChildren; i++) {
+            MoveObject(node->mName.C_Str(), x, y, z);
+            SetNodePosition(node, x, y, z);
+        }
+    }
+
     void loadModel(std::string path)
     {
         Assimp::Importer import;
@@ -83,15 +159,21 @@ private:
         }
         directory = path.substr(0, path.find_last_of('/'));
 
-        processNode(scene->mRootNode, scene);
+        rootName = scene->mRootNode->mName.C_Str();
+        Rootnode = scene->mRootNode;
+        processNode(scene->mRootNode, scene, number, &nodeTree);
     }
 
-    void processNode(aiNode* node, const aiScene* scene)
+    void processNode(aiNode* node, const aiScene* scene, int index, Tree *noda)
     {
+        int ind = index;
+        ind++;
+        
+        noda->name = node->mName.C_Str();
 
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
-            std::cout << node->mName.C_Str() << " " << std::endl;
+            
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
             meshes.push_back(processMesh(mesh, scene));
             meshNames[node->mName.C_Str()] = i;
@@ -100,11 +182,19 @@ private:
                 meshes[meshes.size() - 1].CreateRigidBody();
             }
         }
+        
 
         for (unsigned int i = 0; i < node->mNumChildren; i++)
         {
-            processNode(node->mChildren[i], scene);
+             childName = node
+            noda->createChild()
+            processNode(node->mChildren[i], scene, ind);
         }
+        for (int i = 0; i < ind; i++) {
+            cout << "=";
+        }
+        cout << node->mName.C_Str() << endl;
+       
     }
 
     Mesh processMesh(aiMesh* mesh, const aiScene* scene)
@@ -202,3 +292,4 @@ private:
     }
 
 };
+
