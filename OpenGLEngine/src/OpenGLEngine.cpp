@@ -54,9 +54,9 @@ int main() {
     };
     
     
-    Object box("D:/prog/obj/fighter/scene.gltf", world);
+    Object box("D:/prog/obj/colider/untitled.obj", world);
     
-   
+    box.SetNewMeshScale("Plane", glm::vec3(0.1, 0.1, 0.1));
 
     const decimal timeStep = 1.0f / 60.0f;
     float i = 0;
@@ -74,10 +74,9 @@ int main() {
         shad.use();
         shad.setMat4("projection", projection);
         shad.setMat4("view", view);
-        shad.setVec3("lightPos", glm::vec3(sin(i) * 8, 5.0f, cos(i) * 8));
+        shad.setVec3("lightPos", glm::vec3(8.0f, 5.0f, 5.0f));
         
-        box.SetMeshRotate("Sketchfab_model", 0, 0.05, 0);
-        box.SetMeshPosition("Sketchfab_model" ,10.0, 20, 10);
+        box.SetObjectPosition("Cube.001", 0.1, 0, 0);
 
         box.Draw(shad);
 

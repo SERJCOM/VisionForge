@@ -20,15 +20,18 @@
 
 struct Tree {
     std::vector <Tree> children;
+    std::vector <int> meshIndex;
     std::string name;
-    int meshIndex;
     std::map <std::string, int>* meshNames;
 
-    void createChild(std::string name, int index) {
+    void createChild(std::string name) {
         Tree child;
         child.name = name;
-        child.meshIndex = index;
         children.push_back(child);
+    }
+
+    void addMesh(int i) {
+        meshIndex.push_back(i);
     }
 
     Tree* findNodeByName(std::string name) {
@@ -87,17 +90,21 @@ public:
     }
 
     void SetNewMeshScale(std::string name, glm::vec3 size) {
-        meshes[meshNames[name]].meshScale = size;
+        if (meshNames.find(name) == meshNames.end()) {
+            std::cout << "the element was not found\n";
+        }
+        else {
+            std::cout << meshNames.find(name)->second << std::endl;
+            meshes[meshNames[name]].meshScale = size;
+        }
+        
     }
-
-   
 
     void SetMeshRotate(std::string name, float anglex, float angley, float anglez) {
         meshes[meshNames[name]].RotateMesh(anglex, angley, anglez);
     }
 
     void MoveObject(std::string name, float x, float y, float z) {
-       
         meshes[meshNames[name]].MoveObject(glm::vec3(x,y,z));
     }
 
@@ -105,8 +112,8 @@ public:
         meshes[meshNames[name]].SetObjectPosition(glm::vec3(x, y, z));
     }
 
-    void SetAllNodesPosition(std::string name, float x, float y, float z) {
-        findRootNodeName_Position(name, )
+    void SetObjectPosition(std::string name, float x, float y, float z) {
+        findRootNodeName_Position(name, x, y, z, nodeTree);
     }
 
 
@@ -116,34 +123,33 @@ public:
         return angle * 3.13 / 180;
     }
 
-    /*void SetPhysicsWorld(PhysicsWorld* physworld) { 
-        cout << "SetPhysicsWorld\n";
-        this->physworld = physworld; 
-        cout << "adress1 " << physworld << endl;
-    }*/
 private:
     bool PhysicBool = true;
     PhysicsWorld* physworld;
     int number = 0;
     std::string rootName;
     Tree nodeTree;
-    aiNode* Rootnode;
+    
 
-    void findRootNodeName_Position(std::string name, aiNode* node, float x, float y, float z) {
-        if (node->mName.C_Str() == name.c_str()) {
+    void findRootNodeName_Position(std::string name, float x, float y, float z, Tree node) {
+       
+        if (node.name == name.c_str()) {
+            //std::cout << node.name << std::endl;
             SetNodePosition(node, x, y, z);
         }
-        else {
-            for (int i = 0; i < node->mNumChildren; i++) {
-                findRootNodeName_Position(name, node, x, y, z);
-            }
+        
+        for (unsigned int i = 0; i < node.children.size(); i++)
+        {
+            findRootNodeName_Position(name, x, y, z, node.children[i]);
         }
+        
     }
 
-    void SetNodePosition(aiNode* node, float x, float y, float z) {
-        for (int i = 0; i < node->mNumChildren; i++) {
-            MoveObject(node->mName.C_Str(), x, y, z);
-            SetNodePosition(node, x, y, z);
+    void SetNodePosition(Tree noda, float x, float y, float z) {
+        MoveObject(noda.name, x, y, z);
+        //cout << noda.name << " " << noda.children.size() << std::endl;
+        for (int i = 0; i < noda.children.size(); i++) {
+            SetNodePosition(noda.children[i], x, y, z);
         }
     }
 
@@ -160,42 +166,45 @@ private:
         directory = path.substr(0, path.find_last_of('/'));
 
         rootName = scene->mRootNode->mName.C_Str();
-        Rootnode = scene->mRootNode;
         processNode(scene->mRootNode, scene, number, &nodeTree);
     }
 
-    void processNode(aiNode* node, const aiScene* scene, int index, Tree *noda)
+    void processNode(aiNode* node, const aiScene* scene, int index, Tree* noda)
     {
         int ind = index;
         ind++;
-        
+
         noda->name = node->mName.C_Str();
 
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
-            
+
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
             meshes.push_back(processMesh(mesh, scene));
-            meshNames[node->mName.C_Str()] = i;
+            noda->addMesh(i);
+            meshNames[node->mName.C_Str()] = meshes.size()-1;
             if (PhysicBool == true) {
                 meshes[meshes.size() - 1].SetupPhysic(physworld);
                 meshes[meshes.size() - 1].CreateRigidBody();
             }
         }
-        
+
 
         for (unsigned int i = 0; i < node->mNumChildren; i++)
         {
-             childName = node
-            noda->createChild()
-            processNode(node->mChildren[i], scene, ind);
+            Tree child;
+            child.name = node->mChildren[i]->mName.C_Str();
+            noda->children.push_back(child);
+    
+            processNode(node->mChildren[i], scene, ind, &noda->children[i]);
         }
         for (int i = 0; i < ind; i++) {
             cout << "=";
         }
         cout << node->mName.C_Str() << endl;
-       
+
     }
+
 
     Mesh processMesh(aiMesh* mesh, const aiScene* scene)
     {
