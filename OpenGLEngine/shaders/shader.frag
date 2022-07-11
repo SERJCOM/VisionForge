@@ -9,7 +9,9 @@ in vec2 TexCoords;
 uniform vec3 cameraPos;
 uniform sampler2D texture_diffuse1;
 uniform vec3 lightPos;
+
 bool lightFlag = false;
+
 struct Light{
 	vec3 lightColor; // цвет источника света
 	vec3 lightPos;
@@ -92,6 +94,7 @@ void main()
 	vec3 t = texture(texture_diffuse1, TexCoords).rgb;
 	
 	
-	FragColor = vec4(max(dot(norm, normalize(lightPos - PosFrag)) , 0.0 ) * t, 1.0f);
+	FragColor = vec4(max(dot(norm, normalize(lightPos - PosFrag)) , 0.0 ) * t, 1.0f); // раскомментировать
+	//FragColor = texture(texture_diffuse1, TexCoords);
 }
 

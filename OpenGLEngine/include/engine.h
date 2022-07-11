@@ -18,8 +18,6 @@ namespace Engine {
 			glewInit();
 			glEnable(GL_TEXTURE_CUBE_MAP);
 			glEnable(GL_DEPTH_TEST);
-
-
 		}
 
 		void ClearBuffers() {

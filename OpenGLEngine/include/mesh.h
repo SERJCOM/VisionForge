@@ -56,7 +56,8 @@ public:
         
         //Vector3 position(PhysicPosition.x, PhysicPosition.y, PhysicPosition.z);
         Vector3 position(meshPosition.x, meshPosition.y, meshPosition.z);
-        Quaternion orientation = Quaternion::identity();
+        Quaternion orientation = Quaternion::fromEulerAngles(glm::radians(angleRotate.x), glm::radians(angleRotate.y), glm::radians(angleRotate.z));
+
         Transform transform(position, orientation);
         
         body = world->createRigidBody(transform);
@@ -118,6 +119,7 @@ public:
             orient[2].x, orient[2].y, orient[2].z, orient[2].w,
             0.0, 0.0, 0.0, 1.0);
         model = glm::mat4(1);
+        //model = glm::rotate(model, glm::radians(90), glm::vec3(0.0f, 0.0f, 1.0f));
         model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
         model =  model * orientMat;
         model = glm::scale(model, meshScale);

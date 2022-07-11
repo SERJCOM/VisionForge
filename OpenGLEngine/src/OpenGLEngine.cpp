@@ -54,9 +54,13 @@ int main() {
     };
     
     
-    Object box("D:/prog/obj/colider/untitled.obj", world);
     
-    box.SetNewMeshScale("Plane", glm::vec3(0.1, 0.1, 0.1));
+    Object box("D:/prog/obj/dimaMap/untitled.obj", world);
+    Object plane("D:/prog/obj/plane/untitled.obj", world);
+    
+    std::cout << "the size of box " << box.meshNames.size() << std::endl;
+
+    //box.SetNewMeshScale("Object_4", glm::vec3(0.01, 0.01, 0.01));
 
     const decimal timeStep = 1.0f / 60.0f;
     float i = 0;
@@ -68,17 +72,20 @@ int main() {
         //cout << camera.cameraPos.x << " " << camera.cameraPos.y << " " << camera.cameraPos.z << endl;
         world->update(timeStep);
 
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f);
         glm::mat4 view = camera.view;
         glm::mat4 model;
         shad.use();
         shad.setMat4("projection", projection);
         shad.setMat4("view", view);
-        shad.setVec3("lightPos", glm::vec3(8.0f, 5.0f, 5.0f));
+        shad.setVec3("lightPos", glm::vec3(0.0f, 50.0f, 0.0f));
         
-        box.SetObjectPosition("Cube.001", 0.1, 0, 0);
+        //box.SetObjectPosition("mig25.WRL.cleaner.materialmerger.gles", 0, 0, -0.1);
 
         box.Draw(shad);
+
+        //plane.SetObjectPosition("untitled.obj", 0.0f, 30.0f, 0.0f);
+        plane.Draw(shad);
 
         window.Display();
         i += 0.01;
