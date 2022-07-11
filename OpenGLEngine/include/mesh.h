@@ -76,6 +76,17 @@ public:
         body->setTransform(currentTransform); 
     }
 
+    void SetRotateMesh(float anglex, float angley, float anglez) {
+        angleRotate.x = anglex;
+        angleRotate.y = angley;
+        angleRotate.z = anglez;
+        Transform currentTransform = body->getTransform();
+        Quaternion orientation = currentTransform.getOrientation();
+        orientation = Quaternion::fromEulerAngles(angleRotate.x, angleRotate.y, angleRotate.z);
+        currentTransform.setOrientation(orientation);
+        body->setTransform(currentTransform);
+    }
+
     void MoveObject(glm::vec3 position) {
         meshPosition += position;
         Transform currentTransform = body->getTransform();

@@ -84,7 +84,7 @@ int main() {
 
         box.Draw(shad);
 
-        //plane.SetObjectPosition("untitled.obj", 0.0f, 30.0f, 0.0f);
+        plane.SetObjectPosition(0.0f, 40.0f, 0.0f);
         plane.Draw(shad);
 
         window.Display();

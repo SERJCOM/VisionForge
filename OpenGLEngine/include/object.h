@@ -92,38 +92,61 @@ public:
             meshes[i].Draw(shader);
     }
 
-    void SetNewMeshScale(std::string name, glm::vec3 size) {
-        if (meshNames.find(name) == meshNames.end()) {
-            std::cout << "the element was not found\n";
-        }
-        else {
-            std::cout << meshNames.find(name)->second << std::endl;
-            meshes[meshNames[name]].meshScale = size;
-        }
-        
+    void ScaleMesh(std::string name, glm::vec3 size) {
+        if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
+        else    meshes[meshNames[name]].meshScale = size;
     }
 
-    void SetMeshRotate(std::string name, float anglex, float angley, float anglez) {
+    void ScaleObject(glm::vec3 size) {
+        for (int i = 0; i < meshes.size(); i++) {
+            meshes[i].meshScale = size;
+        }
+    }
+
+
+    void RotateMesh(std::string name, float anglex, float angley, float anglez) {
         meshes[meshNames[name]].RotateMesh(anglex, angley, anglez);
     }
 
-    void MoveObject(std::string name, float x, float y, float z) {
-        if (meshNames.find(name) == meshNames.end()) {
-           // std::cout << "the element was not found\n";
+    void RotateObject(float anglex, float angley, float anglez) {
+        for (int i = 0; i < meshes.size(); i++) {
+            meshes[i].RotateMesh(anglex, angley, anglez);
         }
-        else {
-            meshes[meshNames[name]].MoveObject(glm::vec3(x, y, z));
+    }
+
+    void SetMeshRotation(std::string name, float anglex, float angley, float anglez) {
+        meshes[meshNames[name]].SetRotateMesh(anglex, angley, anglez);
+    }
+
+    void SetObjectRotation(float anglex, float angley, float anglez) {
+        for (int i = 0; i < meshes.size(); i++) {
+            meshes[i].RotateMesh(anglex, angley, anglez);
         }
-        
+    }
+
+
+
+    void MoveObject(float x, float y, float z) {
+        for (int i = 0; i < meshes.size(); i++) {
+            meshes[i].MoveObject(glm::vec3(x, y, z));
+        }
+    }
+
+    void MoveMesh(std::string name, float x, float y, float z) {
+        if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
+        else    meshes[meshNames[name]].MoveObject(glm::vec3(x, y, z));
     }
 
     void SetMeshPosition(std::string name, float x, float y, float z) {
-        meshes[meshNames[name]].SetObjectPosition(glm::vec3(x, y, z));
+        if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
+        else    meshes[meshNames[name]].SetObjectPosition(glm::vec3(x, y, z));
     }
 
-    void SetObjectPosition(std::string name, float x, float y, float z) {
-        findRootNodeName_Position(name, x, y, z, nodeTree);
+    void SetObjectPosition(float x, float y, float z) {
+        for (int i = 0; i < meshes.size(); i++) 
+            meshes[i].SetObjectPosition(glm::vec3(x, y, z));
     }
+
 
 
     void EnablePhysics(bool enable) { this->PhysicBool = enable; }
@@ -137,33 +160,8 @@ private:
     PhysicsWorld* physworld;
     int number = 0;
     std::string rootName;
-    Tree nodeTree;
-    
-
-    void findRootNodeName_Position(std::string name, float x, float y, float z, Tree node) {
-        //std::cout << node.name << std::endl;
-        if (node.name == name.c_str()) {
-            //
-            SetNodePosition(node, x, y, z);
-        }
-        
-        for (unsigned int i = 0; i < node.children.size(); i++)
-        {
-            findRootNodeName_Position(name, x, y, z, node.children[i]);
-        }
-        
-    }
-
-    void SetNodePosition(Tree noda, float x, float y, float z) {
-        for (int i = 0; i < noda.meshIndex.size(); i++) {
-            meshes[noda.meshIndex[i]].MoveObject(glm::vec3(x, y, z));
-        }
-        //MoveObject(noda.name, x, y, z);
-        //cout << noda.name << " " << noda.children.size() << std::endl;
-        for (int i = 0; i < noda.children.size(); i++) {
-            SetNodePosition(noda.children[i], x, y, z);
-        }
-    }
+    //Tree nodeTree;
+   
 
     void loadModel(std::string path)
     {
@@ -179,15 +177,15 @@ private:
 
         rootName = scene->mRootNode->mName.C_Str();
         std::cout << "the root name is " << rootName << std::endl;
-        processNode(scene->mRootNode, scene, number, &nodeTree);
+        processNode(scene->mRootNode, scene, number);
     }
 
-    void processNode(aiNode* node, const aiScene* scene, int index, Tree* noda)
+    void processNode(aiNode* node, const aiScene* scene, int index)
     {
         int ind = index;
         ind++;
 
-        noda->name = node->mName.C_Str();
+        //noda->name = node->mName.C_Str();
         
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
@@ -195,7 +193,7 @@ private:
             meshes.push_back(processMesh(mesh, scene));
             std::cout << mesh->mName.C_Str() << std::endl;
             meshNames[node->mName.C_Str()] = meshes.size()-1;
-            noda->addMesh(meshes.size() - 1);
+            //noda->addMesh(meshes.size() - 1);
             if (PhysicBool == true) {
                 meshes[meshes.size() - 1].SetupPhysic(physworld);
                 meshes[meshes.size() - 1].CreateRigidBody();
@@ -207,15 +205,14 @@ private:
         {
             Tree child;
             child.name = node->mChildren[i]->mName.C_Str();
-            noda->children.push_back(child);
+            //noda->children.push_back(child);
     
-            processNode(node->mChildren[i], scene, ind, &noda->children[i]);
+            processNode(node->mChildren[i], scene, ind);
         }
         /*for (int i = 0; i < ind; i++) {
             cout << "=";
         }
         cout << node->mName.C_Str() << endl;*/
-
     }
 
 
