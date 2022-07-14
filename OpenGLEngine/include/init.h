@@ -16,8 +16,12 @@
 #include "mesh.h"
 #include <vector>
 #include <GL/glew.h>
-
+#include "scene_manager.h""
 
 
 using	std::cout;
 using	std::endl;
+
+
+PhysicsCommon physicsCommon;
+PhysicsWorld* world = physicsCommon.createPhysicsWorld();

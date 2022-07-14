@@ -11,65 +11,7 @@
 #include <assimp/postprocess.h>
 #include <map>
 
-/// <summary>
-/// инструкция пользования классом Object
-/// 1)	загрузить модель 
-/// 2)	выбрать размер, положение в пространтстве, координаты
-/// 3)	
-/// </summary>
 
-
-
-struct Tree {
-    std::vector <Tree> children;
-    std::vector <int> meshIndex;
-    std::string name;
-    std::map <std::string, int>* meshNames;
-
-
-    void createChild(std::string name) {
-        Tree child;
-        child.name = name;
-        children.push_back(child);
-    }
-
-    void addMesh(int i) {
-        meshIndex.push_back(i);
-    }
-
-    Tree* findNodeByName(std::string name) {
-        for (int i = 0; i < children.size(); i++) {
-            if (children[i].name == name) {
-                return &children[i];
-            }
-        }
-        return nullptr;
-    }
-    
-    void GetIndexFromChildren(std::vector <int>* array, Tree* node) {
-
-        array->push_back(meshNames->operator[](node->name)); // достать индекс по ключу node->name и засунуть это значение в вектор
-
-        for (int i = 0; i < node->children.size(); i++) {
-            GetIndexFromChildren(array, &node->children[i]);
-            std::cout << node->children[i].name << std::endl;
-        }
-
-    }
-
-    std::vector <int>* GetIndexFromNode(std::string name, std::map <std::string, int>* meshNames) {
-        this->meshNames = meshNames;
-        Tree* firstNode = findNodeByName(name);
-
-        if (firstNode == nullptr) { return nullptr; }
-        else {
-            std::vector <int>* array;
-            GetIndexFromChildren(array, firstNode);
-            return array;
-        }
-    }
-
-};
 
 class Object {
 public:
@@ -80,6 +22,12 @@ public:
     bool gammaCorrection;
 
     Object(std::string path, PhysicsWorld* physworld)
+    {
+        this->physworld = physworld;
+        loadModel(path);
+    }
+
+    Object(const char* path, PhysicsWorld* physworld)
     {
         this->physworld = physworld;
         loadModel(path);
@@ -111,6 +59,12 @@ public:
     void RotateObject(float anglex, float angley, float anglez) {
         for (int i = 0; i < meshes.size(); i++) {
             meshes[i].RotateMesh(anglex, angley, anglez);
+        }
+    }
+
+    void RotateObject(glm::vec3 angles) {
+        for (int i = 0; i < meshes.size(); i++) {
+            meshes[i].RotateMesh(angles.x, angles.y, angles.z);
         }
     }
 
@@ -160,8 +114,6 @@ private:
     PhysicsWorld* physworld;
     int number = 0;
     std::string rootName;
-    //Tree nodeTree;
-   
 
     void loadModel(std::string path)
     {
@@ -185,7 +137,6 @@ private:
         int ind = index;
         ind++;
 
-        //noda->name = node->mName.C_Str();
         
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
@@ -193,7 +144,6 @@ private:
             meshes.push_back(processMesh(mesh, scene));
             std::cout << mesh->mName.C_Str() << std::endl;
             meshNames[node->mName.C_Str()] = meshes.size()-1;
-            //noda->addMesh(meshes.size() - 1);
             if (PhysicBool == true) {
                 meshes[meshes.size() - 1].SetupPhysic(physworld);
                 meshes[meshes.size() - 1].CreateRigidBody();
@@ -201,18 +151,8 @@ private:
         }
 
 
-        for (unsigned int i = 0; i < node->mNumChildren; i++)
-        {
-            Tree child;
-            child.name = node->mChildren[i]->mName.C_Str();
-            //noda->children.push_back(child);
-    
-            processNode(node->mChildren[i], scene, ind);
-        }
-        /*for (int i = 0; i < ind; i++) {
-            cout << "=";
-        }
-        cout << node->mName.C_Str() << endl;*/
+        for (unsigned int i = 0; i < node->mNumChildren; i++)   processNode(node->mChildren[i], scene, ind);
+        
     }
 
 

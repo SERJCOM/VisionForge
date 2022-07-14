@@ -6,62 +6,16 @@ int main() {
     Camera camera(&window.window);
     Shader shad("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.frag");
 
-    PhysicsCommon physicsCommon;
-    PhysicsWorld* world = physicsCommon.createPhysicsWorld();
-    float skyboxVertices[] = {
-        // координаты         
-       -1.0f,  1.0f, -1.0f,
-       -1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f,  1.0f, -1.0f,
-       -1.0f,  1.0f, -1.0f,
-
-       -1.0f, -1.0f,  1.0f,
-       -1.0f, -1.0f, -1.0f,
-       -1.0f,  1.0f, -1.0f,
-       -1.0f,  1.0f, -1.0f,
-       -1.0f,  1.0f,  1.0f,
-       -1.0f, -1.0f,  1.0f,
-
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-
-       -1.0f, -1.0f,  1.0f,
-       -1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
-        1.0f, -1.0f,  1.0f,
-       -1.0f, -1.0f,  1.0f,
-
-       -1.0f,  1.0f, -1.0f,
-        1.0f,  1.0f, -1.0f,
-        1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f,
-       -1.0f,  1.0f,  1.0f,
-       -1.0f,  1.0f, -1.0f,
-
-       -1.0f, -1.0f, -1.0f,
-       -1.0f, -1.0f,  1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-       -1.0f, -1.0f,  1.0f,
-        1.0f, -1.0f,  1.0f
-    };
+                                      
+    Scene scene("D:/prog/json examples/example.json");
+    scene.LoadPhysics(world);
+    scene.LoadScene();
     
+    /*Object box("D:/prog/obj/dimaMap/untitled.obj", world);
+    Object plane("D:/prog/obj/plane/untitled.obj", world);*/
     
-    
-    Object box("D:/prog/obj/dimaMap/untitled.obj", world);
-    Object plane("D:/prog/obj/plane/untitled.obj", world);
-    
-    std::cout << "the size of box " << box.meshNames.size() << std::endl;
-
-    //box.SetNewMeshScale("Object_4", glm::vec3(0.01, 0.01, 0.01));
-
+                                                            
+     
     const decimal timeStep = 1.0f / 60.0f;
     float i = 0;
     while (window.running) {
@@ -82,10 +36,12 @@ int main() {
         
         //box.SetObjectPosition("mig25.WRL.cleaner.materialmerger.gles", 0, 0, -0.1);
 
-        box.Draw(shad);
+        /*box.Draw(shad);
 
         plane.SetObjectPosition(0.0f, 40.0f, 0.0f);
-        plane.Draw(shad);
+        plane.Draw(shad);*/
+
+        scene.DrawScene(shad);
 
         window.Display();
         i += 0.01;

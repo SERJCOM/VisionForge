@@ -117,14 +117,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\prog\проекты VISUAL STUDIO\LIBS\SFML-2.5.1\include;D:\prog\проекты VISUAL STUDIO\LIBS\glew-2.1.0\include;D:\prog\glm-0.9.9.8;D:\prog\PerlinNoise-master;D:\prog\проекты VISUAL STUDIO\OpenGLEngine\OpenGLEngine\include;D:\prog\проекты VISUAL STUDIO\OpenGLEngine\include;D:\prog\reactphysics3d\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\prog\проекты VISUAL STUDIO\LIBS\SFML-2.5.1\include;D:\prog\проекты VISUAL STUDIO\LIBS\glew-2.1.0\include;D:\prog\glm-0.9.9.8;D:\prog\PerlinNoise-master;D:\prog\проекты VISUAL STUDIO\OpenGLEngine\OpenGLEngine\include;D:\prog\проекты VISUAL STUDIO\OpenGLEngine\include;D:\prog\reactphysics3d\include;D:\prog\jsoncpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\prog\проекты VISUAL STUDIO\LIBS\SFML-2.5.1\lib;D:\prog\проекты VISUAL STUDIO\LIBS\glew-2.1.0\lib\Release\x64;D:\prog\проекты VISUAL STUDIO\OpenGLEngine\lib;D:\prog\reactphysics3d\src;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-audio-d.lib;sfml-system-d.lib;glew32.lib;assimp-vc142-mt.lib;reactphysics3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\prog\проекты VISUAL STUDIO\LIBS\SFML-2.5.1\lib;D:\prog\проекты VISUAL STUDIO\LIBS\glew-2.1.0\lib\Release\x64;D:\prog\проекты VISUAL STUDIO\OpenGLEngine\lib;D:\prog\reactphysics3d\src;D:\prog\jsoncpp\src\lib_json;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-audio-d.lib;sfml-system-d.lib;glew32.lib;assimp-vc142-mt.lib;reactphysics3d.lib;jsoncpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>
       </EntryPointSymbol>
       <Profile>true</Profile>
@@ -156,6 +156,7 @@
     <ClInclude Include="include\model.h" />
     <ClInclude Include="include\object.h" />
     <ClInclude Include="include\physics.h" />
+    <ClInclude Include="include\scene_manager.h" />
     <ClInclude Include="include\shader.h" />
     <ClInclude Include="include\texture.h" />
     <ClInclude Include="include\window.h" />
