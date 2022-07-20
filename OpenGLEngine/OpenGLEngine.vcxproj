@@ -162,7 +162,9 @@
     <ClInclude Include="include\window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\OpenGLEngine.cpp" />
+    <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="textures\skybox.jpg" />

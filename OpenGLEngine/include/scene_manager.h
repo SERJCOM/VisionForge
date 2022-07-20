@@ -18,8 +18,9 @@ public:
 		in.close();
 	}
 
-	void LoadPhysics(PhysicsWorld* physworld) {
+	void LoadPhysics(PhysicsWorld* physworld, PhysicsCommon& physicsCommon) {
 		this->physworld = physworld;
+		this->physicsCommon = &physicsCommon;
 	}
 
 	void LoadScene() {
@@ -28,7 +29,8 @@ public:
 			glm::vec3 scale_object(root["objects"][i]["scale"][0].asFloat(), root["objects"][i]["scale"][1].asFloat(), root["objects"][i]["scale"][2].asFloat());
 			glm::vec3 rotate_object(root["objects"][i]["rotate"][0].asInt(), root["objects"][i]["rotate"][1].asInt(), root["objects"][i]["rotate"][2].asInt());
 			glm::vec3 position_object(root["objects"][i]["position"][0].asFloat(), root["objects"][i]["position"][1].asFloat(), root["objects"][i]["position"][2].asFloat());
-			Object object(path, physworld);
+			
+			Object object(path, physworld, physicsCommon);
 			object.ScaleObject(scale_object);
 			object.RotateObject(rotate_object);
 			object.SetObjectPosition(position_object.x, position_object.y, position_object.z);
@@ -48,4 +50,5 @@ private:
 	Json::Reader reader;
 	std::vector <Object> objects;
 	PhysicsWorld* physworld;
+	PhysicsCommon* physicsCommon;
 };

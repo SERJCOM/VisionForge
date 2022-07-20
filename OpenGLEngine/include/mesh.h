@@ -6,7 +6,11 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <vector>
+#include "physics.h"
 using namespace reactphysics3d;
+
+
 
 struct Vertex {
     glm::vec3 Position;
@@ -28,12 +32,13 @@ public:
     glm::mat4 model;
     glm::vec3 PhysicPosition;
     glm::vec3 ColliderSize;
-
+    
     glm::vec3 meshScale = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 angleRotate = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 meshPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     float angle = 0;
    
+    bool physicsEnable = false;
 
     PhysicsWorld* world;
     RigidBody* body;
@@ -49,12 +54,13 @@ public:
 
     
 
-    void SetupPhysic(PhysicsWorld* physworld) {
+    void SetupPhysic(PhysicsWorld* physworld, PhysicsCommon* physicsCommon) {
         this->world = physworld;
+        this->physicsCommon = physicsCommon;
+        physicsEnable = true;
     }
+
     void CreateRigidBody(){
-        
-        //Vector3 position(PhysicPosition.x, PhysicPosition.y, PhysicPosition.z);
         Vector3 position(meshPosition.x, meshPosition.y, meshPosition.z);
         Quaternion orientation = Quaternion::fromEulerAngles(glm::radians(angleRotate.x), glm::radians(angleRotate.y), glm::radians(angleRotate.z));
 
@@ -65,35 +71,42 @@ public:
     }
 
 
+
     void RotateMesh(float anglex, float angley, float anglez) {
         angleRotate.x += anglex;
         angleRotate.y += angley;
         angleRotate.z += anglez;
-        Transform currentTransform = body->getTransform();
-        Quaternion orientation = currentTransform.getOrientation();
-        orientation = Quaternion::fromEulerAngles(angleRotate.x, angleRotate.y, angleRotate.z);
-        currentTransform.setOrientation(orientation);
-        body->setTransform(currentTransform); 
+        if (physicsEnable) {
+            Transform currentTransform = body->getTransform();
+            Quaternion orientation = currentTransform.getOrientation();
+            orientation = Quaternion::fromEulerAngles(angleRotate.x, angleRotate.y, angleRotate.z);
+            currentTransform.setOrientation(orientation);
+            body->setTransform(currentTransform);
+        }
     }
 
     void SetRotateMesh(float anglex, float angley, float anglez) {
         angleRotate.x = anglex;
         angleRotate.y = angley;
         angleRotate.z = anglez;
-        Transform currentTransform = body->getTransform();
-        Quaternion orientation = currentTransform.getOrientation();
-        orientation = Quaternion::fromEulerAngles(angleRotate.x, angleRotate.y, angleRotate.z);
-        currentTransform.setOrientation(orientation);
-        body->setTransform(currentTransform);
+        if (physicsEnable) {
+            Transform currentTransform = body->getTransform();
+            Quaternion orientation = currentTransform.getOrientation();
+            orientation = Quaternion::fromEulerAngles(angleRotate.x, angleRotate.y, angleRotate.z);
+            currentTransform.setOrientation(orientation);
+            body->setTransform(currentTransform);
+        }
     }
 
     void MoveObject(glm::vec3 position) {
         meshPosition += position;
-        Transform currentTransform = body->getTransform();
-        Vector3 pos;
-        pos.setAllValues(meshPosition.x, meshPosition.y, meshPosition.z);
-        currentTransform.setPosition(pos);
-        body->setTransform(currentTransform);
+        if (physicsEnable) {
+            Transform currentTransform = body->getTransform();
+            Vector3 pos;
+            pos.setAllValues(meshPosition.x, meshPosition.y, meshPosition.z);
+            currentTransform.setPosition(pos);
+            body->setTransform(currentTransform);
+        }
     }
 
     void SetObjectPosition(glm::vec3 position) {
@@ -114,26 +127,35 @@ public:
     }
 
     void SetMatrix(Shader* shad) {
-        Transform transform = body->getTransform();
-        Vector3 position = transform.getPosition();
-        Quaternion orientation = transform.getOrientation();
-        glm::vec4 orient[3];
-        glm::mat4 orientMat;
-        for (int i = 0; i < 3; i++) {
-            orient[i].x = orientation.getMatrix().getRow(i).x;
-            orient[i].y = orientation.getMatrix().getRow(i).y;
-            orient[i].z = orientation.getMatrix().getRow(i).z;
-            orient[i].w = 0;
+        Quaternion orientation;
+        Vector3 position;
+        if (physicsEnable) {
+            Transform transform = body->getTransform();
+            position = transform.getPosition();
+            orientation = transform.getOrientation();
         }
-        orientMat = glm::mat4(orient[0].x, orient[0].y, orient[0].z, orient[0].w,
-            orient[1].x, orient[1].y, orient[1].z, orient[1].w,
-            orient[2].x, orient[2].y, orient[2].z, orient[2].w,
-            0.0, 0.0, 0.0, 1.0);
-        model = glm::mat4(1);
-        //model = glm::rotate(model, glm::radians(90), glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
-        model =  model * orientMat;
-        model = glm::scale(model, meshScale);
+        else {
+            orientation = Quaternion::fromEulerAngles(angleRotate.x, angleRotate.y, angleRotate.z);
+            position = Vector3(meshPosition.x, meshPosition.y, meshPosition.z);
+        }
+            glm::vec4 orient[3];
+            glm::mat4 orientMat;
+            for (int i = 0; i < 3; i++) {
+                orient[i].x = orientation.getMatrix().getRow(i).x;
+                orient[i].y = orientation.getMatrix().getRow(i).y;
+                orient[i].z = orientation.getMatrix().getRow(i).z;
+                orient[i].w = 0;
+            }
+            orientMat = glm::mat4(orient[0].x, orient[0].y, orient[0].z, orient[0].w,
+                orient[1].x, orient[1].y, orient[1].z, orient[1].w,
+                orient[2].x, orient[2].y, orient[2].z, orient[2].w,
+                0.0, 0.0, 0.0, 1.0);
+            model = glm::mat4(1);
+            //model = glm::rotate(model, glm::radians(90), glm::vec3(0.0f, 0.0f, 1.0f));
+            model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
+            model = model * orientMat;
+            model = glm::scale(model, meshScale);
+        
         shad->setMat4("model", model);
     }
 
@@ -162,11 +184,25 @@ public:
         glActiveTexture(GL_TEXTURE0);
     }
 
-private:
+    void bodyAddColiderBox(glm::vec3 halfsize) {
+        if (physicsEnable) {
+            BoxShape* boxShape = physicsCommon->createBoxShape(Vector3(halfsize.x, halfsize.y, halfsize.z));
+            Collider* collider;
+            Transform transform = body->getTransform();
+            collider = body->addCollider(boxShape, transform);
+        }
+        else {
+            std::cout << "ERROR!!! THE PHYSICS BODY DOES NOT EXIST\n";
+        }
+    }
+
+protected:
+    
     unsigned int VAO, VBO, EBO;
     
     Collider* collider;
     Shader* shader;
+    PhysicsCommon* physicsCommon;
 
     void setupMesh(){
         glGenVertexArrays(1, &VAO);

@@ -7,13 +7,16 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+
 uniform bool texturePermit;
 uniform vec3 lightColor;
+uniform vec3 PickingColor;
 
 out vec3 colorOut;
 out vec3 NormalOut;
 out vec3 PosFrag;
 out vec2 TexCoords;
+
  
 void main()
 {
@@ -23,4 +26,5 @@ void main()
     colorOut = vec3(lightColor);
     NormalOut = Normal;
 	TexCoords = vertTexCoords;    
+	
 }

@@ -20,22 +20,25 @@ public:
     std::vector<texture> textures_loaded;
     std::map <std::string, int> meshNames;
     bool gammaCorrection;
+   
 
-    Object(std::string path, PhysicsWorld* physworld)
+    Object(std::string path, PhysicsWorld* physworld, PhysicsCommon* physicsCommon)
     {
         this->physworld = physworld;
+        this->physicsCommon = physicsCommon;
         loadModel(path);
     }
 
-    Object(const char* path, PhysicsWorld* physworld)
+    Object(const char* path, PhysicsWorld* physworld, PhysicsCommon* physicsCommon)
     {
         this->physworld = physworld;
+        this->physicsCommon = physicsCommon;
         loadModel(path);
     }
+
 
     void Draw(Shader& shader)
     {
-
         for (unsigned int i = 0; i < meshes.size(); i++)
             meshes[i].Draw(shader);
     }
@@ -46,6 +49,7 @@ public:
     }
 
     void ScaleObject(glm::vec3 size) {
+        objectScale = size;
         for (int i = 0; i < meshes.size(); i++) {
             meshes[i].meshScale = size;
         }
@@ -57,12 +61,23 @@ public:
     }
 
     void RotateObject(float anglex, float angley, float anglez) {
+        objectAngleRotate += glm::vec3(anglex, angley, anglez);
+        Quaternion orientation = Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z);
+        Transform transform;
+        transform.setOrientation(orientation);
+        body->setTransform(transform);
+
         for (int i = 0; i < meshes.size(); i++) {
             meshes[i].RotateMesh(anglex, angley, anglez);
         }
     }
 
     void RotateObject(glm::vec3 angles) {
+        objectAngleRotate += angles;
+        Quaternion orientation = Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z);
+        Transform transform;
+        transform.setOrientation(orientation);
+        body->setTransform(transform);
         for (int i = 0; i < meshes.size(); i++) {
             meshes[i].RotateMesh(angles.x, angles.y, angles.z);
         }
@@ -73,6 +88,12 @@ public:
     }
 
     void SetObjectRotation(float anglex, float angley, float anglez) {
+        objectAngleRotate = glm::vec3(anglex, angley, anglez);
+        Quaternion orientation = Quaternion::fromEulerAngles(anglex, angley, anglez);
+        Transform transform;
+        transform.setOrientation(orientation);
+        body->setTransform(transform);
+
         for (int i = 0; i < meshes.size(); i++) {
             meshes[i].RotateMesh(anglex, angley, anglez);
         }
@@ -81,6 +102,11 @@ public:
 
 
     void MoveObject(float x, float y, float z) {
+        objectPosition += glm::vec3(x, y, z);
+        Transform transform;
+        transform.setPosition(Vector3(objectPosition.x, objectPosition.y, objectPosition.z));
+        body->setTransform(transform);
+
         for (int i = 0; i < meshes.size(); i++) {
             meshes[i].MoveObject(glm::vec3(x, y, z));
         }
@@ -97,6 +123,11 @@ public:
     }
 
     void SetObjectPosition(float x, float y, float z) {
+        objectPosition = glm::vec3(x, y, z);
+        Transform transform;
+        transform.setPosition(Vector3(x, y, z));
+        body->setTransform(transform);
+
         for (int i = 0; i < meshes.size(); i++) 
             meshes[i].SetObjectPosition(glm::vec3(x, y, z));
     }
@@ -109,11 +140,32 @@ public:
         return angle * 3.13 / 180;
     }
 
-private:
+    void SetupPhysicMeshByName(std::string name) {
+        meshes[meshNames[name]].SetupPhysic(physworld, physicsCommon);
+        meshes[meshNames[name]].CreateRigidBody();
+    }
+
+    void CreatePhysicsBody(){
+        Vector3 position(objectPosition.x, objectPosition.y, objectPosition.z);
+        Quaternion orientation = Quaternion::fromEulerAngles(glm::radians(objectAngleRotate.x), glm::radians(objectAngleRotate.y), glm::radians(objectAngleRotate.z));
+
+        Transform transform(position, orientation);
+
+        body = world->createRigidBody(transform);
+        body->setType(BodyType::KINEMATIC);
+    }
+
+protected:
     bool PhysicBool = true;
-    PhysicsWorld* physworld;
     int number = 0;
     std::string rootName;
+    PhysicsCommon* physicsCommon;
+    PhysicsWorld* physworld;
+    RigidBody* body;
+
+    glm::vec3 objectPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 objectAngleRotate = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3 objectScale = glm::vec3(1.0f, 1.0f, 1.0f);
 
     void loadModel(std::string path)
     {
@@ -142,12 +194,8 @@ private:
         {
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
             meshes.push_back(processMesh(mesh, scene));
-            std::cout << mesh->mName.C_Str() << std::endl;
+            //std::cout << mesh->mName.C_Str() << std::endl;
             meshNames[node->mName.C_Str()] = meshes.size()-1;
-            if (PhysicBool == true) {
-                meshes[meshes.size() - 1].SetupPhysic(physworld);
-                meshes[meshes.size() - 1].CreateRigidBody();
-            }
         }
 
 

@@ -78,6 +78,13 @@ public:
         glUniform3f(glGetUniformLocation(ID, name.c_str()), color.r, color.g, color.b);
     }
 
+    void setVec4(const std::string& name, float colorr, float colorg, float colorb, float colorw ) const
+    {
+        glUniform4f(glGetUniformLocation(ID, name.c_str()), colorr, colorg, colorb, colorw);
+    }
+
+
+
 private:
     void checkCompileErrors(unsigned int shader, std::string type)
     {

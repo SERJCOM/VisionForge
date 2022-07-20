@@ -1,4 +1,4 @@
-#pragma once
+ #pragma once
 //#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include "window.h"
@@ -18,10 +18,12 @@
 #include <GL/glew.h>
 #include "scene_manager.h""
 
+PhysicsCommon physicsCommon;
+PhysicsWorld* world = physicsCommon.createPhysicsWorld();
+
 
 using	std::cout;
 using	std::endl;
 
 
-PhysicsCommon physicsCommon;
-PhysicsWorld* world = physicsCommon.createPhysicsWorld();
+

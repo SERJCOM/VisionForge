@@ -1,21 +1,24 @@
 ﻿#include "init.h"
 
 int main() {
-    Engine::Window window(800, 600);
+
+    world->setIsDebugRenderingEnabled(true);
+    DebugRenderer& debugRenderer = world->getDebugRenderer();
+    debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::CONTACT_POINT, true);
+    debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::CONTACT_NORMAL, true);
+
+    Window window(800, 600);
     Engine::Engine engine;
     Camera camera(&window.window);
     Shader shad("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.frag");
 
                                       
     Scene scene("D:/prog/json examples/example.json");
-    scene.LoadPhysics(world);
+    scene.LoadPhysics(world, physicsCommon);
     scene.LoadScene();
-    
-    /*Object box("D:/prog/obj/dimaMap/untitled.obj", world);
-    Object plane("D:/prog/obj/plane/untitled.obj", world);*/
-    
-                                                            
-     
+                           
+
+
     const decimal timeStep = 1.0f / 60.0f;
     float i = 0;
     while (window.running) {
@@ -33,13 +36,6 @@ int main() {
         shad.setMat4("projection", projection);
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(0.0f, 50.0f, 0.0f));
-        
-        //box.SetObjectPosition("mig25.WRL.cleaner.materialmerger.gles", 0, 0, -0.1);
-
-        /*box.Draw(shad);
-
-        plane.SetObjectPosition(0.0f, 40.0f, 0.0f);
-        plane.Draw(shad);*/
 
         scene.DrawScene(shad);
 

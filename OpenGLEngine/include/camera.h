@@ -24,6 +24,7 @@ public:
 		Position.y = 300;
 		sf::Mouse::setPosition(Position, *window);
 	}
+
 	void move() {
 		const float cameraSpeed = 1.0f;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) cameraPos += cameraSpeed * cameraFront;
