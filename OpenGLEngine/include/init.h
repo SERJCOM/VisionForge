@@ -4,7 +4,7 @@
 #include "window.h"
 #include "engine.h"
 #include "camera.h"
-#include "object.h"
+#include "model.h"
 #include <math.h>
 #include "texture.h"
 #include "shader.h"

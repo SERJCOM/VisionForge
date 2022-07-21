@@ -11,15 +11,15 @@ class Window {
 public:
 	sf::Window window;
 
-	Window(int sizeX, int sizeY) {}
+	Window(int sizeX, int sizeY);
 
-	Window() {}
+	Window();
 
-	void Display() {}
+	void Display();
 
-	float GetWindowWidth() {}
+	float GetWindowWidth();
 
-	float GetWindowHeight() {}
+	float GetWindowHeight();
 
 	bool running = true;
 };

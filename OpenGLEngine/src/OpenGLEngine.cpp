@@ -1,4 +1,5 @@
 ﻿#include "init.h"
+#include <reactphysics3d/utils/DebugRenderer.h>
 
 int main() {
 
@@ -8,15 +9,17 @@ int main() {
     debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::CONTACT_NORMAL, true);
 
     Window window(800, 600);
-    Engine::Engine engine;
+    Engine engine;
     Camera camera(&window.window);
     Shader shad("D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.vert", "D:/prog/проекты VISUAL STUDIO/OpenGLEngine/OpenGLEngine/shaders/shader.frag");
 
                                       
-    Scene scene("D:/prog/json examples/example.json");
+    /*Scene scene("D:/prog/json examples/example.json");
     scene.LoadPhysics(world, physicsCommon);
-    scene.LoadScene();
-                           
+    scene.LoadScene();*/
+                       
+    Model obj("D:/prog/obj/plane/untitled.obj", world, &physicsCommon);
+
 
 
     const decimal timeStep = 1.0f / 60.0f;
@@ -37,7 +40,9 @@ int main() {
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(0.0f, 50.0f, 0.0f));
 
-        scene.DrawScene(shad);
+        obj.Draw(shad);
+
+        //scene.DrawScene(shad);
 
         window.Display();
         i += 0.01;

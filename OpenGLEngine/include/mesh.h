@@ -29,7 +29,7 @@ public:
     std::vector<Vertex>       vertices;
     std::vector<unsigned int> indices;
     std::vector<texture> textures;
-    glm::mat4 model;
+    glm::mat4 modelMat;
     glm::vec3 PhysicPosition;
     glm::vec3 ColliderSize;
     
@@ -138,25 +138,25 @@ public:
             orientation = Quaternion::fromEulerAngles(angleRotate.x, angleRotate.y, angleRotate.z);
             position = Vector3(meshPosition.x, meshPosition.y, meshPosition.z);
         }
-            glm::vec4 orient[3];
-            glm::mat4 orientMat;
-            for (int i = 0; i < 3; i++) {
-                orient[i].x = orientation.getMatrix().getRow(i).x;
-                orient[i].y = orientation.getMatrix().getRow(i).y;
-                orient[i].z = orientation.getMatrix().getRow(i).z;
-                orient[i].w = 0;
-            }
-            orientMat = glm::mat4(orient[0].x, orient[0].y, orient[0].z, orient[0].w,
-                orient[1].x, orient[1].y, orient[1].z, orient[1].w,
-                orient[2].x, orient[2].y, orient[2].z, orient[2].w,
-                0.0, 0.0, 0.0, 1.0);
-            model = glm::mat4(1);
-            //model = glm::rotate(model, glm::radians(90), glm::vec3(0.0f, 0.0f, 1.0f));
-            model = glm::translate(model, glm::vec3(position.x, position.y, position.z));
-            model = model * orientMat;
-            model = glm::scale(model, meshScale);
+        glm::vec4 orient[3];
+        glm::mat4 orientMat;
+        for (int i = 0; i < 3; i++) {
+            orient[i].x = orientation.getMatrix().getRow(i).x;
+            orient[i].y = orientation.getMatrix().getRow(i).y;
+            orient[i].z = orientation.getMatrix().getRow(i).z;
+            orient[i].w = 0;
+        }
+        orientMat = glm::mat4(orient[0].x, orient[0].y, orient[0].z, orient[0].w,
+            orient[1].x, orient[1].y, orient[1].z, orient[1].w,
+            orient[2].x, orient[2].y, orient[2].z, orient[2].w,
+            0.0, 0.0, 0.0, 1.0);
+        modelMat = glm::mat4(1);
+        //model = glm::rotate(model, glm::radians(90), glm::vec3(0.0f, 0.0f, 1.0f));
+        modelMat = glm::translate(modelMat, glm::vec3(position.x, position.y, position.z));
+        modelMat = modelMat * orientMat;
+        modelMat = glm::scale(modelMat, meshScale);
         
-        shad->setMat4("model", model);
+        shad->setMat4("model", modelMat);
     }
 
     void Draw(Shader shader) {     

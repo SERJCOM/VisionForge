@@ -163,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\OpenGLEngine.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>

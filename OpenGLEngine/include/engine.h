@@ -9,11 +9,10 @@
 #include <SFML/Graphics/Image.hpp>
 
 
-namespace Engine {
-	class Engine
-	{
-	public:
-		Engine() {}
-		void ClearBuffers() {}
-	};
+
+class Engine
+{
+public:
+	Engine();
+	void ClearBuffers();
 };
