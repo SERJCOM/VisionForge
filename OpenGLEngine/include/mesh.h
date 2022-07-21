@@ -35,6 +35,7 @@ public:
     
     glm::vec3 meshScale = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 angleRotate = glm::vec3(0.0f, 0.0f, 0.0f);
+    Quaternion orientation = Quaternion::fromEulerAngles(0, 0, 0);
     glm::vec3 meshPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     float angle = 0;
    
@@ -80,6 +81,8 @@ public:
             Transform currentTransform = body->getTransform();
             Quaternion orientation = currentTransform.getOrientation();
             orientation = Quaternion::fromEulerAngles(angleRotate.x, angleRotate.y, angleRotate.z);
+            std::cout << angleRotate.x << " " << angleRotate.y << " " << angleRotate.z << " " << orientation.getVectorV().x << " " << orientation.getVectorV().y << " " << orientation.getVectorV().z << std::endl;
+
             currentTransform.setOrientation(orientation);
             body->setTransform(currentTransform);
         }
@@ -93,6 +96,7 @@ public:
             Transform currentTransform = body->getTransform();
             Quaternion orientation = currentTransform.getOrientation();
             orientation = Quaternion::fromEulerAngles(angleRotate.x, angleRotate.y, angleRotate.z);
+            std::cout << angleRotate.x << " " << angleRotate.y << " " << angleRotate.z << " " << orientation.getVectorV().x << " " << orientation.getVectorV().y << " " << orientation.getVectorV().z << std::endl;
             currentTransform.setOrientation(orientation);
             body->setTransform(currentTransform);
         }

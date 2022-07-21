@@ -60,6 +60,17 @@ public:
 
     void CreatePhysicsBody();
 
+    void CreateCollisionBox(glm::vec3 halfExtents);
+
+    /// <summary>
+    /// заменить FLAG на ENUM
+    /// </summary>
+
+    void SetTypeOfThePhysObject(bool flag);
+
+    void UpdateObjectPosition();
+
+    void PrintObjectPosition();
 protected:
     bool PhysicBool = true;
     int number = 0;

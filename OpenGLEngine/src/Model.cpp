@@ -117,8 +117,48 @@ void Model::CreatePhysicsBody() {
     Transform transform(position, orientation);
 
     body = physworld->createRigidBody(transform);
-    body->setType(BodyType::KINEMATIC);
+    
 }
+
+
+void Model::CreateCollisionBox(glm::vec3 halfsize) {
+    const Vector3 halfExtents(halfsize.x, halfsize.y, halfsize.z);
+    BoxShape* boxShape = physicsCommon->createBoxShape(halfExtents);
+    Collider* collider;
+    collider = body->addCollider(boxShape, body->getTransform());
+}
+
+void Model::SetTypeOfThePhysObject(bool flag) {
+    if (flag) {
+        body->setType(BodyType::KINEMATIC);
+    }
+    else {
+        //body->setType(BodyType::DYNAMIC);
+    }
+}
+
+void Model::PrintObjectPosition() {
+    Transform trans = body->getTransform();
+    Vector3 pos = trans.getPosition();
+    std::cout << pos.to_string() << std::endl;
+}
+
+void Model::UpdateObjectPosition() {
+    Transform transform = body->getTransform();
+    glm::vec3 position = glm::vec3(transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
+    Quaternion orientation = transform.getOrientation();
+    decimal angle;
+    Vector3 axis;
+    orientation.getRotationAngleAxis(angle, axis);
+    glm::quat quatPosition = glm::angleAxis(angle, glm::vec3(axis.x, axis.y, axis.z));
+    glm::vec3 vecangles = glm::eulerAngles(quatPosition);
+    for (int i = 0; i < meshes.size(); i++) {
+        meshes[i].SetObjectPosition(position);
+        meshes[i].SetRotateMesh(vecangles.x, vecangles.y, vecangles.z);
+    }
+}
+
+// PRIVATE
 
 void Model::loadModel(std::string path)
 {
