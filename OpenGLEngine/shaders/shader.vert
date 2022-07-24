@@ -10,7 +10,7 @@ uniform mat4 projection;
 
 uniform bool texturePermit;
 uniform vec3 lightColor;
-uniform vec3 PickingColor;
+
 
 out vec3 colorOut;
 out vec3 NormalOut;
@@ -24,7 +24,8 @@ void main()
     gl_Position = projection * view * model * vec4(pos, 1.0);
     PosFrag = vec3(model * vec4(pos, 1.0));
     colorOut = vec3(lightColor);
-    NormalOut = Normal;
+	
+    NormalOut = mat3(transpose(inverse(model))) * Normal;;
 	TexCoords = vertTexCoords;    
 	
 }

@@ -54,6 +54,7 @@ void Model::RotateObject(glm::vec3 angles) {
     transform.setOrientation(orientation);
     body->setTransform(transform);
     for (int i = 0; i < meshes.size(); i++) {
+        std::cout << meshes.size() << std::endl;
         meshes[i].RotateMesh(angles.x, angles.y, angles.z);
     }
 }
@@ -75,10 +76,16 @@ void Model::SetObjectRotation(float anglex, float angley, float anglez) {
 }
 
 void Model::MoveObject(float x, float y, float z) {
+    
     objectPosition += glm::vec3(x, y, z);
+    
     Transform transform;
+    std::cout << "enter\n";
     transform.setPosition(Vector3(objectPosition.x, objectPosition.y, objectPosition.z));
+    std::cout << "2st enter\n";
     body->setTransform(transform);
+    
+    
 
     for (int i = 0; i < meshes.size(); i++) {
         meshes[i].MoveObject(glm::vec3(x, y, z));
@@ -128,6 +135,16 @@ void Model::CreateCollisionBox(glm::vec3 halfsize) {
     collider = body->addCollider(boxShape, body->getTransform());
 }
 
+void Model::CreateCollisionSphere(float radius) {
+    SphereShape* sphereShape = physicsCommon->createSphereShape(radius);
+    body->addCollider(sphereShape, body->getTransform());
+}
+
+void Model::CreateCollisionCapsule(glm::vec2 halfSize) {
+    CapsuleShape* capsuleShape = physicsCommon->createCapsuleShape(halfSize.x, halfSize.y);
+    body->addCollider(capsuleShape, body->getTransform());
+}
+
 void Model::SetTypeOfThePhysObject(bool flag) {
     if (flag) {
         body->setType(BodyType::KINEMATIC);
@@ -163,7 +180,7 @@ void Model::UpdateObjectPosition() {
 void Model::loadModel(std::string path)
 {
     Assimp::Importer import;
-    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_GenBoundingBoxes | aiProcess_CalcTangentSpace);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
@@ -228,7 +245,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         vertices.push_back(vertex);
     }
 
-
+    
 
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
@@ -240,7 +257,9 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     std::vector<texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-    return Mesh(vertices, indices, textures);
+    
+    
+    return Mesh(vertices, indices, textures, mesh->mAABB);
 }
 
 std::vector<texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)

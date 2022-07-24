@@ -21,9 +21,6 @@
     <ClInclude Include="include\engine.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="include\object.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="include\texture.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -54,6 +51,9 @@
     <ClInclude Include="include\scene_manager.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="include\physDebug.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\OpenGLEngine.cpp">
@@ -66,6 +66,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="src\Model.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PhysDebug.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

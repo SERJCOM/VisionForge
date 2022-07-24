@@ -62,6 +62,10 @@ public:
 
     void CreateCollisionBox(glm::vec3 halfExtents);
 
+    void CreateCollisionSphere(float radius);
+
+    void CreateCollisionCapsule(glm::vec2 halfSize);
+
     /// <summary>
     /// заменить FLAG на ENUM
     /// </summary>

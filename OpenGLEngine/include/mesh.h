@@ -8,6 +8,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 #include "physics.h"
+#include <assimp/mesh.h>
+
 using namespace reactphysics3d;
 
 
@@ -40,9 +42,6 @@ public:
     float angle = 0;
    
     bool physicsEnable = false;
-
-    PhysicsWorld* world;
-    RigidBody* body;
     bool AlwaysUpdateMatrix = true; 
     
 
@@ -50,6 +49,15 @@ public:
         this->vertices = vertices;
         this->indices = indices;
         this->textures = textures;
+        
+        setupMesh();
+    }
+
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<texture> textures, aiAABB boundbox) {
+        this->vertices = vertices;
+        this->indices = indices;
+        this->textures = textures;
+        boundingBox = boundbox;
         setupMesh();
     }
 
@@ -207,6 +215,9 @@ protected:
     Collider* collider;
     Shader* shader;
     PhysicsCommon* physicsCommon;
+    PhysicsWorld* world;
+    RigidBody* body;
+    aiAABB boundingBox;
 
     void setupMesh(){
         glGenVertexArrays(1, &VAO);
@@ -236,7 +247,3 @@ protected:
         glBindVertexArray(0);
     }
 };
-
-
-
-

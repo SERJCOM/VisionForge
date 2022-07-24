@@ -2,7 +2,6 @@
 #include <iostream>
 #include <SFML/Graphics/Image.hpp>
 #include <GL/glew.h>
-#include "object.h"
 #include <string>
 
 class Texture {

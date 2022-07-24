@@ -1,10 +1,9 @@
 #pragma once
 #include <iostream>
-#include <object.h>
 #include <json/json.h>
 #include <fstream>
 #include <string>
-#include "object.h"
+#include "model.h"
 #include <vector>
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>

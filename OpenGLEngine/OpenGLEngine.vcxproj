@@ -154,7 +154,7 @@
     <ClInclude Include="include\light.h" />
     <ClInclude Include="include\mesh.h" />
     <ClInclude Include="include\model.h" />
-    <ClInclude Include="include\object.h" />
+    <ClInclude Include="include\physDebug.hpp" />
     <ClInclude Include="include\physics.h" />
     <ClInclude Include="include\scene_manager.h" />
     <ClInclude Include="include\shader.h" />
@@ -164,6 +164,7 @@
   <ItemGroup>
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\Model.cpp" />
+    <ClCompile Include="src\PhysDebug.cpp" />
     <ClCompile Include="src\OpenGLEngine.cpp" />
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>

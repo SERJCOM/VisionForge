@@ -5,14 +5,11 @@ in vec3 colorOut;
 in vec3 NormalOut;
 in vec3 PosFrag;
 in vec2 TexCoords;
-in vec3 PickingColorOut;
+
 
 uniform vec3 cameraPos;
 uniform sampler2D texture_diffuse1;
 uniform vec3 lightPos;
-uniform bool picking;
-
-bool lightFlag = false;
 
 
 struct Light{
@@ -87,23 +84,24 @@ vec3 CalcFlashLight(Light light, vec3 view, vec3 FragPos, vec3 normal){
 
 void main()
 {
-	if(picking == false){
-		vec3 result;
+	vec3 result;
 
-		//vec3 norm = normalize(NormalOut);
-		//vec3 viewDir = normalize(cameraPos - PosFrag);
-		//result = CalcDampingLight(LIGHT,PosFrag, norm);
-		
-		vec3 norm = normalize(NormalOut);
-		vec3 t = texture(texture_diffuse1, TexCoords).rgb;
-		
-		
-		FragColor = vec4(max(dot(norm, normalize(lightPos - PosFrag)) , 0.0 ) * t, 1.0f); // раскомментировать
-		//FragColor = texture(texture_diffuse1, TexCoords);
-	}
-	else{
-		vec3 col = colorOut;
-		FragColor = vec4(col, 1);
-	}
+	//vec3 norm = normalize(NormalOut);
+	//vec3 viewDir = normalize(cameraPos - PosFrag);
+	//result = CalcDampingLight(LIGHT,PosFrag, norm);
+	
+	vec3 norm = normalize(NormalOut);
+	vec3 lightDir = normalize(lightPos - PosFrag);  
+	
+	vec3 t = texture(texture_diffuse1, TexCoords).rgb;
+	
+	float diff = max(dot(norm, lightDir), 0.0);
+	
+	result = diff * t;
+	FragColor = vec4(result, 1.0);
+	
+	//FragColor = vec4(max(dot(norm, normalize(lightPos - PosFrag)) , 0.0 ) * t, 1.0f); // раскомментировать
+	//FragColor = texture(texture_diffuse1, TexCoords);
+	
 }
 
