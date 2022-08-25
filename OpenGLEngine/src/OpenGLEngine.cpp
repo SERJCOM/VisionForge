@@ -17,18 +17,20 @@ int main() {
 
     
                        
-    Model obj("D:/prog/obj/plane/untitled.obj", world, &physicsCommon);
+    Model obj("D:/prog/obj/mine/Grass_Block.obj", world, &physicsCommon);
     obj.CreatePhysicsBody();
-    obj.CreateCollisionCapsule(glm::vec2(2.0f, 5.0f));
+    obj.CreateCollisionBox(glm::vec3(10.0f, 5.0f, 10.0f));
     obj.SetTypeOfThePhysObject(false);
-    obj.MoveObject(0, 100, 0);
+    //obj.RotateObject(glm::vec3(180.0f, 180.0f, 0));
+    obj.MoveObject(0, 1000, 0);
+    
 
-    Model city("D:/prog/obj/dimaMap/untitled.obj", world, &physicsCommon);
+    /*Model city("D:/prog/obj/dimaMap/untitled.obj", world, &physicsCommon);
     city.CreatePhysicsBody();
-    city.CreateCollisionBox(glm::vec3(1.0f, 5.0f, 50.0f));
-    city.SetTypeOfThePhysObject(true);
+    city.CreateCollisionBox(glm::vec3(50.0f, 5.0f, 50.0f));
+    city.SetTypeOfThePhysObject(true);*/
 
-    std::cout << "the size of the mesh " << sizeof(obj) << std::endl;
+    
 
     const decimal timeStep = 1.0f / 60.0f;
     float i = 0;
@@ -42,24 +44,24 @@ int main() {
 
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f);
         glm::mat4 view = camera.view;
-        glm::mat4 model;
         shad.use();
         shad.setMat4("projection", projection);
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(0.0f, 50.0f, 0.0f));
 
 
-        obj.PrintObjectPosition();
-        obj.UpdateObjectPosition();
+        //obj.PrintObjectPosition();
+        //obj.RotateObject(glm::vec3(18.0f, 0, 0));
+        obj.UpdateObjectTransform();
         obj.Draw(shad);
 
-        city.UpdateObjectPosition();
-        city.Draw(shad);
+        /*city.UpdateObjectTransform();
+        city.Draw(shad);*/
 
         
 
         window.Display();
-        i += 0.01;
+        i += 0.01f;
     }
     return 0;
 }

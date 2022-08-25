@@ -48,13 +48,13 @@ void Model::RotateObject(float anglex, float angley, float anglez) {
 }
 
 void Model::RotateObject(glm::vec3 angles) {
-    objectAngleRotate += angles;
+    objectAngleRotate += glm::radians(angles);
     Quaternion orientation = Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z);
     Transform transform;
     transform.setOrientation(orientation);
     body->setTransform(transform);
     for (int i = 0; i < meshes.size(); i++) {
-        std::cout << meshes.size() << std::endl;
+        
         meshes[i].RotateMesh(angles.x, angles.y, angles.z);
     }
 }
@@ -80,13 +80,9 @@ void Model::MoveObject(float x, float y, float z) {
     objectPosition += glm::vec3(x, y, z);
     
     Transform transform;
-    std::cout << "enter\n";
     transform.setPosition(Vector3(objectPosition.x, objectPosition.y, objectPosition.z));
-    std::cout << "2st enter\n";
     body->setTransform(transform);
     
-    
-
     for (int i = 0; i < meshes.size(); i++) {
         meshes[i].MoveObject(glm::vec3(x, y, z));
     }
@@ -160,7 +156,7 @@ void Model::PrintObjectPosition() {
     std::cout << pos.to_string() << std::endl;
 }
 
-void Model::UpdateObjectPosition() {
+void Model::UpdateObjectTransform() {
     Transform transform = body->getTransform();
     glm::vec3 position = glm::vec3(transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
     Quaternion orientation = transform.getOrientation();
@@ -239,6 +235,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
             glm::vec2 vec;
             vec.x = mesh->mTextureCoords[0][i].x;
             vec.y = mesh->mTextureCoords[0][i].y;
+            std::cout << vec.x << " " << vec.y << std::endl;
             vertex.TexCoords = vec;
         }
         else vertex.TexCoords = glm::vec2(0.0f, 0.0f);
@@ -283,6 +280,7 @@ std::vector<texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
         if (!skip)
         {
             texture texturee;
+            std::cout << str.C_Str() << std::endl;
             texturee.id = Texture::LoadTextureFromFile(str.C_Str(), this->directory);
             texturee.type = typeName;
             texturee.path = str.C_Str();

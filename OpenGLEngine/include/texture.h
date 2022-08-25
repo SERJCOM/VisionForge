@@ -47,6 +47,7 @@ public:
 	static unsigned int LoadTextureFromFile(std::string name, std::string path) {
 		unsigned int texture;
 		sf::Image texture_im;
+		std::cout << (path + "/" + name).c_str() << std::endl;
 		if (texture_im.loadFromFile((path + "/" + name).c_str())) {
 
 			glGenTextures(1, &texture);

@@ -53,7 +53,7 @@ public:
     void EnablePhysics(bool enable) { this->PhysicBool = enable; }
 
     static float DegToRad(float angle) {
-        return angle * 3.13 / 180;
+        return static_cast<float>(angle * 3.13) / 180;
     }
 
     void SetupPhysicMeshByName(std::string name);
@@ -72,7 +72,7 @@ public:
 
     void SetTypeOfThePhysObject(bool flag);
 
-    void UpdateObjectPosition();
+    void UpdateObjectTransform();
 
     void PrintObjectPosition();
 protected:

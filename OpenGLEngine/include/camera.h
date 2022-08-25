@@ -80,5 +80,5 @@ public:
 private:
 	float lastX = 400, lastY = 300;
 	float yaw = 0, pitch = 0;
-	float xpos = 400, ypos = 300;
+	int xpos = 400, ypos = 300;
 };
