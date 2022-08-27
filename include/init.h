@@ -16,6 +16,7 @@
 #include "mesh.h"
 #include <vector>
 #include <GL/glew.h>
+#include "shape.hpp"
 
 #include "scene_manager.h"
 

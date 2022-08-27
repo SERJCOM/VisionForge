@@ -30,6 +30,8 @@ int main() {
     city.CreateCollisionBox(glm::vec3(30.0f, 5.0f, 30.0f));
     city.SetTypeOfThePhysObject(true);
 
+    Shape skybox;
+    skybox.LoadSkyBox()
 
     const decimal timeStep = 1.0f / 60.0f;
     float i = 0;
@@ -53,7 +55,6 @@ int main() {
         shad.setVec3("lightPos", glm::vec3(10.0f, 50.0f, 0));
 
 
-        obj.PrintObjectPosition();
         obj.MoveObject(0, 0, 0.7f);
         obj.UpdateObjectTransform();
         obj.Draw(shad);
