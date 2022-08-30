@@ -6,11 +6,61 @@
 #include <SFML/Graphics/Image.hpp>
 #include "shader.h"
 
+// float skyboxVertices[] = {
+// 		-1.0f,  1.0f, -1.0f,
+// 		-1.0f, -1.0f, -1.0f,
+// 		1.0f, -1.0f, -1.0f,
+// 		1.0f, -1.0f, -1.0f,
+// 		1.0f,  1.0f, -1.0f,
+// 		-1.0f,  1.0f, -1.0f,
+	
+// 		-1.0f, -1.0f,  1.0f,
+// 		-1.0f, -1.0f, -1.0f,
+// 		-1.0f,  1.0f, -1.0f,
+// 		-1.0f,  1.0f, -1.0f,
+// 		-1.0f,  1.0f,  1.0f,
+// 		-1.0f, -1.0f,  1.0f,
+	
+// 		1.0f, -1.0f, -1.0f,
+// 		1.0f, -1.0f,  1.0f,
+// 		1.0f,  1.0f,  1.0f,
+// 		1.0f,  1.0f,  1.0f,
+// 		1.0f,  1.0f, -1.0f,
+// 		1.0f, -1.0f, -1.0f,
+	
+// 		-1.0f, -1.0f,  1.0f,
+// 		-1.0f,  1.0f,  1.0f,
+// 		1.0f,  1.0f,  1.0f,
+// 		1.0f,  1.0f,  1.0f,
+// 		1.0f, -1.0f,  1.0f,
+// 		-1.0f, -1.0f,  1.0f,
+	
+// 		-1.0f,  1.0f, -1.0f,
+// 		1.0f,  1.0f, -1.0f,
+// 		1.0f,  1.0f,  1.0f,
+// 		1.0f,  1.0f,  1.0f,
+// 		-1.0f,  1.0f,  1.0f,
+// 		-1.0f,  1.0f, -1.0f,
+	
+// 		-1.0f, -1.0f, -1.0f,
+// 		-1.0f, -1.0f,  1.0f,
+// 		1.0f, -1.0f, -1.0f,
+// 		1.0f, -1.0f, -1.0f,
+// 		-1.0f, -1.0f,  1.0f,
+// 		1.0f, -1.0f,  1.0f
+// };
+
 class Shape{
+public:
 
-    
-
+	unsigned int skyboxID = 0;
     void LoadSkyBox(std::vector<std::string> path) {
+
+		// std::cout << "test1\n" ;
+		// skyboxShader = Shader("../../shaders/skybox.vert", "../../shaders/skybox.frag");
+		// std::cout << "test2\n" ;
+		// CreateSkyBox();
+
 		glGenTextures(1, &skyboxID);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
 		for (int i = 0; i < 6; i++) {
@@ -29,24 +79,22 @@ class Shape{
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-        skyboxShader.use();
-        skyboxShader.setInt("texture1", 0);
-
-        CreateSkyBox();
+        // skyboxShader.use();
+		// skyboxShader.setInt("skybox", 0);
 	}
 
-    void DrawSkyBox(glm::mat4& mat view_camera, glm::mat4& mat projection){
+    void DrawSkyBox(glm::mat4& view_camera, glm::mat4& projection){
 
-        glDepthFunc(GL_LEQUAL); // меняем функцию глубины, чтобы обеспечить прохождение теста глубины, когда значения равны содержимому буфера глубины
-        skyboxShader.use();
-        glm::mat4 view = glm::mat4(glm::mat3(view_camera)); // убираем из матрицы вида секцию, отвечающую за операцию трансляции
-        skyboxShader.setMat4("view".s, view);
-        skyboxShader.setMat4("projection".s, projection);
+        // glDepthFunc(GL_LEQUAL); // меняем функцию глубины, чтобы обеспечить прохождение теста глубины, когда значения равны содержимому буфера глубины
+        // skyboxShader.use();
+        // glm::mat4 view = glm::mat4(glm::mat3(view_camera)); // убираем из матрицы вида секцию, отвечающую за операцию трансляции
+        // skyboxShader.setMat4("view", view);
+        // skyboxShader.setMat4("projection", projection);
 
 
         glBindVertexArray(VAO);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
         glDepthFunc(GL_LESS); // восстанавливаем стандартное значение функции теста глубины
@@ -55,59 +103,20 @@ class Shape{
 
 private:
 
-void CreateSkyBox(){
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &VBO);
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    }
-    unsigned int VAO, VBO, EBO;
-    Shader skyboxShader("..\\..\\shaders\\skybox.vert", "..\\..\\shaders\\skybox.frag");
-	unsigned int skyboxID = 0;
-    std::vector<float> skyboxVertices = {
-		-1.0f,  1.0f, -1.0f,
-		-1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f,
-		1.0f,  1.0f, -1.0f,
-		-1.0f,  1.0f, -1.0f,
+	// void CreateSkyBox(){
+	// 	glGenVertexArrays(1, &VAO);
+	// 	glGenBuffers(1, &VBO);
+	// 	glBindVertexArray(VAO);
+	// 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// 	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	// 	glEnableVertexAttribArray(0);
+	// 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	// }
+
+
+    unsigned int VAO, VBO;
+    Shader skyboxShader;
 	
-		-1.0f, -1.0f,  1.0f,
-		-1.0f, -1.0f, -1.0f,
-		-1.0f,  1.0f, -1.0f,
-		-1.0f,  1.0f, -1.0f,
-		-1.0f,  1.0f,  1.0f,
-		-1.0f, -1.0f,  1.0f,
-	
-		1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f,  1.0f,
-		1.0f,  1.0f,  1.0f,
-		1.0f,  1.0f,  1.0f,
-		1.0f,  1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f,
-	
-		-1.0f, -1.0f,  1.0f,
-		-1.0f,  1.0f,  1.0f,
-		1.0f,  1.0f,  1.0f,
-		1.0f,  1.0f,  1.0f,
-		1.0f, -1.0f,  1.0f,
-		-1.0f, -1.0f,  1.0f,
-	
-		-1.0f,  1.0f, -1.0f,
-		1.0f,  1.0f, -1.0f,
-		1.0f,  1.0f,  1.0f,
-		1.0f,  1.0f,  1.0f,
-		-1.0f,  1.0f,  1.0f,
-		-1.0f,  1.0f, -1.0f,
-	
-		-1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f,  1.0f,
-		1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f,  1.0f,
-		1.0f, -1.0f,  1.0f
-};
+    
+
 };
