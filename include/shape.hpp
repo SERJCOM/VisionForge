@@ -6,60 +6,64 @@
 #include <SFML/Graphics/Image.hpp>
 #include "shader.h"
 
-// float skyboxVertices[] = {
-// 		-1.0f,  1.0f, -1.0f,
-// 		-1.0f, -1.0f, -1.0f,
-// 		1.0f, -1.0f, -1.0f,
-// 		1.0f, -1.0f, -1.0f,
-// 		1.0f,  1.0f, -1.0f,
-// 		-1.0f,  1.0f, -1.0f,
+float skyboxVertices[] = {
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
 	
-// 		-1.0f, -1.0f,  1.0f,
-// 		-1.0f, -1.0f, -1.0f,
-// 		-1.0f,  1.0f, -1.0f,
-// 		-1.0f,  1.0f, -1.0f,
-// 		-1.0f,  1.0f,  1.0f,
-// 		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
 	
-// 		1.0f, -1.0f, -1.0f,
-// 		1.0f, -1.0f,  1.0f,
-// 		1.0f,  1.0f,  1.0f,
-// 		1.0f,  1.0f,  1.0f,
-// 		1.0f,  1.0f, -1.0f,
-// 		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
 	
-// 		-1.0f, -1.0f,  1.0f,
-// 		-1.0f,  1.0f,  1.0f,
-// 		1.0f,  1.0f,  1.0f,
-// 		1.0f,  1.0f,  1.0f,
-// 		1.0f, -1.0f,  1.0f,
-// 		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
 	
-// 		-1.0f,  1.0f, -1.0f,
-// 		1.0f,  1.0f, -1.0f,
-// 		1.0f,  1.0f,  1.0f,
-// 		1.0f,  1.0f,  1.0f,
-// 		-1.0f,  1.0f,  1.0f,
-// 		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		1.0f,  1.0f, -1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
 	
-// 		-1.0f, -1.0f, -1.0f,
-// 		-1.0f, -1.0f,  1.0f,
-// 		1.0f, -1.0f, -1.0f,
-// 		1.0f, -1.0f, -1.0f,
-// 		-1.0f, -1.0f,  1.0f,
-// 		1.0f, -1.0f,  1.0f
-// };
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		1.0f, -1.0f,  1.0f
+};
 
 class Shape{
 public:
 
 	unsigned int skyboxID = 0;
     void LoadSkyBox(std::vector<std::string> path) {
-
-		// std::cout << "test1\n" ;
-		// skyboxShader = Shader("../../shaders/skybox.vert", "../../shaders/skybox.frag");
-		// std::cout << "test2\n" ;
-		// CreateSkyBox();
+		skyboxShader = Shader("../../shaders/skybox.vert", "../../shaders/skybox.frag");
+		
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO);
+		glBindVertexArray(VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
 		glGenTextures(1, &skyboxID);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
@@ -79,17 +83,17 @@ public:
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-        // skyboxShader.use();
-		// skyboxShader.setInt("skybox", 0);
+        skyboxShader.use();
+    	skyboxShader.setInt("skybox", 0);
 	}
 
-    void DrawSkyBox(glm::mat4& view_camera, glm::mat4& projection){
+    void DrawSkyBox(glm::mat4 view_camera, glm::mat4 projection){
 
-        // glDepthFunc(GL_LEQUAL); // меняем функцию глубины, чтобы обеспечить прохождение теста глубины, когда значения равны содержимому буфера глубины
-        // skyboxShader.use();
-        // glm::mat4 view = glm::mat4(glm::mat3(view_camera)); // убираем из матрицы вида секцию, отвечающую за операцию трансляции
-        // skyboxShader.setMat4("view", view);
-        // skyboxShader.setMat4("projection", projection);
+        glDepthFunc(GL_LEQUAL); // меняем функцию глубины, чтобы обеспечить прохождение теста глубины, когда значения равны содержимому буфера глубины
+        skyboxShader.use();
+        glm::mat4 view = glm::mat4(glm::mat3(view_camera)); // убираем из матрицы вида секцию, отвечающую за операцию трансляции
+        skyboxShader.setMat4("view", view);
+        skyboxShader.setMat4("projection", projection);
 
 
         glBindVertexArray(VAO);
@@ -103,15 +107,9 @@ public:
 
 private:
 
-	// void CreateSkyBox(){
-	// 	glGenVertexArrays(1, &VAO);
-	// 	glGenBuffers(1, &VBO);
-	// 	glBindVertexArray(VAO);
-	// 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	// 	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-	// 	glEnableVertexAttribArray(0);
-	// 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	// }
+	void CreateSkyBox(){
+		
+	}
 
 
     unsigned int VAO, VBO;
