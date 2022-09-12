@@ -6,13 +6,6 @@
 
 
 int main() {
-
-    world->setIsDebugRenderingEnabled(true);
-    DebugRenderer& debugRenderer = world->getDebugRenderer();
-    debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::COLLISION_SHAPE, true);
-    debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::COLLIDER_BROADPHASE_AABB, true);
-    //std::cout << debugRenderer.getNbLines() << " " << debugRenderer.getNbTriangles() <<  std::endl;
-
     Window window(800, 600);
     Engine engine;
     Camera camera(&window.window);
@@ -29,7 +22,7 @@ int main() {
 
     Model city("../../obj/dimaMap/untitled.obj", world, &physicsCommon);
     city.CreatePhysicsBody();
-    city.CreateCollisionBox(glm::vec3(30.0f, 5.0f, 30.0f));
+    city.CreateColliderConcave();
     city.SetTypeOfThePhysObject(true);
 
     Shape skybox;
@@ -64,7 +57,11 @@ int main() {
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(10.0f, 50.0f, 0));
 
+        obj.UpdateObjectTransform();
         obj.Draw(shad);
+
+        city.Draw(shad);
+
 
         skybox.DrawSkyBox(camera.view, projection);
 

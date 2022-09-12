@@ -67,9 +67,7 @@ public:
 
     void CreateCollisionCapsule(glm::vec2 halfSize);
 
-    /// <summary>
-    /// çàìåíèòü FLAG íà ENUM
-    /// </summary>
+    void CreateColliderConcave(); 
 
     void SetTypeOfThePhysObject(bool flag);
 
