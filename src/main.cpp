@@ -66,6 +66,8 @@ int main() {
 
         obj.Draw(shad);
 
+        city.Draw(shad);
+
         skybox.DrawSkyBox(camera.view, projection);
 
         window.Display();
