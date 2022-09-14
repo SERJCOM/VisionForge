@@ -21,16 +21,17 @@ int main() {
                        
     Model obj("../../obj/plane/untitled.obj", world, &physicsCommon);
     obj.CreatePhysicsBody();    
-    obj.CreateCollisionBox(glm::vec3(10.0f, 5.0f, 10.0f));
-    obj.SetTypeOfThePhysObject(false);
-    obj.SetObjectPosition(0, 100.0f, 0);
+    obj.CreateCollisionBox(glm::vec3(5.0f, 5.0f, 5.0f));
+    obj.SetObjectPosition(100, 100.0f, 30);
     obj.UpdateObjectTransform();
     
 
     Model city("../../obj/dimaMap/untitled.obj", world, &physicsCommon);
+    std::cout << city.meshes[0].indices.size() << " indices 1\n";
     city.CreatePhysicsBody();
-    city.CreateCollisionBox(glm::vec3(30.0f, 5.0f, 30.0f));
+    city.CreateConcaveMeshShape();
     city.SetTypeOfThePhysObject(true);
+    
 
     Shape skybox;
     std::vector<std::string> skybox_path;
@@ -64,6 +65,7 @@ int main() {
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(10.0f, 50.0f, 0));
 
+        obj.UpdateObjectTransform();
         obj.Draw(shad);
 
         city.Draw(shad);

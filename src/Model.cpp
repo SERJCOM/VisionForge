@@ -128,6 +128,30 @@ void Model::CreateCollisionCapsule(glm::vec2 halfSize) {
     body->addCollider(capsuleShape, body->getTransform());
 }
 
+void Model::CreateConcaveMeshShape(){
+    const size_t sizeVertices = meshes[0].vertices.size();
+    const size_t sizeTriangles = meshes[0].indices.size();
+
+    triangleArray = new TriangleVertexArray(
+        sizeVertices, &meshes[0].vertices[0].Position, sizeof(meshes[0].vertices), 
+    &meshes[0].vertices[0].Normal.x, sizeof(meshes[0].vertices),   
+    sizeTriangles / 3, &meshes[0].indices[0], 3 * sizeof(unsigned int),
+    rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
+	rp3d::TriangleVertexArray::NormalDataType::NORMAL_FLOAT_TYPE,
+	rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE
+    );
+
+    void* pointer = &meshes[0].indices;
+    std::cout << &meshes[0].indices << " indeces " << &meshes[0].vertices[0] << " vertices " << &meshes[0].vertices[0].Normal.x << " normal " <<   std::endl;
+
+    size_object = Vector3(10, 10, 10);
+    triangleMesh = physicsCommon->createTriangleMesh();
+    triangleMesh->addSubpart(triangleArray);
+    concaveMesh = physicsCommon->createConcaveMeshShape(triangleMesh, size_object) ;
+
+    body->addCollider(concaveMesh, body->getTransform());
+}
+
 void Model::SetTypeOfThePhysObject(bool flag) {
     if (flag) {
         body->setType(BodyType::KINEMATIC);
