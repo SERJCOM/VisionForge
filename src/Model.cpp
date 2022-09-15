@@ -128,26 +128,20 @@ void Model::CreateCollisionCapsule(glm::vec2 halfSize) {
     body->addCollider(capsuleShape, body->getTransform());
 }
 
+void Model::CreateColliderConcave(){
+    const size_t nbVertices = meshes[0].vertices.size();
+    const size_t nbTriangles = meshes[0].indices.size();
+    std::cout << nbVertices << " vertices " << nbTriangles << " triangles \n";
 
-void Model::CreateConcaveMeshShape(){
-    const size_t sizeVertices = meshes[0].vertices.size();
-    const size_t sizeTriangles = meshes[0].indices.size();
+    TriangleVertexArray* triangleArray = new TriangleVertexArray(nbVertices, &meshes[0].vertices, sizeof(glm::vec3) * 2 + sizeof(glm::vec2), *((&myStruct.Z) + offsetof(s)))
+    )
 
-    triangleArray = new TriangleVertexArray(
-        sizeVertices, &meshes[0].vertices[0].Position, sizeof(meshes[0].vertices), 
-    &meshes[0].vertices[0].Normal.x, sizeof(meshes[0].vertices),   
-    sizeTriangles / 3, &meshes[0].indices[0], 3 * sizeof(unsigned int),
-    rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
-	rp3d::TriangleVertexArray::NormalDataType::NORMAL_FLOAT_TYPE,
-	rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE
-    );
+    // TriangleVertexArray * triangleArray =   new TriangleVertexArray ( nbVertices , &meshes[0].vertices , 2 * sizeof(glm::vec3) + sizeof(glm::vec2) , nbTriangles , &meshes[0].indices ,  sizeof ( int ) , 
+    // TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE , TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE ) ;
 
-    size_object = Vector3(10, 10, 10);
-    triangleMesh = physicsCommon->createTriangleMesh();
-    triangleMesh->addSubpart(triangleArray);
-    concaveMesh = physicsCommon->createConcaveMeshShape(triangleMesh, Vector3(1.0f, 1.0f, 1.0f)) ;
-
-    body->addCollider(concaveMesh, body->getTransform());
+    // TriangleMesh *triangleMesh = physicsCommon->createTriangleMesh() ;
+    // triangleMesh->addSubpart(triangleArray);
+    // ConcaveMeshShape *concaveMesh = physicsCommon->createConcaveMeshShape(triangleMesh);
 }
 
 void Model::SetTypeOfThePhysObject(bool flag) {
@@ -204,6 +198,7 @@ void Model::processNode(aiNode* node, const aiScene* scene, int index)
     int ind = index;
     ind++;
 
+
     for (size_t i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -212,7 +207,9 @@ void Model::processNode(aiNode* node, const aiScene* scene, int index)
         meshNames[node->mName.C_Str()] = static_cast<int>(meshes.size()) - 1;
     }
 
+
     for (size_t i = 0; i < node->mNumChildren; i++)   processNode(node->mChildren[i], scene, ind);
+
 }
 
 Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
@@ -256,6 +253,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
     }
 
+    
+
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
         aiFace face = mesh->mFaces[i];
@@ -266,6 +265,8 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     std::vector<texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
+    
+    
     return Mesh(vertices, indices, textures, mesh->mAABB);
 }
 

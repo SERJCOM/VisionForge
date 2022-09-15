@@ -18,6 +18,7 @@ int main() {
     obj.SetTypeOfThePhysObject(false);
     obj.SetObjectPosition(0, 100.0f, 0);
     obj.UpdateObjectTransform();
+    
 
     Model city("../../obj/dimaMap/untitled.obj", world, &physicsCommon);
     city.CreatePhysicsBody();
