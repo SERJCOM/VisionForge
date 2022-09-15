@@ -24,15 +24,12 @@ int main() {
     obj.CreateCollisionBox(glm::vec3(5.0f, 1.0f, 5.0f));
     obj.SetObjectPosition(20, 50.0f, 30);
     obj.UpdateObjectTransform();
-    
 
     Model city("../../obj/dimaMap/untitled.obj", world, &physicsCommon);
-    std::cout << city.meshes[0].indices.size() << " indices 1\n";
     city.CreatePhysicsBody();
     city.CreateConcaveMeshShape();
     city.SetTypeOfThePhysObject(true);
     
-
     Shape skybox;
     std::vector<std::string> skybox_path;
     skybox_path.push_back("../../img/skymap/steini4_ft.jpg");
