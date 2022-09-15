@@ -67,16 +67,25 @@ public:
 
     void CreateCollisionCapsule(glm::vec2 halfSize);
 
-    void CreateColliderConcave(); 
+    void CreateConcaveMeshShape();
+
+    /// <summary>
+    /// çàìåíèòü FLAG íà ENUM
+    /// </summary>
 
     void SetTypeOfThePhysObject(bool flag);
 
     void UpdateObjectTransform();
 
     void PrintObjectPosition();
+
+    ~Model(){
+        delete triangleArray;
+    }
 protected:
     bool PhysicBool = true;
     int number = 0;
+
     std::string rootName;
     PhysicsCommon* physicsCommon;
     PhysicsWorld* physworld;
@@ -86,6 +95,12 @@ protected:
     glm::vec3 objectAngleRotate = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 objectScale = glm::vec3(1.0f, 1.0f, 1.0f);
 
+    TriangleVertexArray* triangleArray = nullptr;
+    TriangleMesh* triangleMesh = nullptr;
+    ConcaveMeshShape* concaveMesh = nullptr;
+    Vector3 size_object;
+
+
     void loadModel(std::string path);
 
     void processNode(aiNode* node, const aiScene* scene, int index);
@@ -93,6 +108,8 @@ protected:
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 
     std::vector<texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+
+    
 
 };
 

@@ -6,6 +6,13 @@
 
 
 int main() {
+
+    world->setIsDebugRenderingEnabled(true);
+    DebugRenderer& debugRenderer = world->getDebugRenderer();
+    debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::COLLISION_SHAPE, true);
+    debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::COLLIDER_BROADPHASE_AABB, true);
+    //std::cout << debugRenderer.getNbLines() << " " << debugRenderer.getNbTriangles() <<  std::endl;
+
     Window window(800, 600);
     Engine engine;
     Camera camera(&window.window);
@@ -14,16 +21,15 @@ int main() {
                        
     Model obj("../../obj/plane/untitled.obj", world, &physicsCommon);
     obj.CreatePhysicsBody();    
-    obj.CreateCollisionBox(glm::vec3(10.0f, 5.0f, 10.0f));
-    obj.SetTypeOfThePhysObject(false);
-    obj.SetObjectPosition(0, 100.0f, 0);
+    obj.CreateCollisionBox(glm::vec3(5.0f, 1.0f, 5.0f));
+    obj.SetObjectPosition(20, 50.0f, 30);
     obj.UpdateObjectTransform();
 
     Model city("../../obj/dimaMap/untitled.obj", world, &physicsCommon);
     city.CreatePhysicsBody();
-    city.CreateColliderConcave();
+    city.CreateConcaveMeshShape();
     city.SetTypeOfThePhysObject(true);
-
+    
     Shape skybox;
     std::vector<std::string> skybox_path;
     skybox_path.push_back("../../img/skymap/steini4_ft.jpg");
@@ -56,11 +62,11 @@ int main() {
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(10.0f, 50.0f, 0));
 
+        obj.SetObjectPosition(camera.cameraPos.x + 20, camera.cameraPos.y - 20, camera.cameraPos.z );
         obj.UpdateObjectTransform();
         obj.Draw(shad);
 
         city.Draw(shad);
-
 
         skybox.DrawSkyBox(camera.view, projection);
 
