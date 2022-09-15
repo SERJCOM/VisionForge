@@ -24,6 +24,7 @@ int main() {
     obj.CreateCollisionBox(glm::vec3(5.0f, 1.0f, 5.0f));
     obj.SetObjectPosition(20, 50.0f, 30);
     obj.UpdateObjectTransform();
+    
 
     Model city("../../obj/dimaMap/untitled.obj", world, &physicsCommon);
     city.CreatePhysicsBody();
