@@ -28,12 +28,9 @@ struct texture {
 
 class Mesh {
 public:
-    std::vector<glm::vec3> position;
-    std::vector<glm::vec2> TexCoords;
-    std::vector<glm::vec3> Normal;
+    std::vector<Vertex>       vertices;
     std::vector<unsigned int> indices;
     std::vector<texture> textures;
-
     glm::mat4 modelMat;
     glm::vec3 PhysicPosition;
     glm::vec3 ColliderSize;
@@ -48,20 +45,16 @@ public:
     bool AlwaysUpdateMatrix = true; 
     
 
-    Mesh(std::vector<glm::vec3> position, std::vector<glm::vec2> TexCoords, std::vector<glm::vec3> Normal, std::vector<unsigned int> indices, std::vector<texture> textures){
-        this->position = position;
-        this->TexCoords = TexCoords;
-        this->Normal = Normal;
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<texture> textures){
+        this->vertices = vertices;
         this->indices = indices;
         this->textures = textures;
         
         setupMesh();
     }
 
-    Mesh(std::vector<glm::vec3> position, std::vector<glm::vec2> TexCoords, std::vector<glm::vec3> Normal, std::vector<unsigned int> indices, std::vector<texture> textures, aiAABB boundbox) {
-        this->position = position;
-        this->TexCoords = TexCoords;
-        this->Normal = Normal;
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<texture> textures, aiAABB boundbox) {
+        this->vertices = vertices;
         this->indices = indices;
         this->textures = textures;
         boundingBox = boundbox;
@@ -234,7 +227,7 @@ protected:
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-        glBufferData(GL_ARRAY_BUFFER, position.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),

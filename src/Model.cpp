@@ -128,20 +128,24 @@ void Model::CreateCollisionCapsule(glm::vec2 halfSize) {
     body->addCollider(capsuleShape, body->getTransform());
 }
 
-void Model::CreateColliderConcave(){
-    const size_t nbVertices = meshes[0].vertices.size();
-    const size_t nbTriangles = meshes[0].indices.size();
-    std::cout << nbVertices << " vertices " << nbTriangles << " triangles \n";
+void Model::CreateConcaveMeshShape(){
+    const size_t sizeVertices = meshes[0].vertices.size();
+    const size_t sizeTriangles = meshes[0].indices.size();
 
-    TriangleVertexArray* triangleArray = new TriangleVertexArray(nbVertices, &meshes[0].vertices, sizeof(glm::vec3) * 2 + sizeof(glm::vec2), *((&myStruct.Z) + offsetof(s)))
-    )
+    triangleArray = new TriangleVertexArray(
+        sizeVertices, &meshes[0].vertices[0].Position, sizeof(meshes[0].vertices), 
+    &meshes[0].vertices[0].Normal.x, sizeof(meshes[0].vertices),   
+    sizeTriangles / 3, &meshes[0].indices[0], 3 * sizeof(unsigned int),
+    rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
+	rp3d::TriangleVertexArray::NormalDataType::NORMAL_FLOAT_TYPE,
+	rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE
+    );
 
-    // TriangleVertexArray * triangleArray =   new TriangleVertexArray ( nbVertices , &meshes[0].vertices , 2 * sizeof(glm::vec3) + sizeof(glm::vec2) , nbTriangles , &meshes[0].indices ,  sizeof ( int ) , 
-    // TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE , TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE ) ;
-
-    // TriangleMesh *triangleMesh = physicsCommon->createTriangleMesh() ;
-    // triangleMesh->addSubpart(triangleArray);
-    // ConcaveMeshShape *concaveMesh = physicsCommon->createConcaveMeshShape(triangleMesh);
+    size_object = Vector3(10, 10, 10);
+    triangleMesh = physicsCommon->createTriangleMesh();
+    triangleMesh->addSubpart(triangleArray);
+    concaveMesh = physicsCommon->createConcaveMeshShape(triangleMesh, Vector3(1.0f, 1.0f, 1.0f)) ;
+    body->addCollider(concaveMesh, body->getTransform());
 }
 
 void Model::SetTypeOfThePhysObject(bool flag) {
@@ -198,7 +202,6 @@ void Model::processNode(aiNode* node, const aiScene* scene, int index)
     int ind = index;
     ind++;
 
-
     for (size_t i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
@@ -207,53 +210,41 @@ void Model::processNode(aiNode* node, const aiScene* scene, int index)
         meshNames[node->mName.C_Str()] = static_cast<int>(meshes.size()) - 1;
     }
 
-
     for (size_t i = 0; i < node->mNumChildren; i++)   processNode(node->mChildren[i], scene, ind);
-
 }
 
 Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
-
-    std::vector<glm::vec3> position;
-    std::vector<glm::vec2> TexCoords;
-    std::vector<glm::vec3> Normal;
+    std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<texture> textures;
 
-
-
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
-        glm::vec3 PosMesh;
-        glm::vec3 NormalMesh;
-        glm::vec2 TexCoordsMesh;
+        Vertex vertex;
         glm::vec3 vector;
 
         vector.x = mesh->mVertices[i].x;
         vector.y = mesh->mVertices[i].y;
         vector.z = mesh->mVertices[i].z;
-        PosMesh = vector;
+        vertex.Position = vector;
 
         vector.x = mesh->mNormals[i].x;
         vector.y = mesh->mNormals[i].y;
         vector.z = mesh->mNormals[i].z;
-        NormalMesh = vector;
+        vertex.Normal = vector;
 
         if (mesh->mTextureCoords[0])
         {
             glm::vec2 vec;
             vec.x = mesh->mTextureCoords[0][i].x;
             vec.y = mesh->mTextureCoords[0][i].y;
-            TexCoordsMesh = vec;
+            vertex.TexCoords = vec;
         }
-        else TexCoordsMesh = glm::vec2(0.0f, 0.0f);
-        
-        position = PosMesh;
-
+        else vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+        vertices.push_back(vertex);
     }
 
-    
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
         aiFace face = mesh->mFaces[i];
@@ -264,8 +255,6 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     std::vector<texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-    
-    
     return Mesh(vertices, indices, textures, mesh->mAABB);
 }
 
