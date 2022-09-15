@@ -128,6 +128,7 @@ void Model::CreateCollisionCapsule(glm::vec2 halfSize) {
     body->addCollider(capsuleShape, body->getTransform());
 }
 
+
 void Model::CreateConcaveMeshShape(){
     const size_t sizeVertices = meshes[0].vertices.size();
     const size_t sizeTriangles = meshes[0].indices.size();
@@ -215,34 +216,43 @@ void Model::processNode(aiNode* node, const aiScene* scene, int index)
 
 Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
-    std::vector<Vertex> vertices;
+
+    std::vector<glm::vec3> position;
+    std::vector<glm::vec2> TexCoords;
+    std::vector<glm::vec3> Normal;
     std::vector<unsigned int> indices;
     std::vector<texture> textures;
 
+
+
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
-        Vertex vertex;
+        glm::vec3 PosMesh;
+        glm::vec3 NormalMesh;
+        glm::vec2 TexCoordsMesh;
         glm::vec3 vector;
 
         vector.x = mesh->mVertices[i].x;
         vector.y = mesh->mVertices[i].y;
         vector.z = mesh->mVertices[i].z;
-        vertex.Position = vector;
+        PosMesh = vector;
 
         vector.x = mesh->mNormals[i].x;
         vector.y = mesh->mNormals[i].y;
         vector.z = mesh->mNormals[i].z;
-        vertex.Normal = vector;
+        NormalMesh = vector;
 
         if (mesh->mTextureCoords[0])
         {
             glm::vec2 vec;
             vec.x = mesh->mTextureCoords[0][i].x;
             vec.y = mesh->mTextureCoords[0][i].y;
-            vertex.TexCoords = vec;
+            TexCoordsMesh = vec;
         }
-        else vertex.TexCoords = glm::vec2(0.0f, 0.0f);
-        vertices.push_back(vertex);
+        else TexCoordsMesh = glm::vec2(0.0f, 0.0f);
+        
+        position = PosMesh;
+
     }
 
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
