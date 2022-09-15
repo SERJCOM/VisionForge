@@ -73,5 +73,6 @@ int main() {
         window.Display();
         i += 0.01f;
     }
+    
     return 0;
 }
