@@ -147,7 +147,7 @@ void Model::CreateConcaveMeshShape(){
     size_object = Vector3(10, 10, 10);
     triangleMesh = physicsCommon->createTriangleMesh();
     triangleMesh->addSubpart(triangleArray);
-    concaveMesh = physicsCommon->createConcaveMeshShape(triangleMesh, size_object) ;
+    concaveMesh = physicsCommon->createConcaveMeshShape(triangleMesh, Vector3(1.0f, 1.0f, 1.0f)) ;
 
     body->addCollider(concaveMesh, body->getTransform());
 }

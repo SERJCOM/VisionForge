@@ -21,8 +21,8 @@ int main() {
                        
     Model obj("../../obj/plane/untitled.obj", world, &physicsCommon);
     obj.CreatePhysicsBody();    
-    obj.CreateCollisionBox(glm::vec3(5.0f, 5.0f, 5.0f));
-    obj.SetObjectPosition(100, 100.0f, 30);
+    obj.CreateCollisionBox(glm::vec3(5.0f, 1.0f, 5.0f));
+    obj.SetObjectPosition(20, 50.0f, 30);
     obj.UpdateObjectTransform();
     
 
@@ -65,6 +65,7 @@ int main() {
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(10.0f, 50.0f, 0));
 
+        obj.SetObjectPosition(camera.cameraPos.x + 20, camera.cameraPos.y - 20, camera.cameraPos.z );
         obj.UpdateObjectTransform();
         obj.Draw(shad);
 
