@@ -11,7 +11,7 @@ int main() {
     DebugRenderer& debugRenderer = world->getDebugRenderer();
     debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::COLLISION_SHAPE, true);
     debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::COLLIDER_BROADPHASE_AABB, true);
-    //std::cout << debugRenderer.getNbLines() << " " << debugRenderer.getNbTriangles() <<  std::endl;
+    
 
     Window window(800, 600);
     Engine engine;
@@ -63,7 +63,7 @@ int main() {
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(10.0f, 50.0f, 0));
 
-        obj.SetObjectPosition(camera.cameraPos.x + 20, camera.cameraPos.y - 20, camera.cameraPos.z );
+        obj.SetObjectPosition(camera.cameraPos.x + 40, camera.cameraPos.y - 20, camera.cameraPos.z );
         obj.UpdateObjectTransform();
         obj.Draw(shad);
 

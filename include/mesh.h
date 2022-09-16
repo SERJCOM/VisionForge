@@ -10,6 +10,7 @@
 #include "physics.h"
 #include <assimp/mesh.h>
 
+
 using namespace reactphysics3d;
 
 
@@ -24,6 +25,12 @@ struct texture {
     unsigned int id;
     std::string type;
     std::string path;
+};
+
+struct sBoundingBox{
+        AABB boundingBox;
+        Vector3 min;
+        Vector3 max;
 };
 
 class Mesh {
@@ -53,15 +60,23 @@ public:
         setupMesh();
     }
 
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<texture> textures, aiAABB boundbox) {
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<texture> textures, aiAABB* boundbox) {
         this->vertices = vertices;
         this->indices = indices;
         this->textures = textures;
-        boundingBox = boundbox;
+        this->boundingbox.min = Vector3(boundbox->mMin.x , boundbox->mMin.y, boundbox->mMin.z);
+        this->boundingbox.max = Vector3(boundbox->mMax.x, boundbox->mMax.y, boundbox->mMax.z);
+        this->boundingbox.boundingBox = AABB(boundingbox.min, boundingbox.max);
         setupMesh();
     }
 
-    
+    Mesh();
+
+    void UpdateMesh(){
+        setupMesh();
+    }
+
+
 
     void SetupPhysic(PhysicsWorld* physworld, PhysicsCommon* physicsCommon) {
         this->world = physworld;
@@ -217,7 +232,10 @@ protected:
     PhysicsCommon* physicsCommon;
     PhysicsWorld* world;
     RigidBody* body;
-    aiAABB boundingBox;
+    
+    sBoundingBox boundingbox;
+
+    // 
 
     void setupMesh(){
         glGenVertexArrays(1, &VAO);
@@ -226,6 +244,7 @@ protected:
 
         glBindVertexArray(VAO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	    
 
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
@@ -233,7 +252,7 @@ protected:
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
             &indices[0], GL_STATIC_DRAW);
 
-        
+
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 
@@ -246,4 +265,7 @@ protected:
 
         glBindVertexArray(0);
     }
+
+
+
 };

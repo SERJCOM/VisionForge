@@ -248,8 +248,6 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
         vertices.push_back(vertex);
     }
 
-    
-
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
         aiFace face = mesh->mFaces[i];
@@ -260,9 +258,11 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     std::vector<texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-    
-    
-    return Mesh(vertices, indices, textures, mesh->mAABB);
+    // if(Vector3(mesh->mAABB.mMin.x, mesh->mAABB.mMin.y, mesh->mAABB.mMin.z).length() < modelBoundingBox){
+
+    // }
+
+    return Mesh(vertices, indices, textures, &mesh->mAABB);
 }
 
 std::vector<texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)

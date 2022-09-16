@@ -95,11 +95,15 @@ protected:
     glm::vec3 objectAngleRotate = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 objectScale = glm::vec3(1.0f, 1.0f, 1.0f);
 
+
+    // concave collision 
     TriangleVertexArray* triangleArray = nullptr;
     TriangleMesh* triangleMesh = nullptr;
     ConcaveMeshShape* concaveMesh = nullptr;
     Vector3 size_object;
+    // end concave collision
 
+    sBoundingBox modelBoundingBox;
 
     void loadModel(std::string path);
 
