@@ -17,6 +17,7 @@ add_executable(Engine
     src/Engine.cpp 
     src/Model.cpp 
     src/Window.cpp
+    src/Mesh.cpp
 )
 
 message(STATUS  ${CMAKE_SOURCE_DIR} )
