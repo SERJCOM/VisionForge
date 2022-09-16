@@ -6,12 +6,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "shader.h"
 
-struct Vertex {
-    glm::vec3 Position;
-    glm::vec2 TexCoords;
-    glm::vec3 Normal;
-};
-
 struct texture {
     unsigned int id;
     std::string type;
@@ -24,15 +18,16 @@ protected:
     std::vector<glm::vec3> normal;
     std::vector<unsigned int> indices;
     std::vector<glm::vec2> textCoord;
+    std::vector<texture> textures;
 
     unsigned int VAO, VBO, EBO;
 
     void SetupMesh();
 
-
 public:
-    Mesh(Vertex vert, std::vector<unsigned int> indices, std::vector<texture> textures);
+    Mesh(std::vector<glm::vec3> vert, std::vector<glm::vec3> normal, std::vector<glm::vec2> textCoord, std::vector<unsigned int> indices, std::vector<texture> textures);
 
-    virtual void Draw(Shader shader);
+    virtual void Draw(Shader& shader);
+
     
 };

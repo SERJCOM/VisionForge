@@ -266,6 +266,4 @@ protected:
         glBindVertexArray(0);
     }
 
-
-
 };
