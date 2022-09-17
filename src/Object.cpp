@@ -1,7 +1,7 @@
 #include "object.hpp"
 
-Object::Object(std::vector<glm::vec3> vert, std::vector<glm::vec3> normal, std::vector<glm::vec2> textCoord, std::vector<unsigned int> indices, std::vector<texture> textures){
-    Mesh::Mesh(vert, normal, textCoord, indices, textures);
+Object::Object(std::vector<glm::vec3> vert, std::vector<glm::vec3> normal, std::vector<glm::vec2> textCoord, std::vector<unsigned int> indices, std::vector<texture> textures)
+:Mesh::Mesh(vert, normal, textCoord, indices, textures){
     phys = new Physics;
 }
 

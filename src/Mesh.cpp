@@ -29,7 +29,7 @@ void Mesh::SetupMesh(){
     glBindVertexArray(0);
 }
 
-void Mesh::Draw(Shader shader){
+void Mesh::Draw(Shader& shader){
     glActiveTexture(GL_TEXTURE0);
 
         unsigned int diffuseNr = 1;

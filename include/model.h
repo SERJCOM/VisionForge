@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include "mesh.h"
+#include "object.hpp"
 #include "light.h"
 #include "shader.h"
 #include "texture.h"
@@ -9,6 +9,11 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <map>
+#include <vector>
+
+#include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 
 
@@ -103,7 +108,7 @@ protected:
     Vector3 size_object;
     // end concave collision
 
-    sBoundingBox modelBoundingBox;
+    //sBoundingBox modelBoundingBox;
 
     void loadModel(std::string path);
 

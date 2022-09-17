@@ -1,6 +1,5 @@
 #include "init.h"
 #include <reactphysics3d/utils/DebugRenderer.h>
-#include "physDebug.hpp"
 #include <SFML/Graphics/Image.hpp>
 
 
@@ -20,16 +19,16 @@ int main() {
 
                        
     Model obj("../../obj/plane/untitled.obj", world, &physicsCommon);
-    obj.CreatePhysicsBody();    
-    obj.CreateCollisionBox(glm::vec3(5.0f, 1.0f, 5.0f));
-    obj.SetObjectPosition(20, 50.0f, 30);
-    obj.UpdateObjectTransform();
+    // obj.CreatePhysicsBody();    
+    // obj.CreateCollisionBox(glm::vec3(5.0f, 1.0f, 5.0f));
+    // obj.SetObjectPosition(20, 50.0f, 30);
+    // obj.UpdateObjectTransform();
     
 
     Model city("../../obj/dimaMap/untitled.obj", world, &physicsCommon);
-    city.CreatePhysicsBody();
-    city.CreateConcaveMeshShape();
-    city.SetTypeOfThePhysObject(true);
+    // city.CreatePhysicsBody();
+    // city.CreateConcaveMeshShape();
+    // city.SetTypeOfThePhysObject(true);
     
     Shape skybox;
     std::vector<std::string> skybox_path;
@@ -63,8 +62,8 @@ int main() {
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(10.0f, 50.0f, 0));
 
-        obj.SetObjectPosition(camera.cameraPos.x + 40, camera.cameraPos.y - 20, camera.cameraPos.z );
-        obj.UpdateObjectTransform();
+        // obj.SetObjectPosition(camera.cameraPos.x + 40, camera.cameraPos.y - 20, camera.cameraPos.z );
+        // obj.UpdateObjectTransform();
         obj.Draw(shad);
 
         city.Draw(shad);
