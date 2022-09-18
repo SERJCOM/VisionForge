@@ -19,7 +19,7 @@
 
 class Model {
 public:
-    std::vector<Mesh> meshes;
+    std::vector<Object> meshes;
     std::string directory;
     std::vector<texture> textures_loaded;
     std::map <std::string, int> meshNames;
@@ -74,10 +74,6 @@ public:
 
     void CreateConcaveMeshShape();
 
-    /// <summary>
-    /// çàìåíèòü FLAG íà ENUM
-    /// </summary>
-
     void SetTypeOfThePhysObject(bool flag);
 
     void UpdateObjectTransform();
@@ -114,11 +110,9 @@ protected:
 
     void processNode(aiNode* node, const aiScene* scene, int index);
 
-    Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+    Object processMesh(aiMesh* mesh, const aiScene* scene);
 
     std::vector<texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
-
-    
 
 };
 

@@ -29,41 +29,24 @@ public:
 
     void RotateMesh(float anglex, float angley, float anglez);
 
+    void SetRotateMesh(float anglex, float angley, float anglez);
+
     void MoveObject(glm::vec3 position);
 
-    virtual void Draw(Shader& shader){
-        glActiveTexture(GL_TEXTURE0);
+    void SetObjectPosition(glm::vec3 position);
 
-        unsigned int diffuseNr = 1;
-        for (unsigned int i = 0; i < textures.size(); i++)
-        {
-            glActiveTexture(GL_TEXTURE0 + i); 
-            std::string number;
-            std::string name = textures[i].type;
-            if (name == "texture_diffuse")
-                number = std::to_string(diffuseNr++);
-            
-            glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
-            glBindTexture(GL_TEXTURE_2D, textures[i].id);
-        }
+    virtual void Draw(Shader& shader);
 
-        this->SetMatrix(&shader);
-        
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
-        glActiveTexture(GL_TEXTURE0);
-    }
-
+    ~Object();
 
 protected:
 
-    Physics* phys= nullptr;
+    Physics phys;
 
     glm::mat4 modelMat;
 
     void SetMatrix(Shader* shad);
 
-    ~Object();
+    
 
 };

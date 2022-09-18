@@ -5,13 +5,6 @@
 
 
 int main() {
-
-    world->setIsDebugRenderingEnabled(true);
-    DebugRenderer& debugRenderer = world->getDebugRenderer();
-    debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::COLLISION_SHAPE, true);
-    debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::COLLIDER_BROADPHASE_AABB, true);
-    
-
     Window window(800, 600);
     Engine engine;
     Camera camera(&window.window);
@@ -19,9 +12,9 @@ int main() {
 
                        
     Model obj("../../obj/plane/untitled.obj", world, &physicsCommon);
-    // obj.CreatePhysicsBody();    
+    //obj.CreatePhysicsBody();    
     // obj.CreateCollisionBox(glm::vec3(5.0f, 1.0f, 5.0f));
-    // obj.SetObjectPosition(20, 50.0f, 30);
+    //obj.SetObjectPosition(20, 50.0f, 30);
     // obj.UpdateObjectTransform();
     
 
@@ -63,7 +56,7 @@ int main() {
         shad.setVec3("lightPos", glm::vec3(10.0f, 50.0f, 0));
 
         // obj.SetObjectPosition(camera.cameraPos.x + 40, camera.cameraPos.y - 20, camera.cameraPos.z );
-        // obj.UpdateObjectTransform();
+        //obj.UpdateObjectTransform();
         obj.Draw(shad);
 
         city.Draw(shad);

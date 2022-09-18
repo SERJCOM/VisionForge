@@ -163,20 +163,20 @@ void Model::PrintObjectPosition() {
     std::cout << pos.to_string() << std::endl;
 }
 
-// void Model::UpdateObjectTransform() {
-//     Transform transform = body->getTransform();
-//     glm::vec3 position = glm::vec3(transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
-//     Quaternion orientation = transform.getOrientation();
-//     decimal angle;
-//     Vector3 axis;
-//     orientation.getRotationAngleAxis(angle, axis);
-//     glm::quat quatPosition = glm::angleAxis(angle, glm::vec3(axis.x, axis.y, axis.z));
-//     glm::vec3 vecangles = glm::eulerAngles(quatPosition);
-//     for (int i = 0; i < meshes.size(); i++) {
-//         meshes[i].SetObjectPosition(position);
-//         meshes[i].SetRotateMesh(vecangles.x , vecangles.y, vecangles.z);
-//     }
-// }
+void Model::UpdateObjectTransform() {
+    Transform transform = body->getTransform();
+    glm::vec3 position = glm::vec3(transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
+    Quaternion orientation = transform.getOrientation();
+    decimal angle;
+    Vector3 axis;
+    orientation.getRotationAngleAxis(angle, axis);
+    glm::quat quatPosition = glm::angleAxis(angle, glm::vec3(axis.x, axis.y, axis.z));
+    glm::vec3 vecangles = glm::eulerAngles(quatPosition);
+    for (int i = 0; i < meshes.size(); i++) {
+        meshes[i].SetObjectPosition(position);
+        meshes[i].SetRotateMesh(vecangles.x , vecangles.y, vecangles.z);
+    }
+}
 
 // PRIVATE
 
@@ -216,7 +216,7 @@ void Model::processNode(aiNode* node, const aiScene* scene, int index)
 
 }
 
-Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
+Object Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normal;
@@ -262,7 +262,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
     // }
 
-    return Mesh(vertices, normal,textCoord, indices, textures);
+    return Object(vertices, normal,textCoord, indices, textures);
 }
 
 std::vector<texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
