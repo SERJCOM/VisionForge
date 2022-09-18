@@ -14,15 +14,15 @@ struct texture {
 
 class Mesh{
 protected:
-    std::vector<glm::vec3> verticles;
-    std::vector<glm::vec3> normal;
-    std::vector<unsigned int> indices;
-    std::vector<glm::vec2> textCoord;
-    std::vector<texture> textures;
+    // std::vector<glm::vec3> verticles;
+    // std::vector<glm::vec3> normal;
+    // std::vector<unsigned int> indices;
+    // std::vector<glm::vec2> textCoord;
+    // std::vector<texture> textures;
 
-    unsigned int VAO, VBO, EBO;
+    // unsigned int VAO, VBO, EBO;
 
-    void SetupMesh();
+    //virtual void SetupMesh();
 
 public:
     Mesh(std::vector<glm::vec3> vert, std::vector<glm::vec3> normal, std::vector<glm::vec2> textCoord, std::vector<unsigned int> indices, std::vector<texture> textures);

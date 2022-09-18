@@ -19,9 +19,9 @@ int main() {
     
 
     Model city("../../obj/dimaMap/untitled.obj", world, &physicsCommon);
-    // city.CreatePhysicsBody();
-    // city.CreateConcaveMeshShape();
-    // city.SetTypeOfThePhysObject(true);
+    city.CreatePhysicsBody();
+    //city.CreateConcaveMeshShape();
+    city.SetTypeOfThePhysObject(true);
     
     Shape skybox;
     std::vector<std::string> skybox_path;
@@ -57,7 +57,7 @@ int main() {
 
         // obj.SetObjectPosition(camera.cameraPos.x + 40, camera.cameraPos.y - 20, camera.cameraPos.z );
         //obj.UpdateObjectTransform();
-        obj.Draw(shad);
+        //obj.Draw(shad);
 
         city.Draw(shad);
 

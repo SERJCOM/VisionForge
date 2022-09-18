@@ -107,7 +107,6 @@ void Model::CreatePhysicsBody() {
     Quaternion orientation = Quaternion::fromEulerAngles(glm::radians(objectAngleRotate.x), glm::radians(objectAngleRotate.y), glm::radians(objectAngleRotate.z));
     Transform transform(position, orientation);
     body = physworld->createRigidBody(transform);
-    
 }
 
 

@@ -1,7 +1,12 @@
 #include "object.hpp"
 
-Object::Object(std::vector<glm::vec3> vert, std::vector<glm::vec3> normal, std::vector<glm::vec2> textCoord, std::vector<unsigned int> indices, std::vector<texture> textures)
-:Mesh::Mesh(vert, normal, textCoord, indices, textures){
+Object::Object(std::vector<glm::vec3> vert, std::vector<glm::vec3> normal, std::vector<glm::vec2> textCoord, std::vector<unsigned int> indices, std::vector<texture> textures){
+    this->verticles = vert;
+    this->normal = normal;
+    this->textCoord = textCoord;
+    this->indices = indices;
+    this->textures = textures;
+    setupMesh();
     //phys = new Physics;
 }
 
@@ -9,7 +14,7 @@ Object::~Object(){
     //delete phys;
 }
 
-void Object::SetMatrix(Shader* shad) {
+void Object::SetMatrix(Shader* shad){
     Quaternion orientation;
     Vector3 position;
     if (phys.physicsEnable) {
@@ -115,10 +120,38 @@ void Object::Draw(Shader& shader){
             glBindTexture(GL_TEXTURE_2D, textures[i].id);
         }
 
-        //this->SetMatrix(&shader);
+        this->SetMatrix(&shader);
         
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
         glActiveTexture(GL_TEXTURE0);
+    }
+
+void Object::setupMesh(){
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(verticles) * verticles.size() + sizeof(normal) * normal.size() + sizeof(textCoord) * textCoord.size(),
+    NULL, GL_STATIC_DRAW);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(verticles), &verticles);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(verticles), sizeof(normal), &normal);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(verticles) + sizeof(normal), sizeof(textCoord), &textCoord);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
+        &indices[0], GL_STATIC_DRAW);
+
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);  
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(sizeof(verticles)));  
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(sizeof(verticles) + sizeof(normal))); 
+    
+
+    glBindVertexArray(0);
     }
