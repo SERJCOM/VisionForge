@@ -1,12 +1,9 @@
 #include "object.hpp"
 
-Object::Object(std::vector<glm::vec3> vert, std::vector<glm::vec3> normal, std::vector<glm::vec2> textCoord, std::vector<unsigned int> indices, std::vector<texture> textures){
-    this->verticles = vert;
-    this->normal = normal;
-    this->textCoord = textCoord;
-    this->indices = indices;
-    this->textures = textures;
-    setupMesh();
+Object::Object(std::vector<glm::vec3> vert, std::vector<glm::vec3> normal, std::vector<glm::vec2> textCoord, std::vector<unsigned int> indices, std::vector<texture> textures):
+Mesh(vert, normal, textCoord, indices, textures){
+
+    this->setupMesh();
     //phys = new Physics;
 }
 
@@ -129,28 +126,31 @@ void Object::Draw(Shader& shader){
     }
 
 void Object::setupMesh(){
+
+    std::cout << "Mesh Setup \n";
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
 
     glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    
 
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticles) * verticles.size() + sizeof(normal) * normal.size() + sizeof(textCoord) * textCoord.size(),
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * verticles.size() + sizeof(glm::vec3) * normal.size() + sizeof(glm::vec2) * textCoord.size(),
     NULL, GL_STATIC_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(verticles), &verticles);
-    glBufferSubData(GL_ARRAY_BUFFER, sizeof(verticles), sizeof(normal), &normal);
-    glBufferSubData(GL_ARRAY_BUFFER, sizeof(verticles) + sizeof(normal), sizeof(textCoord), &textCoord);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * verticles.size(), &verticles);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * verticles.size(), sizeof(glm::vec3) * normal.size(), &normal);
+    glBufferSubData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * verticles.size() + sizeof(glm::vec3)* normal.size() , sizeof(glm::vec2) * textCoord.size(), &textCoord);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
         &indices[0], GL_STATIC_DRAW);
 
-
+    glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);  
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(sizeof(verticles)));  
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(sizeof(verticles) + sizeof(normal))); 
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(sizeof(glm::vec3) * verticles.size()));  
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(sizeof(glm::vec3) * verticles.size() + sizeof(glm::vec3) * normal.size())); 
     
 
     glBindVertexArray(0);

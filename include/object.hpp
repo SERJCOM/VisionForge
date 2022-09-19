@@ -1,7 +1,8 @@
 #pragma once
-//#include "mesh.hpp"
+#include "mesh.hpp"
 #include <reactphysics3d/reactphysics3d.h> 
 #include <assimp/mesh.h>
+
 
 using namespace reactphysics3d;
 
@@ -18,15 +19,8 @@ struct Physics{
     bool physicsEnable = false;
 };
 
-class Object{
+class Object: public Mesh{
 public:
-    std::vector<glm::vec3> verticles;
-    std::vector<glm::vec3> normal;
-    std::vector<unsigned int> indices;
-    std::vector<glm::vec2> textCoord;
-    std::vector<texture> textures;
-
-    unsigned int VAO, VBO, EBO;
 
     Object(std::vector<glm::vec3> vert, std::vector<glm::vec3> normal, std::vector<glm::vec2> textCoord, std::vector<unsigned int> indices, std::vector<texture> textures);
 

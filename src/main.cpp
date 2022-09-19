@@ -11,7 +11,7 @@ int main() {
     Shader shad("..\\..\\shaders\\shader.vert", "..\\..\\shaders\\shader.frag");
 
                        
-    Model obj("../../obj/plane/untitled.obj", world, &physicsCommon);
+    //Model obj("../../obj/plane/untitled.obj", world, &physicsCommon);
     //obj.CreatePhysicsBody();    
     // obj.CreateCollisionBox(glm::vec3(5.0f, 1.0f, 5.0f));
     //obj.SetObjectPosition(20, 50.0f, 30);
