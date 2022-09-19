@@ -217,20 +217,19 @@ void Model::processNode(aiNode* node, const aiScene* scene, int index)
 
 Object Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
-    std::vector<glm::vec3> vertices;
-    std::vector<glm::vec3> normal;
-    std::vector<glm::vec2> textCoord;
+    std::vector<Vertex>       vertices;
     std::vector<unsigned int> indices;
     std::vector<texture> textures;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         glm::vec3 vector;
+        
 
         vector.x = mesh->mVertices[i].x;
         vector.y = mesh->mVertices[i].y;
         vector.z = mesh->mVertices[i].z;
-        vertices.push_back(vector);
+        verticespush_back(vector);
 
         vector.x = mesh->mNormals[i].x;
         vector.y = mesh->mNormals[i].y;
