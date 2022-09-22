@@ -128,13 +128,13 @@ void Model::CreateCollisionCapsule(glm::vec2 halfSize) {
 }
 
 void Model::CreateConcaveMeshShape(){
-    const size_t sizeVertices = meshes[0].GetVertices().size();
-    const size_t sizeTriangles = meshes[0].GetIndices().size();
+     const size_t sizeVertices = meshes[0].vertices.size();
+    const size_t sizeTriangles = meshes[0].indices.size();
 
     triangleArray = new TriangleVertexArray(
-        sizeVertices, &meshes[0].GetVertices()[0].Position, sizeof(meshes[0].GetVertices()), 
-    &meshes[0].GetVertices()[0].Normal.x, sizeof(meshes[0].GetVertices()),   
-    sizeTriangles / 3, &meshes[0].GetIndices()[0], 3 * sizeof(unsigned int),
+        sizeVertices, &meshes[0].vertices[0].Position, sizeof(meshes[0].vertices), 
+    &meshes[0].vertices[0].Normal.x, sizeof(meshes[0].vertices),   
+    sizeTriangles / 3, &meshes[0].indices[0], 3 * sizeof(unsigned int),
     rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
 	rp3d::TriangleVertexArray::NormalDataType::NORMAL_FLOAT_TYPE,
 	rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE

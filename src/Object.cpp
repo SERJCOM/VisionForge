@@ -143,8 +143,6 @@ void Object::Draw(Shader& shader){
     }
 
 void Object::setupMesh(){
-
-    std::cout << "Mesh Setup \n";
     glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
         glGenBuffers(1, &EBO);
