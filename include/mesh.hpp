@@ -6,7 +6,13 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "shader.h"
 
-struct texture {
+struct Vertex {
+    glm::vec3 Position;
+    glm::vec2 TexCoords;
+    glm::vec3 Normal;
+};
+
+struct sTexture {
     unsigned int id;
     std::string type;
     std::string path;
@@ -14,20 +20,34 @@ struct texture {
 
 class Mesh{
 protected:
-    std::vector<glm::vec3> verticles;
-    std::vector<glm::vec3> normal;
+
+    std::vector<Vertex>       vertices;    
     std::vector<unsigned int> indices;
-    std::vector<glm::vec2> textCoord;
-    std::vector<texture> textures;
+    std::vector<sTexture> textures;
 
     unsigned int VAO, VBO, EBO;
 
     // virtual void SetupMesh();
 
 public:
-    Mesh(std::vector<glm::vec3> vert, std::vector<glm::vec3> normal, std::vector<glm::vec2> textCoord, std::vector<unsigned int> indices, std::vector<texture> textures);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<sTexture> textures);
+
+    Mesh();
+
+    
 
     virtual void Draw(Shader& shader);
 
+    std::vector<Vertex> GetVertices(){
+        return vertices;
+    }
+
+    std::vector<unsigned int> GetIndices(){
+        return indices;
+    }
+
+    std::vector<sTexture> GetTexture(){
+        return textures;
+    }
     
 };

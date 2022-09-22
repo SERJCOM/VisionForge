@@ -22,21 +22,25 @@ struct Physics{
 class Object: public Mesh{
 public:
 
-    Object(std::vector<glm::vec3> vert, std::vector<glm::vec3> normal, std::vector<glm::vec2> textCoord, std::vector<unsigned int> indices, std::vector<texture> textures);
+    Object(std::vector<Vertex> vertices , std::vector<unsigned int> indices, std::vector<sTexture> textures);
 
     void SetupPhysic(PhysicsWorld* physworld, PhysicsCommon* physicsCommon);
 
     void CreateRigidBody();
 
+    void ScaleMesh(glm::vec3 size);
+
     void RotateMesh(float anglex, float angley, float anglez);
 
-    void SetRotateMesh(float anglex, float angley, float anglez);
+    void SetMeshRotation(float anglex, float angley, float anglez);
 
     void MoveObject(glm::vec3 position);
 
     void SetObjectPosition(glm::vec3 position);
 
     virtual void Draw(Shader& shader);
+
+    void bodyAddColiderBox(glm::vec3 halfsize);
 
     ~Object();
 

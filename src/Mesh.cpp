@@ -1,9 +1,9 @@
 #include "mesh.hpp"
 
-Mesh::Mesh( std::vector<glm::vec3> vert, std::vector<glm::vec3> normal, std::vector<glm::vec2> textCoord, std::vector<unsigned int> indices, std::vector<texture> textures){
-    this->verticles = vert;
-    this->normal = normal;
-    this->textCoord = textCoord;
+
+
+Mesh::Mesh(std::vector<Vertex> vertices , std::vector<unsigned int> indices, std::vector<sTexture> textures){
+    this->vertices = vertices;
     this->indices = indices;
     this->textures = textures;
 
@@ -46,7 +46,7 @@ void Mesh::Draw(Shader& shader){
         }
 
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, verticles.size() * 3);
+        glDrawArrays(GL_TRIANGLES, 0, indices.size() * 3);
         glBindVertexArray(0);
         glActiveTexture(GL_TEXTURE0);
 }

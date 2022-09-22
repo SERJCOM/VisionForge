@@ -19,21 +19,21 @@ void Model::Draw(Shader& shader)
         meshes[i].Draw(shader);
 }
 
-// void Model::ScaleMesh(std::string name, glm::vec3 size) {
-//     if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
-//     else    meshes[meshNames[name]].meshScale = size;
-// }
+void Model::ScaleMesh(std::string name, glm::vec3 size) {
+    if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
+    else    meshes[meshNames[name]].ScaleMesh(size);
+}
 
-// void Model::ScaleObject(glm::vec3 size) {
-//     objectScale = size;
-//     for (int i = 0; i < meshes.size(); i++) {
-//         meshes[i].meshScale = size;
-//     }
-// }
+void Model::ScaleObject(glm::vec3 size) {
+    objectScale = size;
+    for (int i = 0; i < meshes.size(); i++) {
+        meshes[i].ScaleMesh(size);
+    }
+}
 
-// void Model::RotateMesh(std::string name, float anglex, float angley, float anglez) {
-//     meshes[meshNames[name]].RotateMesh(anglex, angley, anglez);
-// }
+void Model::RotateMesh(std::string name, float anglex, float angley, float anglez) {
+    meshes[meshNames[name]].RotateMesh(anglex, angley, anglez);
+}
 
 void Model::RotateObject(float anglex, float angley, float anglez) {
     objectAngleRotate += glm::vec3(glm::radians(anglex), glm::radians(angley), glm::radians(anglez));
@@ -51,9 +51,9 @@ void Model::RotateObject(glm::vec3 angles) {
     body->setTransform(transform);
 }
 
-// void Model::SetMeshRotation(std::string name, float anglex, float angley, float anglez) {
-//     meshes[meshNames[name]].SetRotateMesh(anglex, angley, anglez);
-// }
+void Model::SetMeshRotation(std::string name, float anglex, float angley, float anglez) {
+    meshes[meshNames[name]].SetMeshRotation(anglex, angley, anglez);
+}
 
 void Model::SetObjectRotation(float anglex, float angley, float anglez) {
     objectAngleRotate = glm::vec3(anglex, angley, anglez);
@@ -81,15 +81,15 @@ void Model::MoveObject(float x, float y, float z) {
 
 }
 
-// void Model::MoveMesh(std::string name, float x, float y, float z) {
-//     if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
-//     else    meshes[meshNames[name]].MoveObject(glm::vec3(x, y, z));
-// }
+void Model::MoveMesh(std::string name, float x, float y, float z) {
+    if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
+    else    meshes[meshNames[name]].MoveObject(glm::vec3(x, y, z));
+}
 
-// void Model::SetMeshPosition(std::string name, float x, float y, float z) {
-//     if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
-//     else    meshes[meshNames[name]].SetObjectPosition(glm::vec3(x, y, z));
-// }
+void Model::SetMeshPosition(std::string name, float x, float y, float z) {
+    if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
+    else    meshes[meshNames[name]].SetObjectPosition(glm::vec3(x, y, z));
+}
 
 void Model::SetObjectPosition(float x, float y, float z) {
     Transform transform = body->getTransform();
@@ -97,10 +97,10 @@ void Model::SetObjectPosition(float x, float y, float z) {
     body->setTransform(transform);
 }
 
-// void Model::SetupPhysicMeshByName(std::string name) {
-//     meshes[meshNames[name]].SetupPhysic(physworld, physicsCommon);
-//     meshes[meshNames[name]].CreateRigidBody();
-// }
+void Model::SetupPhysicMeshByName(std::string name) {
+    meshes[meshNames[name]].SetupPhysic(physworld, physicsCommon);
+    meshes[meshNames[name]].CreateRigidBody();
+}
 
 void Model::CreatePhysicsBody() {
     Vector3 position(objectPosition.x, objectPosition.y, objectPosition.z);
@@ -127,25 +127,25 @@ void Model::CreateCollisionCapsule(glm::vec2 halfSize) {
     body->addCollider(capsuleShape, body->getTransform());
 }
 
-// void Model::CreateConcaveMeshShape(){
-//     const size_t sizeVertices = meshes[0].vertices.size();
-//     const size_t sizeTriangles = meshes[0].indices.size();
+void Model::CreateConcaveMeshShape(){
+    const size_t sizeVertices = meshes[0].GetVertices().size();
+    const size_t sizeTriangles = meshes[0].GetIndices().size();
 
-//     triangleArray = new TriangleVertexArray(
-//         sizeVertices, &meshes[0].vertices[0].Position, sizeof(meshes[0].vertices), 
-//     &meshes[0].vertices[0].Normal.x, sizeof(meshes[0].vertices),   
-//     sizeTriangles / 3, &meshes[0].indices[0], 3 * sizeof(unsigned int),
-//     rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
-// 	rp3d::TriangleVertexArray::NormalDataType::NORMAL_FLOAT_TYPE,
-// 	rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE
-//     );
+    triangleArray = new TriangleVertexArray(
+        sizeVertices, &meshes[0].GetVertices()[0].Position, sizeof(meshes[0].GetVertices()), 
+    &meshes[0].GetVertices()[0].Normal.x, sizeof(meshes[0].GetVertices()),   
+    sizeTriangles / 3, &meshes[0].GetIndices()[0], 3 * sizeof(unsigned int),
+    rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
+	rp3d::TriangleVertexArray::NormalDataType::NORMAL_FLOAT_TYPE,
+	rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE
+    );
 
-//     size_object = Vector3(10, 10, 10);
-//     triangleMesh = physicsCommon->createTriangleMesh();
-//     triangleMesh->addSubpart(triangleArray);
-//     concaveMesh = physicsCommon->createConcaveMeshShape(triangleMesh, Vector3(1.0f, 1.0f, 1.0f)) ;
-//     body->addCollider(concaveMesh, body->getTransform());
-// }
+    size_object = Vector3(10, 10, 10);
+    triangleMesh = physicsCommon->createTriangleMesh();
+    triangleMesh->addSubpart(triangleArray);
+    concaveMesh = physicsCommon->createConcaveMeshShape(triangleMesh, Vector3(1.0f, 1.0f, 1.0f)) ;
+    body->addCollider(concaveMesh, body->getTransform());
+}
 
 void Model::SetTypeOfThePhysObject(bool flag) {
     if (flag) {
@@ -173,7 +173,7 @@ void Model::UpdateObjectTransform() {
     glm::vec3 vecangles = glm::eulerAngles(quatPosition);
     for (int i = 0; i < meshes.size(); i++) {
         meshes[i].SetObjectPosition(position);
-        meshes[i].SetRotateMesh(vecangles.x , vecangles.y, vecangles.z);
+        meshes[i].SetMeshRotation(vecangles.x , vecangles.y, vecangles.z);
     }
 }
 
@@ -217,34 +217,34 @@ void Model::processNode(aiNode* node, const aiScene* scene, int index)
 
 Object Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
-    std::vector<glm::vec3> vertices;
-    std::vector<glm::vec3> normal;
-    std::vector<glm::vec2> textCoord;
+    std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<texture> textures;
+    std::vector<sTexture> textures;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
+        Vertex vertex;
         glm::vec3 vector;
 
         vector.x = mesh->mVertices[i].x;
         vector.y = mesh->mVertices[i].y;
         vector.z = mesh->mVertices[i].z;
-        vertices.push_back(vector);
+        vertex.Position = vector;
 
         vector.x = mesh->mNormals[i].x;
         vector.y = mesh->mNormals[i].y;
         vector.z = mesh->mNormals[i].z;
-        normal.push_back(vector);
+        vertex.Normal = vector;
 
         if (mesh->mTextureCoords[0])
         {
             glm::vec2 vec;
             vec.x = mesh->mTextureCoords[0][i].x;
             vec.y = mesh->mTextureCoords[0][i].y;
-            textCoord.push_back(vec);
+            vertex.TexCoords = vec;
         }
-        else textCoord.push_back(glm::vec2(0.0f, 0.0f));
+        else vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+        vertices.push_back(vertex);
     }
 
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
@@ -254,19 +254,19 @@ Object Model::processMesh(aiMesh* mesh, const aiScene* scene)
     }
 
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-    std::vector<texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+    std::vector<sTexture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
     // if(Vector3(mesh->mAABB.mMin.x, mesh->mAABB.mMin.y, mesh->mAABB.mMin.z).length() < modelBoundingBox){
 
     // }
 
-    return Object(vertices, normal,textCoord, indices, textures);
+    return Object(vertices, indices, textures);
 }
 
-std::vector<texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
+std::vector<sTexture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
 {
-    std::vector<texture> textures;
+    std::vector<sTexture> textures;
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
@@ -284,7 +284,7 @@ std::vector<texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
         }
         if (!skip)
         {
-            texture texturee;
+            sTexture texturee;
             texturee.id = Texture::LoadTextureFromFile(str.C_Str(), this->directory);
             texturee.type = typeName;
             texturee.path = str.C_Str();

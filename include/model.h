@@ -3,7 +3,7 @@
 #include "object.hpp"
 #include "light.h"
 #include "shader.h"
-#include "texture.h"
+#include "Texture.h"
 #include <string>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -21,7 +21,7 @@ class Model {
 public:
     std::vector<Object> meshes;
     std::string directory;
-    std::vector<texture> textures_loaded;
+    std::vector<sTexture> textures_loaded;
     std::map <std::string, int> meshNames;
     bool gammaCorrection;
 
@@ -112,7 +112,7 @@ protected:
 
     Object processMesh(aiMesh* mesh, const aiScene* scene);
 
-    std::vector<texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+    std::vector<sTexture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
 
 };
 

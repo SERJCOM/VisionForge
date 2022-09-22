@@ -5,7 +5,7 @@
 
 
 int main() {
-    Window window(800, 600);
+    Window window(1080, 720);
     Engine engine;
     Camera camera(&window.window);
     Shader shad("..\\..\\shaders\\shader.vert", "..\\..\\shaders\\shader.frag");

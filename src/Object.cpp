@@ -1,7 +1,6 @@
 #include "object.hpp"
 
-Object::Object(std::vector<glm::vec3> vert, std::vector<glm::vec3> normal, std::vector<glm::vec2> textCoord, std::vector<unsigned int> indices, std::vector<texture> textures):
-Mesh(vert, normal, textCoord, indices, textures){
+Object::Object(std::vector<Vertex> vertices , std::vector<unsigned int> indices, std::vector<sTexture> textures):Mesh(vertices, indices, textures){
 
     this->setupMesh();
     //phys = new Physics;
@@ -58,6 +57,10 @@ void Object::CreateRigidBody(){
     phys.body->setType(BodyType::KINEMATIC);
 }
 
+void Object::ScaleMesh(glm::vec3 size){
+    phys.meshScale = size;
+}
+
 void Object::RotateMesh(float anglex, float angley, float anglez) {
     phys.angleRotate.x += anglex;
     phys.angleRotate.y += angley;
@@ -71,7 +74,7 @@ void Object::RotateMesh(float anglex, float angley, float anglez) {
     }
 }
 
-void Object::SetRotateMesh(float anglex, float angley, float anglez) {
+void Object::SetMeshRotation(float anglex, float angley, float anglez) {
         phys.angleRotate.x = anglex;
         phys.angleRotate.y = angley;
         phys.angleRotate.z = anglez;
@@ -99,7 +102,21 @@ void Object::MoveObject(glm::vec3 position) {
 void Object::SetObjectPosition(glm::vec3 position) {
         phys.meshPosition = glm::vec3(0.0f);
         MoveObject(position);
+}
+
+void Object::bodyAddColiderBox(glm::vec3 halfsize) {
+    if (phys.physicsEnable) {
+        BoxShape* boxShape = phys.physicsCommon->createBoxShape(Vector3(halfsize.x, halfsize.y, halfsize.z));
+        Collider* collider;
+        Transform transform = phys.body->getTransform();
+        collider = phys.body->addCollider(boxShape, transform);
     }
+    else {
+        std::cout << "ERROR!!! THE PHYSICS BODY DOES NOT EXIST\n";
+    }
+}
+
+
 
 void Object::Draw(Shader& shader){
         glActiveTexture(GL_TEXTURE0);
@@ -129,29 +146,29 @@ void Object::setupMesh(){
 
     std::cout << "Mesh Setup \n";
     glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+        glGenBuffers(1, &VBO);
+        glGenBuffers(1, &EBO);
 
-    glBindVertexArray(VAO);
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	    
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * verticles.size() + sizeof(glm::vec3) * normal.size() + sizeof(glm::vec2) * textCoord.size(),
-    NULL, GL_STATIC_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * verticles.size(), &verticles);
-    glBufferSubData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * verticles.size(), sizeof(glm::vec3) * normal.size(), &normal);
-    glBufferSubData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * verticles.size() + sizeof(glm::vec3)* normal.size() , sizeof(glm::vec2) * textCoord.size(), &textCoord);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
-        &indices[0], GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
+            &indices[0], GL_STATIC_DRAW);
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);  
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(sizeof(glm::vec3) * verticles.size()));  
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(sizeof(glm::vec3) * verticles.size() + sizeof(glm::vec3) * normal.size())); 
-    
 
-    glBindVertexArray(0);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+        
+
+        glBindVertexArray(0);
     }
