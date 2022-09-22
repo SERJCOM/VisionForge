@@ -152,7 +152,7 @@ void Model::SetTypeOfThePhysObject(bool flag) {
         body->setType(BodyType::KINEMATIC);
     }
     else {
-        //body->setType(BodyType::DYNAMIC);
+        body->setType(BodyType::DYNAMIC);
     }
 }
 
@@ -182,7 +182,7 @@ void Model::UpdateObjectTransform() {
 void Model::loadModel(std::string path)
 {
     Assimp::Importer import;
-    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_GenBoundingBoxes | aiProcess_CalcTangentSpace | aiProcess_FlipUVs);
+    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_GenBoundingBoxes | aiProcess_CalcTangentSpace | aiProcess_FlipUVs | aiProcess_GenSmoothNormals);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
