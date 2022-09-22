@@ -90,7 +90,7 @@ protected:
     std::string rootName;
     PhysicsCommon* physicsCommon;
     PhysicsWorld* physworld;
-    RigidBody* body;
+    RigidBody* body = nullptr;
 
     glm::vec3 objectPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 objectAngleRotate = glm::vec3(0.0f, 0.0f, 0.0f);

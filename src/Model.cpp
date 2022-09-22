@@ -15,8 +15,28 @@ Model::Model(const char* path, PhysicsWorld* physworld, PhysicsCommon* physicsCo
 
 void Model::Draw(Shader& shader)
 {
-    for (unsigned int i = 0; i < meshes.size(); i++)
+    glm::vec3 vecangles;
+    glm::vec3 position;
+    if(body != nullptr){
+    Transform transform = body->getTransform();
+    position = glm::vec3(transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
+    Quaternion orientation = transform.getOrientation();
+    decimal angle;
+    Vector3 axis;
+    orientation.getRotationAngleAxis(angle, axis);
+    glm::quat quatPosition = glm::angleAxis(angle, glm::vec3(axis.x, axis.y, axis.z));
+    vecangles = glm::eulerAngles(quatPosition);
+    }
+    else{
+        position = objectPosition;
+        vecangles = objectAngleRotate;
+    }
+
+    for (unsigned int i = 0; i < meshes.size(); i++){
+        meshes[i].SetObjectPosition(position);
+        meshes[i].SetMeshRotation(vecangles.x , vecangles.y, vecangles.z);
         meshes[i].Draw(shader);
+    }
 }
 
 void Model::ScaleMesh(std::string name, glm::vec3 size) {
@@ -56,28 +76,33 @@ void Model::SetMeshRotation(std::string name, float anglex, float angley, float 
 }
 
 void Model::SetObjectRotation(float anglex, float angley, float anglez) {
-    objectAngleRotate = glm::vec3(anglex, angley, anglez);
+    objectAngleRotate = glm::radians(glm::vec3(anglex, angley, anglez));
 
-    Transform transform = body->getTransform();
-    transform.setOrientation(Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z));
-    body->setTransform(transform);
+    if(body != nullptr){    
+        Transform transform = body->getTransform();
+        transform.setOrientation(Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z));
+        body->setTransform(transform);
+    }
 }
 
 void Model::SetObjectRotation(glm::vec3 rot) {
     objectAngleRotate = glm::radians(rot);
-
-    Transform transform = body->getTransform();
-    transform.setOrientation(Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z));
-    body->setTransform(transform);
+    if(body != nullptr){
+        Transform transform = body->getTransform();
+        transform.setOrientation(Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z));
+        body->setTransform(transform);
+    }
 }
 
 void Model::MoveObject(float x, float y, float z) {
-    
-    Vector3 pos = body->getTransform().getPosition();
-    Transform transform = body->getTransform();
-    pos = Vector3(pos.x + x, pos.y + y, pos.z + z);
-    transform.setPosition(pos);
-    body->setTransform(transform);
+    objectPosition += glm::vec3(x, y, z);
+    if(body != nullptr){
+        Vector3 pos = body->getTransform().getPosition();
+        Transform transform = body->getTransform();
+        pos = Vector3(pos.x + x, pos.y + y, pos.z + z);
+        transform.setPosition(pos);
+        body->setTransform(transform);
+    }
 
 }
 
@@ -92,9 +117,12 @@ void Model::SetMeshPosition(std::string name, float x, float y, float z) {
 }
 
 void Model::SetObjectPosition(float x, float y, float z) {
-    Transform transform = body->getTransform();
-    transform.setPosition(Vector3(x, y, z));
-    body->setTransform(transform);
+    objectPosition = glm::vec3(x,y,z);
+    if(body != nullptr){
+        Transform transform = body->getTransform();
+        transform.setPosition(Vector3(objectPosition.x, objectPosition.y, objectPosition.z));
+        body->setTransform(transform);
+    }
 }
 
 void Model::SetupPhysicMeshByName(std::string name) {
@@ -128,7 +156,8 @@ void Model::CreateCollisionCapsule(glm::vec2 halfSize) {
 }
 
 void Model::CreateConcaveMeshShape(){
-     const size_t sizeVertices = meshes[0].vertices.size();
+    
+    const size_t sizeVertices = meshes[0].vertices.size();
     const size_t sizeTriangles = meshes[0].indices.size();
 
     triangleArray = new TriangleVertexArray(
@@ -162,20 +191,6 @@ void Model::PrintObjectPosition() {
     std::cout << pos.to_string() << std::endl;
 }
 
-void Model::UpdateObjectTransform() {
-    Transform transform = body->getTransform();
-    glm::vec3 position = glm::vec3(transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
-    Quaternion orientation = transform.getOrientation();
-    decimal angle;
-    Vector3 axis;
-    orientation.getRotationAngleAxis(angle, axis);
-    glm::quat quatPosition = glm::angleAxis(angle, glm::vec3(axis.x, axis.y, axis.z));
-    glm::vec3 vecangles = glm::eulerAngles(quatPosition);
-    for (int i = 0; i < meshes.size(); i++) {
-        meshes[i].SetObjectPosition(position);
-        meshes[i].SetMeshRotation(vecangles.x , vecangles.y, vecangles.z);
-    }
-}
 
 // PRIVATE
 

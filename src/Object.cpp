@@ -21,13 +21,15 @@ void Object::SetMatrix(Shader* shad){
     else {
         orientation = Quaternion::fromEulerAngles(phys.angleRotate.x, phys.angleRotate.y, phys.angleRotate.z);
         position = Vector3(phys.meshPosition.x, phys.meshPosition.y, phys.meshPosition.z);
+        // std::cout << orientation.to_string() << " " << position.to_string() << std::endl;
+
     }
     glm::vec4 orient[3];
     glm::mat4 orientMat;
     for (int i = 0; i < 3; i++) {
-        orient[i].x = phys.orientation.getMatrix().getRow(i).x;
-        orient[i].y = phys.orientation.getMatrix().getRow(i).y;
-        orient[i].z = phys.orientation.getMatrix().getRow(i).z;
+        orient[i].x = orientation.getMatrix().getRow(i).x;
+        orient[i].y = orientation.getMatrix().getRow(i).y;
+        orient[i].z = orientation.getMatrix().getRow(i).z;
         orient[i].w = 0;
     }
     orientMat = glm::mat4(orient[0].x, orient[0].y, orient[0].z, orient[0].w,

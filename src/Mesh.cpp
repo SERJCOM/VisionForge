@@ -11,24 +11,6 @@ Mesh::Mesh(std::vector<Vertex> vertices , std::vector<unsigned int> indices, std
 }
 
 
-// void Mesh::SetupMesh(){
-//     glGenVertexArrays(1, &VAO);
-//     glGenBuffers(1, &VBO);
-
-//     glBindVertexArray(VAO);
-
-//     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-//     glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(verticles), &verticles);
-//     glBufferSubData(GL_ARRAY_BUFFER, sizeof(verticles), sizeof(normal), &normal);
-//     glBufferSubData(GL_ARRAY_BUFFER, sizeof(verticles) + sizeof(normal), sizeof(textCoord), &textCoord);
-
-//     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);  
-//     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(sizeof(verticles)));  
-//     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(sizeof(verticles) + sizeof(normal))); 
-
-//     glBindVertexArray(0);
-// }
-
 void Mesh::Draw(Shader& shader){
     glActiveTexture(GL_TEXTURE0);
 

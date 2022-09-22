@@ -10,19 +10,18 @@ int main() {
     Camera camera(&window.window);
     Shader shad("..\\..\\shaders\\shader.vert", "..\\..\\shaders\\shader.frag");
 
-                       
-    // Model obj("../../obj/plane/untitled.obj", world, &physicsCommon);
-    // obj.CreatePhysicsBody();    
-    // obj.CreateCollisionBox(glm::vec3(5.0f, 1.0f, 5.0f));
-    // obj.SetObjectPosition(20, 50.0f, 30);
-    // obj.UpdateObjectTransform();
-    
+     Model obj("../../obj/plane/untitled.obj", world, &physicsCommon);
+    obj.CreatePhysicsBody();    
+    obj.CreateCollisionBox(glm::vec3(5.0f, 1.0f, 5.0f));
+    obj.SetObjectPosition(20, 500.0f, 30);
 
-    Model city("../../obj/cs_italy/cs_italy.obj", world, &physicsCommon);
-    city.CreatePhysicsBody();   
-    city.ScaleObject(glm::vec3(0.01, 0.01, 0.01));
-    // city.CreateConcaveMeshShape();
+
+    Model city("../../obj/cs_italy/cs_italy.obj", world, &physicsCommon); 
+    city.CreatePhysicsBody();
     city.SetTypeOfThePhysObject(true);
+    city.ScaleObject(glm::vec3(0.1, 0.1, 0.1));
+    city.SetObjectRotation(90, 0, 0);
+    city.CreateConcaveMeshShape();
     
     Shape skybox;
     std::vector<std::string> skybox_path;
@@ -49,19 +48,15 @@ int main() {
         //cout << camera.cameraPos.x << " " << camera.cameraPos.y << " " << camera.cameraPos.z << endl;
         world->update(timeStep);
 
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 500.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), window.GetWindowWidth() / window.GetWindowHeight(), 0.1f, 500.0f);
         glm::mat4 view = camera.view;
         shad.use();
         shad.setMat4("projection", projection);
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(10.0f, 50.0f, 0));
 
-        // obj.SetObjectPosition(camera.cameraPos.x + 40, camera.cameraPos.y - 20, camera.cameraPos.z );
-        // obj.UpdateObjectTransform();
-        // obj.Draw(shad);
-
-        city.RotateObject(glm::vec3(i, i, i));
-        city.UpdateObjectTransform();
+        
+        obj.Draw(shad);
 
         city.Draw(shad);
 
