@@ -31,6 +31,8 @@ int main() {
     city.CreateConcaveMeshShape();
     city.SetTypeOfThePhysObject(true);
     
+
+    
     Shape skybox;
     std::vector<std::string> skybox_path;
     skybox_path.push_back("../../img/skymap/steini4_ft.jpg");
@@ -67,6 +69,9 @@ int main() {
         obj.UpdateObjectTransform();
         obj.Draw(shad);
 
+
+        city.RotateObject(glm::vec3(1, 1, 1));
+        city.UpdateObjectTransform();
         city.Draw(shad);
 
         skybox.DrawSkyBox(camera.view, projection);
