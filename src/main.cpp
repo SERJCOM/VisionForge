@@ -19,11 +19,11 @@ int main() {
     Shader shad("..\\..\\shaders\\shader.vert", "..\\..\\shaders\\shader.frag");
 
                        
-    // Model obj("../../obj/plane/untitled.obj", world, &physicsCommon);
-    // obj.CreatePhysicsBody();    
-    // obj.CreateCollisionBox(glm::vec3(5.0f, 1.0f, 5.0f));
-    // obj.SetObjectPosition(20, 50.0f, 30);
-    // obj.UpdateObjectTransform();
+    Model obj("../../obj/plane/untitled.obj", world, &physicsCommon);
+    obj.CreatePhysicsBody();    
+    obj.CreateCollisionBox(glm::vec3(5.0f, 1.0f, 5.0f));
+    obj.SetObjectPosition(20, 50.0f, 30);
+    obj.UpdateObjectTransform();
     
 
     Model city("../../obj/dimaMap/untitled.obj", world, &physicsCommon);
@@ -63,9 +63,9 @@ int main() {
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(10.0f, 50.0f, 0));
 
-        // obj.SetObjectPosition(camera.cameraPos.x + 40, camera.cameraPos.y - 20, camera.cameraPos.z );
-        // obj.UpdateObjectTransform();
-        // obj.Draw(shad);
+        obj.SetObjectPosition(camera.cameraPos.x + 40, camera.cameraPos.y - 20, camera.cameraPos.z );
+        obj.UpdateObjectTransform();
+        obj.Draw(shad);
 
         city.Draw(shad);
 
