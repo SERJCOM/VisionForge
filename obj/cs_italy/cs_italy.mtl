@@ -1,0 +1,522 @@
+# bigCrate2
+newmtl material_0
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_0.tga
+
+# wlPaper
+newmtl material_1
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_1.tga
+
+# ccWall
+newmtl material_2
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_2.tga
+
+# drkWood
+newmtl material_3
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_3.tga
+
+# bigCrate0
+newmtl material_4
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_4.tga
+
+# pebbleCobble
+newmtl material_5
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_5.tga
+
+# concrete
+newmtl material_6
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_6.tga
+
+# gryStuccoSpade
+newmtl material_7
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_7.tga
+
+# wlPaper1
+newmtl material_8
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_8.tga
+
+# stoneWall
+newmtl material_9
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_9.tga
+
+# redRug
+newmtl material_10
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_10.tga
+
+# trrm_wood2
+newmtl material_11
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_11.tga
+
+# groutTiles
+newmtl material_12
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_12.tga
+
+# chestDrawers
+newmtl material_13
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_13.tga
+
+# 64crateTop
+newmtl material_14
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_14.tga
+
+# 64crate0
+newmtl material_15
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_15.tga
+
+# 64crate1
+newmtl material_16
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_16.tga
+
+# rWallgBrick
+newmtl material_17
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_17.tga
+
+# -0sandyBrick
+newmtl material_18
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_18.tga
+
+# generic64b
+newmtl material_19
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_19.tga
+
+# bigCrateTop
+newmtl material_20
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_20.tga
+
+# gryStuccoTrim
+newmtl material_21
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_21.tga
+
+# mktFloor
+newmtl material_22
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_22.tga
+
+# whiteRockWall
+newmtl material_23
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_23.tga
+
+# wlStuccoBrdr
+newmtl material_24
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_24.tga
+
+# -0clayRoof
+newmtl material_25
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_25.tga
+
+# clayRoofSide
+newmtl material_26
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_26.tga
+
+# -0gryStucco
+newmtl material_27
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_27.tga
+
+# -0wlStucco
+newmtl material_28
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_28.tga
+
+# brickPath
+newmtl material_29
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_29.tga
+
+# muralArc
+newmtl material_30
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_30.tga
+
+# oakDoor
+newmtl material_31
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_31.tga
+
+# yellow
+newmtl material_32
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_32.tga
+
+# oldDoor
+newmtl material_33
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_33.tga
+
+# bStuccoWnd
+newmtl material_34
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_34.tga
+
+# bStuccoBrdr
+newmtl material_35
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_35.tga
+
+# muralbStucco
+newmtl material_36
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_36.tga
+
+# panelWood
+newmtl material_37
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_37.tga
+
+# wlStuccoWnd
+newmtl material_38
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_38.tga
+
+# wBarrelTop
+newmtl material_39
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_39.tga
+
+# wBarrelSide
+newmtl material_40
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_40.tga
+
+# -2bStucco
+newmtl material_41
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_41.tga
+
+# -0bStucco
+newmtl material_42
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_42.tga
+
+# sideLight
+newmtl material_43
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_43.tga
+
+# oldWood
+newmtl material_44
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_44.tga
+
+# -1sandyBrick
+newmtl material_45
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_45.tga
+
+# woodedWindow
+newmtl material_46
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_46.tga
+
+# shutteredWindow
+newmtl material_47
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_47.tga
+
+# crateBoxLabel
+newmtl material_48
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_48.tga
+
+# crateBox
+newmtl material_49
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_49.tga
+
+# sheepKing
+newmtl material_50
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_50.tga
+
+# white
+newmtl material_51
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_51.tga
+
+# oldRadio
+newmtl material_52
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_52.tga
+
+# painting6
+newmtl material_53
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_53.tga
+
+# painting5
+newmtl material_54
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_54.tga
+
+# magHangingRug
+newmtl material_55
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_55.tga
+
+# wdnDrawers
+newmtl material_56
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_56.tga
+
+# redHangingRug
+newmtl material_57
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_57.tga
+
+# steel
+newmtl material_58
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_58.tga
+
+# painting4
+newmtl material_59
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_59.tga
+
+# painting1
+newmtl material_60
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_60.tga
+
+# -0brockWall
+newmtl material_61
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_61.tga
+
+# windowHalf
+newmtl material_62
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_62.tga
+
+# -0rockCobbleST
+newmtl material_63
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_63.tga
+
+# brickGrass
+newmtl material_64
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_64.tga
+
+# rockWall
+newmtl material_65
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_65.tga
+
+# bStuccoPost
+newmtl material_66
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_66.tga
+
+# bStuccoWidePost
+newmtl material_67
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_67.tga
+
+# blueRug
+newmtl material_68
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_68.tga
+
+# ~blueRug
+newmtl material_69
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_69.tga
+
+# pileOlemons
+newmtl material_70
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_70.tga
+
+# pileOtomatoes
+newmtl material_71
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_71.tga
+
+# painting2
+newmtl material_72
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_72.tga
+
+# blueHangingRug
+newmtl material_73
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_73.tga
+
+# fishBox
+newmtl material_74
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_74.tga
+
+# gryStuccoBrdr
+newmtl material_75
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_75.tga
+
+# muralLong
+newmtl material_76
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_76.tga
+
+# floweredWindow
+newmtl material_77
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_77.tga
+
+# spadish
+newmtl material_78
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_78.tga
+
+# windowWhite
+newmtl material_79
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_79.tga
+
+# {rustyrungs
+newmtl material_80
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_80.tga
+
+# {invisible
+newmtl material_81
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_81.tga
+
+# {ornateGate
+newmtl material_82
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_82.tga
+
+# {hangingIvy1
+newmtl material_83
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_83.tga
+
+# {wineRack
+newmtl material_84
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_84.tga
+
+# {wineRack1
+newmtl material_85
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_85.tga
+
+# {wineRack2
+newmtl material_86
+Kd 1.0000 1.0000 1.0000
+illum 0
+map_Kd cs_italy_material_86.tga
+

@@ -1,22 +1,31 @@
 #pragma once
 #include <iostream>
-#include "mesh.h"
+#include "object.hpp"
 #include "light.h"
 #include "shader.h"
-#include "texture.h"
+#include "Texture.h"
 #include <string>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <map>
+#include <vector>
 
+#include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
+struct sConcaveMesh{
+    TriangleVertexArray* triangleArray = nullptr;
+    TriangleMesh* triangleMesh = nullptr;
+    ConcaveMeshShape* concaveMesh = nullptr;
+};
 
 class Model {
 public:
-    std::vector<Mesh> meshes;
+    std::vector<Object> meshes;
     std::string directory;
-    std::vector<texture> textures_loaded;
+    std::vector<sTexture> textures_loaded;
     std::map <std::string, int> meshNames;
     bool gammaCorrection;
 
@@ -69,10 +78,6 @@ public:
 
     void CreateConcaveMeshShape();
 
-    /// <summary>
-    /// çàìåíèòü FLAG íà ENUM
-    /// </summary>
-
     void SetTypeOfThePhysObject(bool flag);
 
     void UpdateObjectTransform();
@@ -80,7 +85,10 @@ public:
     void PrintObjectPosition();
 
     ~Model(){
-        delete triangleArray;
+        for(int i = 0; i < concavemesh.size(); i++){
+            delete concavemesh[i].triangleArray;
+        }
+        
     }
 protected:
     bool PhysicBool = true;
@@ -89,7 +97,7 @@ protected:
     std::string rootName;
     PhysicsCommon* physicsCommon;
     PhysicsWorld* physworld;
-    RigidBody* body;
+    RigidBody* body = nullptr;
 
     glm::vec3 objectPosition = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 objectAngleRotate = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -97,23 +105,18 @@ protected:
 
 
     // concave collision 
-    TriangleVertexArray* triangleArray = nullptr;
-    TriangleMesh* triangleMesh = nullptr;
-    ConcaveMeshShape* concaveMesh = nullptr;
-    Vector3 size_object;
+    std::vector<sConcaveMesh> concavemesh;
     // end concave collision
 
-    sBoundingBox modelBoundingBox;
+    //sBoundingBox modelBoundingBox;
 
     void loadModel(std::string path);
 
     void processNode(aiNode* node, const aiScene* scene, int index);
 
-    Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+    Object processMesh(aiMesh* mesh, const aiScene* scene);
 
-    std::vector<texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
-
-    
+    std::vector<sTexture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
 
 };
 

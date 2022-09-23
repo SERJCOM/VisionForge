@@ -8,7 +8,7 @@
 
 
 class Window {
-public:
+public:	
 	sf::Window window;
 
 	Window(int sizeX, int sizeY);
@@ -22,4 +22,7 @@ public:
 	float GetWindowHeight();
 
 	bool running = true;
+
+private:
+	
 };

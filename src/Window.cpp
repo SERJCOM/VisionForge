@@ -2,13 +2,14 @@
 
 Window::Window(int sizeX, int sizeY) {
 	window.create(sf::VideoMode(sizeX, sizeY), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
-	window.setVerticalSyncEnabled(true);
+	//window.setVerticalSyncEnabled(true);
 	window.setActive(true);
+	window.setFramerateLimit(60);
 }
 
 Window::Window() {
-	window.create(sf::VideoMode(720, 1280), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
-	window.setVerticalSyncEnabled(true);
+	window.create(sf::VideoMode(1080, 720), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
+	//window.setVerticalSyncEnabled(true);
 	window.setActive(true);
 }
 
