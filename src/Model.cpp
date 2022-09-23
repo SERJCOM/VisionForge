@@ -157,23 +157,28 @@ void Model::CreateCollisionCapsule(glm::vec2 halfSize) {
 
 void Model::CreateConcaveMeshShape(){
     
-    const size_t sizeVertices = meshes[0].vertices.size();
-    const size_t sizeTriangles = meshes[0].indices.size();
+    for(int i = 0; i < meshes.size(); i++){
+        sConcaveMesh conc;
+        concavemesh.push_back(conc);
 
-    triangleArray = new TriangleVertexArray(
-        sizeVertices, &meshes[0].vertices[0].Position, sizeof(meshes[0].vertices), 
-    &meshes[0].vertices[0].Normal.x, sizeof(meshes[0].vertices),   
-    sizeTriangles / 3, &meshes[0].indices[0], 3 * sizeof(unsigned int),
-    rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
-	rp3d::TriangleVertexArray::NormalDataType::NORMAL_FLOAT_TYPE,
-	rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE
-    );
+        const size_t meshesSize = meshes.size();
+        const size_t sizeVertices = meshes[i].vertices.size();
+        const size_t sizeTriangles = meshes[i].indices.size();
 
-    size_object = Vector3(10, 10, 10);
-    triangleMesh = physicsCommon->createTriangleMesh();
-    triangleMesh->addSubpart(triangleArray);
-    concaveMesh = physicsCommon->createConcaveMeshShape(triangleMesh, Vector3(1.0f, 1.0f, 1.0f)) ;
-    body->addCollider(concaveMesh, body->getTransform());
+        concavemesh.back().triangleArray = new TriangleVertexArray(
+            sizeVertices, &meshes[i].vertices[0].Position, sizeof(meshes[i].vertices), 
+        &meshes[i].vertices[0].Normal.x, sizeof(meshes[i].vertices),   
+        sizeTriangles / 3, &meshes[i].indices[0], 3 * sizeof(unsigned int),
+        rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
+        rp3d::TriangleVertexArray::NormalDataType::NORMAL_FLOAT_TYPE,
+        rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE
+        );
+
+        concavemesh.back().triangleMesh = physicsCommon->createTriangleMesh();
+         concavemesh.back().triangleMesh->addSubpart(concavemesh.back().triangleArray);
+        concavemesh.back().concaveMesh = physicsCommon->createConcaveMeshShape(concavemesh.back().triangleMesh, Vector3(objectScale.x, objectScale.y, objectScale.z)) ;
+        body->addCollider(concavemesh.back().concaveMesh, body->getTransform());
+    }
 }
 
 void Model::SetTypeOfThePhysObject(bool flag) {

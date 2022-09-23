@@ -10,15 +10,16 @@ int main() {
     Camera camera(&window.window);
     Shader shad("..\\..\\shaders\\shader.vert", "..\\..\\shaders\\shader.frag");
 
-     Model obj("../../obj/plane/untitled.obj", world, &physicsCommon);
+    Model obj("../../obj/plane/untitled.obj", world, &physicsCommon);
     obj.CreatePhysicsBody();    
     obj.CreateCollisionBox(glm::vec3(5.0f, 1.0f, 5.0f));
-    obj.SetObjectPosition(20, 500.0f, 30);
+    obj.SetObjectPosition(20, 100.0f, 30);
 
 
-    Model city("../../obj/cs_italy/cs_italy.obj", world, &physicsCommon); 
+    Model city("../../obj/de_dust2/de_dust2.obj", world, &physicsCommon); 
     city.CreatePhysicsBody();
     city.SetTypeOfThePhysObject(true);
+    
     city.ScaleObject(glm::vec3(0.1, 0.1, 0.1));
     city.SetObjectRotation(90, 0, 0);
     city.CreateConcaveMeshShape();
@@ -60,7 +61,7 @@ int main() {
 
         city.Draw(shad);
 
-        skybox.DrawSkyBox(camera.view, projection);
+        //skybox.DrawSkyBox(camera.view, projection);
 
         window.Display();
         i += 1.0f;

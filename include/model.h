@@ -15,7 +15,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
+struct sConcaveMesh{
+    TriangleVertexArray* triangleArray = nullptr;
+    TriangleMesh* triangleMesh = nullptr;
+    ConcaveMeshShape* concaveMesh = nullptr;
+};
 
 class Model {
 public:
@@ -81,7 +85,10 @@ public:
     void PrintObjectPosition();
 
     ~Model(){
-        delete triangleArray;
+        for(int i = 0; i < concavemesh.size(); i++){
+            delete concavemesh[i].triangleArray;
+        }
+        
     }
 protected:
     bool PhysicBool = true;
@@ -98,10 +105,7 @@ protected:
 
 
     // concave collision 
-    TriangleVertexArray* triangleArray = nullptr;
-    TriangleMesh* triangleMesh = nullptr;
-    ConcaveMeshShape* concaveMesh = nullptr;
-    Vector3 size_object;
+    std::vector<sConcaveMesh> concavemesh;
     // end concave collision
 
     //sBoundingBox modelBoundingBox;
