@@ -13,16 +13,16 @@ int main() {
     Model obj("../../obj/plane/untitled.obj", world, &physicsCommon);
     obj.CreatePhysicsBody();    
     obj.CreateCollisionBox(glm::vec3(5.0f, 1.0f, 5.0f));
-    obj.SetObjectPosition(20, 100.0f, 30);
+    obj.SetObjectPosition(20, 500.0f, 30);
 
 
     Model city("../../obj/de_dust2/de_dust2.obj", world, &physicsCommon); 
-    city.CreatePhysicsBody();
-    city.SetTypeOfThePhysObject(true);
+    // city.CreatePhysicsBody();
+    // city.SetTypeOfThePhysObject(true);
     
     city.ScaleObject(glm::vec3(0.1, 0.1, 0.1));
     city.SetObjectRotation(90, 0, 0);
-    city.CreateConcaveMeshShape();
+    // city.CreateConcaveMeshShape();
     
 
     
@@ -51,7 +51,7 @@ int main() {
         //cout << camera.cameraPos.x << " " << camera.cameraPos.y << " " << camera.cameraPos.z << endl;
         world->update(timeStep);
 
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), window.GetWindowWidth() / window.GetWindowHeight(), 0.1f, 500.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(80.0f), window.GetWindowWidth() / window.GetWindowHeight(), 0.1f, 500.0f);
         glm::mat4 view = camera.view;
         shad.use();
         shad.setMat4("projection", projection);
@@ -59,9 +59,9 @@ int main() {
         shad.setVec3("lightPos", glm::vec3(10.0f, 50.0f, 0));
 
         
-        obj.Draw(shad);
+        //obj.Draw(shad);
 
-        //city.Draw(shad);
+        city.Draw(shad);
 
         skybox.DrawSkyBox(camera.view, projection);
 
