@@ -18,12 +18,18 @@ struct sTexture {
     std::string path;
 };
 
+
+
+
 class Mesh{
 protected:
-
-    
-
     unsigned int VAO, VBO, EBO;
+
+    std::vector<glm::vec3> vert;
+
+    int width, height;
+
+    float quadVertices[26];
 
     // virtual void SetupMesh();
 
@@ -35,9 +41,13 @@ public:
 
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<sTexture> textures);
 
-    Mesh();
+    Mesh(std::vector<glm::vec3> vertices);
 
-    
+    Mesh(){}
+
+    void Create2DRectangle(int width, int height);
+
+    void DrawRectangle(Shader& shad, int texture);
 
     virtual void Draw(Shader& shader);
 

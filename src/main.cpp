@@ -10,6 +10,8 @@ int main() {
     Camera camera(&window.window);
     Shader shad("..\\..\\shaders\\shader.vert", "..\\..\\shaders\\shader.frag");
 
+    Shader rectangleShader("..\\..\\shaders\\rectangle.vert", "..\\..\\shaders\\rectangle.frag");
+
     Model obj("../../obj/plane/untitled.obj", world, &physicsCommon);
     obj.CreatePhysicsBody();    
     obj.CreateCollisionBox(glm::vec3(5.0f, 1.0f, 5.0f));
@@ -24,6 +26,10 @@ int main() {
     city.SetObjectRotation(90, 0, 0);
     // city.CreateConcaveMeshShape();
     
+    Mesh rect;
+    rect.Create2DRectangle(1080, 720);
+
+    Framebuffer fr1(1080, 720);
 
     
     Shape skybox;
@@ -44,7 +50,11 @@ int main() {
             window.window.close();
             return 0;
         }
+
+        fr1.UseFrameBuffer();
+
         engine.ClearBuffers();
+
         camera.move();
         camera.looking(&window.window);
         camera.view = camera.updateView();
@@ -58,12 +68,15 @@ int main() {
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(10.0f, 50.0f, 0));
 
-        
+
         //obj.Draw(shad);
 
         city.Draw(shad);
 
         skybox.DrawSkyBox(camera.view, projection);
+
+        rect.DrawRectangle(rectangleShader, fr1.GetTexture());
+
 
         window.Display();
         i += 1.0f;

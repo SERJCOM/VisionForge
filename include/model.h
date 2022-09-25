@@ -10,6 +10,7 @@
 #include <assimp/postprocess.h>
 #include <map>
 #include <vector>
+#include <map>
 
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -19,6 +20,13 @@ struct sConcaveMesh{
     TriangleVertexArray* triangleArray = nullptr;
     TriangleMesh* triangleMesh = nullptr;
     ConcaveMeshShape* concaveMesh = nullptr;
+};
+
+
+struct sMeshParameters{
+    std::vector<glm::vec3> meshPosition;
+    std::vector<glm::vec3> meshOrientation;
+    std::vector<glm::vec3> meshScale;
 };
 
 class Model {
@@ -103,12 +111,11 @@ protected:
     glm::vec3 objectAngleRotate = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::vec3 objectScale = glm::vec3(1.0f, 1.0f, 1.0f);
 
-
-    // concave collision 
     std::vector<sConcaveMesh> concavemesh;
-    // end concave collision
 
-    //sBoundingBox modelBoundingBox;
+    //std::map<std::string, sMeshParameters> MeshParameters;
+
+    std::vector<int> changedMeshes;
 
     void loadModel(std::string path);
 
@@ -117,6 +124,8 @@ protected:
     Object processMesh(aiMesh* mesh, const aiScene* scene);
 
     std::vector<sTexture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
+
+    
 
 };
 

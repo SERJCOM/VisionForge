@@ -4,7 +4,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Texture.hpp>
-
+#include "shader.h"
 
 
 class Window {
@@ -17,6 +17,7 @@ public:
 
 	void Display();
 
+
 	float GetWindowWidth();
 
 	float GetWindowHeight();
@@ -24,5 +25,6 @@ public:
 	bool running = true;
 
 private:
+	
 	
 };

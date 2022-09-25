@@ -17,7 +17,7 @@
 #include <vector>
 #include <GL/glew.h>
 #include "shape.hpp"
-
+#include "framebuffer.hpp"
 #include "scene_manager.h"
 
 PhysicsCommon physicsCommon;
@@ -26,6 +26,5 @@ PhysicsWorld* world = physicsCommon.createPhysicsWorld();
 
 using	std::cout;
 using	std::endl;
-
 
 

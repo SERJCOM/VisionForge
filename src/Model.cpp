@@ -17,43 +17,68 @@ void Model::Draw(Shader& shader)
 {
     glm::vec3 vecangles;
     glm::vec3 position;
-    if(body != nullptr){
-    Transform transform = body->getTransform();
-    position = glm::vec3(transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
-    Quaternion orientation = transform.getOrientation();
-    decimal angle;
-    Vector3 axis;
-    orientation.getRotationAngleAxis(angle, axis);
-    glm::quat quatPosition = glm::angleAxis(angle, glm::vec3(axis.x, axis.y, axis.z));
-    vecangles = glm::eulerAngles(quatPosition);
+    // if(body != nullptr){
+    //     Transform transform = body->getTransform();
+    //     position = glm::vec3(transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
+    //     Quaternion orientation = transform.getOrientation();
+    //     decimal angle;
+    //     Vector3 axis;
+    //     orientation.getRotationAngleAxis(angle, axis);
+    //     vecangles = glm::eulerAngles(glm::angleAxis(angle, glm::vec3(axis.x, axis.y, axis.z)));
+    // }
+    // else{
+    position = objectPosition;
+    vecangles = objectAngleRotate;
+    //}
+    
+    //  setMatrix
+
+    Quaternion orientation;
+    Vector3 positionVec;
+    orientation = Quaternion::fromEulerAngles(vecangles.x, vecangles.y, vecangles.z);
+    positionVec = Vector3(position.x, position.y, position.z);
+    glm::vec4 orient[3];
+    glm::mat4 orientMat;
+    for (int i = 0; i < 3; i++) {
+        orient[i].x = orientation.getMatrix().getRow(i).x;
+        orient[i].y = orientation.getMatrix().getRow(i).y;
+        orient[i].z = orientation.getMatrix().getRow(i).z;
+        orient[i].w = 0;
     }
-    else{
-        position = objectPosition;
-        vecangles = objectAngleRotate;
-    }
+    orientMat = glm::mat4(orient[0].x, orient[0].y, orient[0].z, orient[0].w,
+        orient[1].x, orient[1].y, orient[1].z, orient[1].w,
+        orient[2].x, orient[2].y, orient[2].z, orient[2].w,
+        0.0, 0.0, 0.0, 1.0);
+    glm::mat4 modelMat = glm::mat4(1);
+    modelMat = glm::translate(modelMat, glm::vec3(position.x, position.y, position.z));
+    modelMat = modelMat * orientMat;
+    modelMat = glm::scale(modelMat, objectScale);
+    
+    shader.setMat4("model", modelMat);
 
     for (unsigned int i = 0; i < meshes.size(); i++){
-        meshes[i].SetObjectPosition(position);
-        meshes[i].SetMeshRotation(vecangles.x , vecangles.y, vecangles.z);
         meshes[i].Draw(shader);
     }
 }
 
-void Model::ScaleMesh(std::string name, glm::vec3 size) {
-    if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
-    else    meshes[meshNames[name]].ScaleMesh(size);
-}
+// void Model::ScaleMesh(std::string name, glm::vec3 size) {
+//     if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
+//     else   { 
+//         if(MeshParameters.find(name) == MeshParameters.end()){
+//             sMeshParameters mm;
+//             MeshParameters.insert(make_pair(name, mm));
+//         }
+//         meshes[meshNames[name]].ScaleMesh(size);
+//     }
+// }
 
 void Model::ScaleObject(glm::vec3 size) {
     objectScale = size;
-    for (int i = 0; i < meshes.size(); i++) {
-        meshes[i].ScaleMesh(size);
-    }
 }
 
-void Model::RotateMesh(std::string name, float anglex, float angley, float anglez) {
-    meshes[meshNames[name]].RotateMesh(anglex, angley, anglez);
-}
+// void Model::RotateMesh(std::string name, float anglex, float angley, float anglez) {
+//     meshes[meshNames[name]].RotateMesh(anglex, angley, anglez);
+// }
 
 void Model::RotateObject(float anglex, float angley, float anglez) {
     objectAngleRotate += glm::vec3(glm::radians(anglex), glm::radians(angley), glm::radians(anglez));
@@ -71,9 +96,9 @@ void Model::RotateObject(glm::vec3 angles) {
     body->setTransform(transform);
 }
 
-void Model::SetMeshRotation(std::string name, float anglex, float angley, float anglez) {
-    meshes[meshNames[name]].SetMeshRotation(anglex, angley, anglez);
-}
+// void Model::SetMeshRotation(std::string name, float anglex, float angley, float anglez) {
+//     meshes[meshNames[name]].SetMeshRotation(anglex, angley, anglez);
+// }
 
 void Model::SetObjectRotation(float anglex, float angley, float anglez) {
     objectAngleRotate = glm::radians(glm::vec3(anglex, angley, anglez));
@@ -106,15 +131,15 @@ void Model::MoveObject(float x, float y, float z) {
 
 }
 
-void Model::MoveMesh(std::string name, float x, float y, float z) {
-    if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
-    else    meshes[meshNames[name]].MoveObject(glm::vec3(x, y, z));
-}
+// void Model::MoveMesh(std::string name, float x, float y, float z) {
+//     if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
+//     else    meshes[meshNames[name]].MoveObject(glm::vec3(x, y, z));
+// }
 
-void Model::SetMeshPosition(std::string name, float x, float y, float z) {
-    if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
-    else    meshes[meshNames[name]].SetObjectPosition(glm::vec3(x, y, z));
-}
+// void Model::SetMeshPosition(std::string name, float x, float y, float z) {
+//     if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
+//     else    meshes[meshNames[name]].SetObjectPosition(glm::vec3(x, y, z));
+// }
 
 void Model::SetObjectPosition(float x, float y, float z) {
     objectPosition = glm::vec3(x,y,z);

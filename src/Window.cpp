@@ -4,7 +4,7 @@ Window::Window(int sizeX, int sizeY) {
 	window.create(sf::VideoMode(sizeX, sizeY), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
 	//window.setVerticalSyncEnabled(true);
 	window.setActive(true);
-	window.setFramerateLimit(60);
+	//window.setFramerateLimit(60);
 }
 
 Window::Window() {
@@ -16,6 +16,7 @@ Window::Window() {
 void Window::Display() {
 	window.display();
 }
+
 
 float Window::GetWindowHeight() {
 	return window.getSize().y;
