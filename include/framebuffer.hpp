@@ -5,7 +5,7 @@
 class Framebuffer{
 
 private:
-    unsigned int fbo, texture, rbo, framebuff;
+    unsigned int fbo, texture, rbo, framebuff, width, height;
 
 public:
     Framebuffer(int width, int height){

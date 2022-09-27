@@ -98,6 +98,9 @@ void main()
 	float diff = max(dot(norm, lightDir), 0.0);
 	
 	result = diff * t;
+
+	result = pow(result, vec3(1.0f / 2.2f));
+
 	FragColor = vec4(result, 1.0);
 	
 	//FragColor = vec4(max(dot(norm, normalize(lightPos - PosFrag)) , 0.0 ) * t, 1.0f); // раскомментировать

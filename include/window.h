@@ -18,9 +18,9 @@ public:
 	void Display();
 
 
-	float GetWindowWidth();
+	int GetWindowWidth();
 
-	float GetWindowHeight();
+	int GetWindowHeight();
 
 	bool running = true;
 

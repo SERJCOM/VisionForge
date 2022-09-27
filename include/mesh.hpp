@@ -45,7 +45,7 @@ public:
 
     Mesh(){}
 
-    void Create2DRectangle(int width, int height);
+    void Create2DRectangle();
 
     void DrawRectangle(Shader& shad, int texture);
 

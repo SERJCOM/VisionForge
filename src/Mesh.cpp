@@ -14,7 +14,7 @@ Mesh::Mesh(std::vector<glm::vec3> vertices){
     vert = vertices;
 }
 
-void Mesh::Create2DRectangle(int width, int height){
+void Mesh::Create2DRectangle(){
     float m[] = {
 	-1.0f,  1.0f,  0.0f, 1.0f,
 	-1.0f, -1.0f,  0.0f, 0.0f,

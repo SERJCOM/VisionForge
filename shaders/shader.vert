@@ -17,9 +17,18 @@ out vec3 NormalOut;
 out vec3 PosFrag;
 out vec2 TexCoords;
 
+
+out SHAD_PAR{
+    vec3 fragPos;
+    vec3 normal;
+    vec2 texCoord;
+    vec4 fragPosLight;
+} shad_pad;
+
  
 void main()
 {
+    
     
     gl_Position = projection * view * model * vec4(pos, 1.0);
     PosFrag = vec3(model * vec4(pos, 1.0));

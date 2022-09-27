@@ -14,5 +14,11 @@ class Engine
 {
 public:
 	Engine();
+
 	void ClearBuffers();
+
+	void Drawning(int x, int y){
+		glViewport(0, 0, x, y);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 };

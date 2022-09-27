@@ -1,5 +1,5 @@
  #pragma once
-//#define _CRT_SECURE_NO_WARNINGS
+
 #include <iostream>
 #include "window.h"
 #include "engine.h"
@@ -19,6 +19,7 @@
 #include "shape.hpp"
 #include "framebuffer.hpp"
 #include "scene_manager.h"
+#include "shadow.hpp"
 
 PhysicsCommon physicsCommon;
 PhysicsWorld* world = physicsCommon.createPhysicsWorld();
