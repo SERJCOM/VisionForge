@@ -10,11 +10,10 @@ private:
     int width, height;
     GLuint texture, framebuff;
 
-    glm::mat4 lightView = glm::lookAt(glm::vec3(0.0f,0.2f, 0.0f), 
-                                  glm::vec3( 0.0f, 0.0f,  0.0f), 
-                                  glm::vec3( 0.0f, 1.0f,  0.0f)); ;
-    float near_plane = 0.1f, far_plane = 100.5f;
+    glm::mat4 lightView = glm::lookAt(glm::vec3(80, 30, 80), glm::vec3(0, 0, 0) , glm::vec3(0.0, 1.0, 0.0));
+    float near_plane = 1.0f, far_plane = 200.5f;
     glm::mat4 lightProjection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, near_plane, far_plane); 
+    glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
 public:
 
@@ -39,6 +38,7 @@ public:
     }
 
     void Listening(){
+        SetMat4();
         glViewport(0, 0, width, height);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuff);
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -46,7 +46,7 @@ public:
 
     void SetMat4(){
         shad.use();
-        shad.setMat4("shadowmatrix", lightProjection * lightView);  
+        shad.setMat4("lightSpaceMatrix", lightSpaceMatrix);  
     }
 
     void SetMat4(glm::mat4 look){
@@ -55,7 +55,7 @@ public:
     }
 
     glm::mat4 GetMatrix(){
-        return lightProjection * lightView;
+        return lightSpaceMatrix;
     }
 
     Shader GetShader(){
