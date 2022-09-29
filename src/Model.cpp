@@ -238,7 +238,10 @@ void Model::loadModel(std::string path)
 
     rootName = scene->mRootNode->mName.C_Str();
     std::cout << "the root name is " << rootName << std::endl;
+    
     processNode(scene->mRootNode, scene, number);
+
+    std::cout << " count of the meshes is " << meshes.size() << std::endl;
 }
 
 void Model::processNode(aiNode* node, const aiScene* scene, int index)

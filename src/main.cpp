@@ -4,7 +4,7 @@
 
 
 int main() {
-    Window window(1080, 720);
+    Window window(1920, 1080);
     Engine engine;
     Camera camera(&window.window);
     Shader shad("..\\..\\shaders\\shader.vert", "..\\..\\shaders\\shader.frag");
@@ -13,7 +13,9 @@ int main() {
 
     Shader shadow("..\\..\\shaders\\shadow.vert", "..\\..\\shaders\\shadow.frag");
 
-    Model city1("../../obj/dimaMap/untitled.obj", world, &physicsCommon); 
+    Model city1("../../obj/halo4/scene.gltf", world, &physicsCommon); 
+    //city1.SetObjectRotation(glm::vec3(180, 180, 0));
+    // city1.ScaleObject(glm::vec3(0.1, 0.1, 0.1));
     Model city("../../obj/testtest.obj.obj", world, &physicsCommon); 
 
     Shadow shadow1(1080, 720);
@@ -51,17 +53,19 @@ int main() {
         glm::mat4 view = camera.view;
 
         
-        shadow1.Listening();
-        city1.Draw(shadow1.GetShader());
-        
-        fr1.UseFrameBuffer();
-        fr1.ClearBuffers();
+        // shadow1.Listening();
+        // city1.Draw(shadow1.GetShader());
+
+        // fr1.UseFrameBuffer();
+        engine.Drawning(window.GetWindowWidth(),window.GetWindowHeight());
+        engine.ClearBuffers();
+
         
         shad.use();
         shad.setMat4("projection", projection);
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(0, 50.0f, 0));
-        shad.setMat4("lightSpaceMatrix", shadow1.GetMatrix());
+        //shad.setMat4("lightSpaceMatrix", shadow1.GetMatrix());
 
         
         glActiveTexture(GL_TEXTURE1);
@@ -73,9 +77,8 @@ int main() {
 
         skybox.DrawSkyBox(camera.view, projection);
 
-        engine.Drawning(1080, 720);
-
-        rect.DrawRectangle(rectangleShader, fr1.GetTexture());
+        // engine.Drawning(1080, 720);
+        // rect.DrawRectangle(rectangleShader, fr1.GetTexture());
 
         window.Display();
 

@@ -9,6 +9,10 @@ private:
 
 public:
     Framebuffer(int width, int height){
+
+        this->width = width;
+        this->height = height;
+
         glGenFramebuffers(1, &framebuff);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuff);   
 
@@ -41,10 +45,9 @@ public:
 
 
     void UseFrameBuffer(){
-        glViewport(0, 0, 1080, 720);
+        glViewport(0, 0, width, height);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuff);
         ClearBuffers();
-        glEnable(GL_DEPTH_TEST);
     }
 
     int GetTexture(){
