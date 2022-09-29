@@ -6,7 +6,7 @@ layout (location = 2) in vec2 vertTexCoords;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-
+uniform mat4 lightSpaceMatrix;
 
 uniform bool texturePermit;
 uniform vec3 lightColor;
@@ -16,20 +16,12 @@ out vec3 colorOut;
 out vec3 NormalOut;
 out vec3 PosFrag;
 out vec2 TexCoords;
+out vec4 fragPosLight;
 
-
-out SHAD_PAR{
-    vec3 fragPos;
-    vec3 normal;
-    vec2 texCoord;
-    vec4 fragPosLight;
-} shad_pad;
 
  
 void main()
 {
-    
-    
     gl_Position = projection * view * model * vec4(pos, 1.0);
     PosFrag = vec3(model * vec4(pos, 1.0));
     colorOut = vec3(lightColor);
@@ -37,4 +29,5 @@ void main()
     NormalOut = mat3(transpose(inverse(model))) * Normal;;
 	TexCoords = vertTexCoords;    
 	
+    fragPosLight = lightSpaceMatrix * vec4(PosFrag, 1.0);
 }

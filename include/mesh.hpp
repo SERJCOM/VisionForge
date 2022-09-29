@@ -23,7 +23,7 @@ struct sTexture {
 
 class Mesh{
 protected:
-    unsigned int VAO, VBO, EBO;
+    
 
     std::vector<glm::vec3> vert;
 
@@ -34,6 +34,7 @@ protected:
     // virtual void SetupMesh();
 
 public:
+    unsigned int VAO, VBO, EBO;
 
     std::vector<Vertex>       vertices;    
     std::vector<unsigned int> indices;

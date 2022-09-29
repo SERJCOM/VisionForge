@@ -41,7 +41,7 @@ public:
 		float xoffset = -(lastX - xpos);
 		float yoffset = -(ypos - lastY);
 
-		const float sensitivity = 0.05f;
+		const float sensitivity = 0.01f;
 		xoffset *= sensitivity;
 		yoffset *= sensitivity;
 
@@ -76,6 +76,8 @@ public:
 	glm::mat4 updateView() {
 		return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 	}
+
+	
 
 private:
 	float lastX = 400, lastY = 300;

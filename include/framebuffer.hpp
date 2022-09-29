@@ -41,6 +41,7 @@ public:
 
 
     void UseFrameBuffer(){
+        glViewport(0, 0, 1080, 720);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuff);
         ClearBuffers();
         glEnable(GL_DEPTH_TEST);

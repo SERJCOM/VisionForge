@@ -21,7 +21,7 @@ void Object::Draw(Shader& shader){
         std::string name = textures[i].type;
         if (name == "texture_diffuse")
             number = std::to_string(diffuseNr++);
-        
+
         glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }

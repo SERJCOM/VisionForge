@@ -10,17 +10,15 @@ private:
     int width, height;
     GLuint texture, framebuff;
 
-    glm::mat4 lightView ;
-    float near_plane = 1.0f, far_plane = 7.5f;
-    glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane); 
+    glm::mat4 lightView = glm::lookAt(glm::vec3(0.0f,0.2f, 0.0f), 
+                                  glm::vec3( 0.0f, 0.0f,  0.0f), 
+                                  glm::vec3( 0.0f, 1.0f,  0.0f)); ;
+    float near_plane = 0.1f, far_plane = 100.5f;
+    glm::mat4 lightProjection = glm::ortho(-20.0f, 20.0f, -20.0f, 20.0f, near_plane, far_plane); 
 
 public:
 
     Shadow(int width, int height){
-        lightView = glm::lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), 
-                                  glm::vec3( 0.0f, 0.0f,  0.0f), 
-                                  glm::vec3( 0.0f, 1.0f,  0.0f));  
-
         shad = Shader("..\\..\\shaders\\shadow.vert", "..\\..\\shaders\\shadow.frag");
         this->width = width;
         this->height = height;
@@ -49,6 +47,15 @@ public:
     void SetMat4(){
         shad.use();
         shad.setMat4("shadowmatrix", lightProjection * lightView);  
+    }
+
+    void SetMat4(glm::mat4 look){
+        shad.use();
+        shad.setMat4("lightSpaceMatrix", look);
+    }
+
+    glm::mat4 GetMatrix(){
+        return lightProjection * lightView;
     }
 
     Shader GetShader(){
