@@ -13,9 +13,22 @@
 class Engine
 {
 public:
-	Engine();
+	Engine(){
+		glewInit();
+		glEnable(GL_TEXTURE_CUBE_MAP);
+		glEnable(GL_DEPTH_TEST);
+		
+	}
 
-	void ClearBuffers();
+	void TurnOnCullFace(){
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK); 
+	}
+
+	void ClearBuffers(){
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
 
 	void Drawning(int x, int y){
 		glViewport(0, 0, x, y);

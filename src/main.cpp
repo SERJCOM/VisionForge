@@ -4,7 +4,7 @@
 
 
 int main() {
-    Window window(1920, 1080);
+    Window window(1080, 720);
     Engine engine;
     Camera camera(&window.window);
     Shader shad("..\\..\\shaders\\shader.vert", "..\\..\\shaders\\shader.frag");
@@ -38,11 +38,20 @@ int main() {
 
     const decimal timeStep = 1.0f / 60.0f;
     float i = 0;
+    sf::Event event;
 
     while (window.running) {
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
             window.window.close();
             return 0;
+        }
+
+        while(window.window.pollEvent(event)){
+            
+        }
+
+        if(!window.window.hasFocus()){
+            std::cout << "Error:: The window has not a focus" << std::endl;
         }
         camera.move();
         camera.looking(&window.window);
@@ -53,8 +62,8 @@ int main() {
         glm::mat4 view = camera.view;
 
         
-        // shadow1.Listening();
-        // city1.Draw(shadow1.GetShader());
+        shadow1.Listening();
+        city1.Draw(shadow1.GetShader());
 
         // fr1.UseFrameBuffer();
         engine.Drawning(window.GetWindowWidth(),window.GetWindowHeight());
@@ -65,14 +74,14 @@ int main() {
         shad.setMat4("projection", projection);
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(0, 50.0f, 0));
-        //shad.setMat4("lightSpaceMatrix", shadow1.GetMatrix());
+        shad.setMat4("lightSpaceMatrix", shadow1.GetMatrix());
 
         
         glActiveTexture(GL_TEXTURE1);
         shad.setInt("shadowMap", 1);
         glBindTexture(GL_TEXTURE_2D, shadow1.GetTexture());
 
-       
+          
         city1.Draw(shad);
 
         skybox.DrawSkyBox(camera.view, projection);
@@ -84,6 +93,8 @@ int main() {
 
         i += 0.1f;
     }
+
+
     
     return 0;
 }

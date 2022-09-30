@@ -10,7 +10,7 @@ private:
     int width, height;
     GLuint texture, framebuff;
 
-    glm::mat4 lightView = glm::lookAt(glm::vec3(50, 50, 0), glm::vec3(0, 0, 0) , glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 lightView = glm::lookAt(glm::vec3(0, 300, 0), glm::vec3(0, 0, 0) , glm::vec3(0.0, 1.0, 0.0));
     float near_plane = 1.0f, far_plane = 500.5f;
     glm::mat4 lightProjection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, near_plane, far_plane); 
     glm::mat4 lightSpaceMatrix = lightProjection * lightView;
@@ -42,6 +42,8 @@ public:
         glViewport(0, 0, width, height);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuff);
         glClear(GL_DEPTH_BUFFER_BIT);
+
+
     }
 
     void SetMat4(){

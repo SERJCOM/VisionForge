@@ -14,7 +14,6 @@ set(SFML_L ${CMAKE_SOURCE_DIR}/add_libraries/SFML-2.5.1)
 
 add_executable(Engine 
     src/main.cpp
-    src/Engine.cpp 
     src/Model.cpp 
     src/Window.cpp
     src/Mesh.cpp

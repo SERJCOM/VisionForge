@@ -31,8 +31,12 @@ void main()
 	vec3 t = texture(texture_diffuse1, TexCoords).rgb;
 	
 	float shadow = CalcShadow(fragPosLight);
-	vec3 lighting = (0.15 * t + (1 - shadow)) * t;
+	vec3 lighting = (0.75 * t + (1 - shadow)) * t;
 
 	FragColor = vec4(lighting, 1.0);	
+	
+	float gamma = 2.2;
+    FragColor.rgb = pow(FragColor.rgb, vec3(1.0/gamma));
+	
 }
 
