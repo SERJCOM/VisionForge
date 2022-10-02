@@ -3,8 +3,10 @@
 #include <SFML/Graphics/Image.hpp>
 
 
+
+
 int main() {
-    Window window(1080, 720);
+    Window window(1920, 1080);
     Engine engine;
     Camera camera(&window.window);
     Shader shad("..\\..\\shaders\\shader.vert", "..\\..\\shaders\\shader.frag");
@@ -16,7 +18,6 @@ int main() {
     Model city1("../../obj/halo4/scene.gltf", world, &physicsCommon); 
     //city1.SetObjectRotation(glm::vec3(180, 180, 0));
     // city1.ScaleObject(glm::vec3(0.1, 0.1, 0.1));
-    Model city("../../obj/testtest.obj.obj", world, &physicsCommon); 
 
     Shadow shadow1(1080, 720);
 
@@ -45,14 +46,8 @@ int main() {
             window.window.close();
             return 0;
         }
+        while(window.window.pollEvent(event)){}
 
-        while(window.window.pollEvent(event)){
-            
-        }
-
-        if(!window.window.hasFocus()){
-            std::cout << "Error:: The window has not a focus" << std::endl;
-        }
         camera.move();
         camera.looking(&window.window);
         camera.view = camera.updateView();
@@ -61,11 +56,6 @@ int main() {
         glm::mat4 projection = glm::perspective(glm::radians(80.0f), (float)window.GetWindowWidth() / (float)window.GetWindowHeight(), 0.1f, 500.0f);
         glm::mat4 view = camera.view;
 
-        
-        shadow1.Listening();
-        city1.Draw(shadow1.GetShader());
-
-        // fr1.UseFrameBuffer();
         engine.Drawning(window.GetWindowWidth(),window.GetWindowHeight());
         engine.ClearBuffers();
 
@@ -77,9 +67,9 @@ int main() {
         shad.setMat4("lightSpaceMatrix", shadow1.GetMatrix());
 
         
-        glActiveTexture(GL_TEXTURE1);
-        shad.setInt("shadowMap", 1);
-        glBindTexture(GL_TEXTURE_2D, shadow1.GetTexture());
+        // glActiveTexture(GL_TEXTURE1);
+        // shad.setInt("shadowMap", 1);
+        // glBindTexture(GL_TEXTURE_2D, shadow1.GetTexture());
 
           
         city1.Draw(shad);

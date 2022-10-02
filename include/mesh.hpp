@@ -23,8 +23,6 @@ struct sTexture {
 
 class Mesh{
 protected:
-    
-
     std::vector<glm::vec3> vert;
 
     int width, height;

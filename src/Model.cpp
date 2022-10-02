@@ -320,6 +320,8 @@ std::vector<sTexture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType
         aiString str;
         mat->GetTexture(type, i, &str);
 
+        std::cout << "texture: " << mat->GetName().C_Str() << std::endl;
+
         bool skip = false;
         for (unsigned int j = 0; j < textures_loaded.size(); j++)
         {

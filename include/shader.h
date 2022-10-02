@@ -7,10 +7,13 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "ssbo.hpp"
+
 
 class Shader {
 public:
     unsigned int ID;
+    
 
     Shader(){
 
@@ -134,6 +137,17 @@ public:
         glUniform4f(glGetUniformLocation(ID, name.c_str()), colorr, colorg, colorb, colorw);
     }
 
+    void AddSSBO(void *_ssbo, int size){
+        SSBO newssbo;
+        newssbo.Init(_ssbo, size);
+        ssbo.push_back(newssbo);
+    }
+
+    void BindSSBO(){
+        for(int i = 0; i < ssbo.size(); i++){
+            ssbo[i].Bind();
+        }
+    }
 
 
 private:
@@ -160,4 +174,6 @@ private:
             }
         }
     }
+
+    std::vector<SSBO> ssbo;
 };
