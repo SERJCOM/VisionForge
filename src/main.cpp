@@ -16,15 +16,15 @@ int main() {
     Shader shadow("..\\..\\shaders\\shadow.vert", "..\\..\\shaders\\shadow.frag");
 
     Model city1("../../obj/halo4/scene.gltf", world, &physicsCommon); 
-    //city1.SetObjectRotation(glm::vec3(180, 180, 0));
-    // city1.ScaleObject(glm::vec3(0.1, 0.1, 0.1));
 
-    Shadow shadow1(1080, 720);
+    LightManager light;
+    light.LinkShader(&shad);
+    light.AddLight();
+    light.SetShaderParameters();
 
     Mesh rect;
     rect.Create2DRectangle();
 
-    Framebuffer fr1(1080, 720);
 
     Shape skybox;
     std::vector<std::string> skybox_path;
@@ -52,7 +52,7 @@ int main() {
         camera.looking(&window.window);
         camera.view = camera.updateView();
         world->update(timeStep);
-        std::cout << "cam pos: " << camera.cameraPos.x   << " " << camera.cameraPos.y << " " << camera.cameraPos.z << std::endl;
+        //std::cout << "cam pos: " << camera.cameraPos.x   << " " << camera.cameraPos.y << " " << camera.cameraPos.z << std::endl;
         glm::mat4 projection = glm::perspective(glm::radians(80.0f), (float)window.GetWindowWidth() / (float)window.GetWindowHeight(), 0.1f, 500.0f);
         glm::mat4 view = camera.view;
 
@@ -64,7 +64,7 @@ int main() {
         shad.setMat4("projection", projection);
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(0, 50.0f, 0));
-        shad.setMat4("lightSpaceMatrix", shadow1.GetMatrix());
+        //shad.setMat4("lightSpaceMatrix", shadow1.GetMatrix());
 
         
         // glActiveTexture(GL_TEXTURE1);

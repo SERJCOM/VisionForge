@@ -137,17 +137,17 @@ public:
         glUniform4f(glGetUniformLocation(ID, name.c_str()), colorr, colorg, colorb, colorw);
     }
 
-    // void AddSSBO(void *_ssbo, int size){
-    //     SSBO newssbo;
-    //     newssbo.Init(_ssbo, size);
-    //     ssbo.push_back(newssbo);
-    // }
+    void AddSSBO(void *_ssbo, int size, int index){
+        SSBO newssbo;
+        newssbo.Init(_ssbo, size, index);
+        ssbo.push_back(newssbo);
+    }
 
-    // void BindSSBO(){
-    //     for(int i = 0; i < ssbo.size(); i++){
-    //         ssbo[i].Bind();
-    //     }
-    // }
+    void BindSSBO(){
+        for(int i = 0; i < ssbo.size(); i++){
+            ssbo[i].Bind();
+        }
+    }
 
 
 private:
@@ -175,5 +175,5 @@ private:
         }
     }
 
-    //std::vector<SSBO> ssbo;
+    std::vector<SSBO> ssbo;
 };

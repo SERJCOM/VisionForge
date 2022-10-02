@@ -1,4 +1,5 @@
-#version 330 core
+#version 430 core
+
 out vec4 FragColor;
   
 in vec3 colorOut;
@@ -35,7 +36,7 @@ float CookTorrance(vec3 _normal, vec3 _light, vec3 _view, float roughness_val){
 	
 	float fresnel       = 1.0 / (1.0 + NdotV);
 	
-	Rs = min(1.0, (fresnel * geometric * roughness) / (NdotV * NdotL + 1.0e-7));
+	float Rs = min(1.0, (fresnel * geometric * roughness) / (NdotV * NdotL + 1.0e-7));
 	
 	return Rs;
 	
@@ -65,7 +66,7 @@ void main()
 	vec4 result = vec4(lighting, 1.0);	
 	
 	float gamma = 2.2;
-    FragColor.rgb = pow(result.rgb, vec3(1.0/gamma));
-	
+    //FragColor.rgb = pow(result.rgb, vec3(1.0/gamma));
+	FragColor.rgb = colorOut;
 }
 

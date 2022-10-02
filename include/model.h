@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include "object.hpp"
-#include "light.h"
+#include "lightManager.hpp"
 #include "shader.h"
 #include "Texture.h"
 #include <string>
