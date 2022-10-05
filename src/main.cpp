@@ -15,7 +15,7 @@ int main() {
 
     Shader shadow("..\\..\\shaders\\shadow.vert", "..\\..\\shaders\\shadow.frag");
 
-    Model city1("../../obj/halo4/scene.gltf", world, &physicsCommon); 
+    Model city1("../../obj/dimaMap/untitled.obj", world, &physicsCommon); 
 
     LightManager light;
     light.LinkShader(&shad);
@@ -64,6 +64,7 @@ int main() {
         shad.setMat4("projection", projection);
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(0, 50.0f, 0));
+        shad.setVec3("cameraPos", camera.cameraPos);
         //shad.setMat4("lightSpaceMatrix", shadow1.GetMatrix());
 
         
@@ -83,8 +84,6 @@ int main() {
 
         i += 0.1f;
     }
-
-
     
     return 0;
 }
