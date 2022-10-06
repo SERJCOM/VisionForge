@@ -17,19 +17,19 @@ void Model::Draw(Shader& shader)
 {
     glm::vec3 vecangles;
     glm::vec3 position;
-    // if(body != nullptr){
-    //     Transform transform = body->getTransform();
-    //     position = glm::vec3(transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
-    //     Quaternion orientation = transform.getOrientation();
-    //     decimal angle;
-    //     Vector3 axis;
-    //     orientation.getRotationAngleAxis(angle, axis);
-    //     vecangles = glm::eulerAngles(glm::angleAxis(angle, glm::vec3(axis.x, axis.y, axis.z)));
-    // }
-    // else{
-    position = objectPosition;
-    vecangles = objectAngleRotate;
-    //}
+    if(body != nullptr){
+        Transform transform = body->getTransform();
+        position = glm::vec3(transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
+        Quaternion orientation = transform.getOrientation();
+        decimal angle;
+        Vector3 axis;
+        orientation.getRotationAngleAxis(angle, axis);
+        vecangles = glm::eulerAngles(glm::angleAxis(angle, glm::vec3(axis.x, axis.y, axis.z)));
+    }
+    else{
+        position = objectPosition;
+        vecangles = objectAngleRotate;
+    }
     
     //  setMatrix
 
@@ -82,18 +82,24 @@ void Model::ScaleObject(glm::vec3 size) {
 
 void Model::RotateObject(float anglex, float angley, float anglez) {
     objectAngleRotate += glm::vec3(glm::radians(anglex), glm::radians(angley), glm::radians(anglez));
-    Quaternion orientation = Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z);
-    Transform transform;
-    transform.setOrientation(orientation);
-    body->setTransform(transform);
+
+    if(body != nullptr){
+        Quaternion orientation = Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z);
+        Transform transform;
+        transform.setOrientation(orientation);
+        body->setTransform(transform);
+    }
 }
 
 void Model::RotateObject(glm::vec3 angles) {
     objectAngleRotate += glm::radians(angles);
-    Quaternion orientation = Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z);
-    Transform transform = body->getTransform();
-    transform.setOrientation(orientation);
-    body->setTransform(transform);
+
+    if(body != nullptr){
+        Quaternion orientation = Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z);
+        Transform transform = body->getTransform();
+        transform.setOrientation(orientation);
+        body->setTransform(transform);
+    }
 }
 
 // void Model::SetMeshRotation(std::string name, float anglex, float angley, float anglez) {
@@ -320,7 +326,7 @@ std::vector<sTexture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType
         aiString str;
         mat->GetTexture(type, i, &str);
 
-        std::cout << "texture: " << mat->GetName().C_Str() << std::endl;
+        //std::cout << "texture: " << mat->GetName().C_Str() << std::endl;
 
         bool skip = false;
         for (unsigned int j = 0; j < textures_loaded.size(); j++)

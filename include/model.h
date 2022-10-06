@@ -124,8 +124,5 @@ protected:
     Object processMesh(aiMesh* mesh, const aiScene* scene);
 
     std::vector<sTexture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
-
-    
-
 };
 

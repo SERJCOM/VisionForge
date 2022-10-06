@@ -29,25 +29,35 @@ uniform vec3 cameraPos;
 uniform sampler2D texture_diffuse1;
 uniform sampler2D shadowMap;
 
+struct sLightComponent{
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+};
 
-vec3 CalcDirLight(DIRECTION_LIGHT light, vec3 normal, vec3 viewDir){	
+
+sLightComponent CalcDirLight(DIRECTION_LIGHT light, vec3 normal, vec3 viewDir, vec3 color){	
 	vec3 lightDir = vec3(light.x_pos, light.y_pos, light.z_pos);
-	lightDir = normalize(-lightDir);
+	lightDir = normalize(lightDir);
 	
 	float diff = max(dot(normal, lightDir), 0.0);
 	
 	vec3 reflectDir = reflect(-lightDir, normal);
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
 
-	vec3 color =  vec3(light.x, light.y, light.z);
+	vec3 lightColor = vec3(light.x, light.y, light.z);
 	
 	vec3 ambient = light.ambient * color;
-	vec3 diffuse = vec3(diff);
+	vec3 diffuse = diff * lightColor;
     vec3 specular = vec3(light.specular);
+
+	sLightComponent lightReturn;
+	lightReturn.ambient = ambient;
+	lightReturn.diffuse = diffuse;
+	lightReturn.specular = specular;
 	
-	return (ambient + diffuse + specular);
-	//return diffuse;
-	
+	//return (ambient + diffuse + specular);
+	return lightReturn;
 }
 
 
@@ -93,22 +103,19 @@ void main()
 {
 	vec3 normal = normalize(NormalOut);
 	
-	vec3 t = texture(texture_diffuse1, TexCoords).rgb; // texture
-	
-	//float shadow = CalcShadow(fragPosLight); // calculating the shadow
-	//vec3 lighting = (0.75 * t  + (1 - shadow)) * t; // calculating the final color of the fragment
+	vec3 color = texture(texture_diffuse1, TexCoords).rgb; // texture
 
-	//vec3 result = lighting	;
-
-	vec3 result = t;
+	sLightComponent lightComp = CalcDirLight(direction_light, normal, cameraPos, color);
 	
-	result += CalcDirLight(direction_light, normal, cameraPos);
+	float shadow = CalcShadow(fragPosLight); // calculating the shadow
+	vec3 lighting = (lightComp.ambient  + (1.0 - shadow) * lightComp.diffuse ) * color; // calculating the final color of the fragment
+
+	vec3 result = lighting;
+
 	
 	//float gamma = 2.2;
     //FragColor.rgb = pow(result.rgb, vec3(1.0/gamma)); // gamma correction
 
 	FragColor = vec4(result, 1.0);
-
-	//FragColor=vec4(colorOut, 1.0);
 }
 

@@ -33,5 +33,6 @@ public:
 	void Drawning(int x, int y){
 		glViewport(0, 0, x, y);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glDisable(GL_CULL_FACE);
 	}
 };

@@ -137,6 +137,12 @@ public:
         glUniform4f(glGetUniformLocation(ID, name.c_str()), colorr, colorg, colorb, colorw);
     }
 
+    void SetTexture(int index, int texture, std::string name){
+        glActiveTexture(GL_TEXTURE0 + index);
+        setInt(name.c_str(), index);
+        glBindTexture(GL_TEXTURE_2D, texture);
+    }
+
     void AddSSBO(void *_ssbo, int size, int index){
         SSBO newssbo;
         newssbo.Init(_ssbo, size, index);

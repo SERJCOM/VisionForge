@@ -9,11 +9,15 @@ private:
     Shader shad;
     int width, height;
     GLuint texture, framebuff;
+    glm::vec3 position = glm::vec3(10.0f, 40.0f, 30.0f);
+    glm::vec3 *ptrPosition = &position;
+    glm::vec3 look = glm::vec3(0,0,0);
 
-    glm::mat4 lightView = glm::lookAt(glm::vec3(0, 300, 0), glm::vec3(0, 0, 0) , glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 lightView = glm::lookAt(*ptrPosition, look , glm::vec3(0.0, 1.0, 0.0));
     float near_plane = 1.0f, far_plane = 500.5f;
     glm::mat4 lightProjection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, near_plane, far_plane); 
-    glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+
+    bool type = false; // false = orth; 
 
 public:
 
@@ -42,13 +46,16 @@ public:
         glViewport(0, 0, width, height);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuff);
         glClear(GL_DEPTH_BUFFER_BIT);
-
-
+        glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK); 
     }
 
     void SetMat4(){
+        glm::mat4 lightView;
+        if(!type)
+            lightView = glm::lookAt(*ptrPosition, look , glm::vec3(0.0, 1.0, 0.0));
         shad.use();
-        shad.setMat4("lightSpaceMatrix", lightSpaceMatrix);  
+        shad.setMat4("lightSpaceMatrix", lightProjection * lightView);  
     }
 
     void SetMat4(glm::mat4 look){
@@ -56,8 +63,16 @@ public:
         shad.setMat4("lightSpaceMatrix", look);
     }
 
+    void SetPosition(glm::vec3 position){
+        this->position = position;
+    }
+
+    void SetPosition(glm::vec3* pos){
+        ptrPosition = pos;
+    }
+
     glm::mat4 GetMatrix(){
-        return lightSpaceMatrix;
+        return lightProjection * lightView;
     }
 
     Shader GetShader(){
