@@ -17,7 +17,6 @@ public:
 
 	void Display();
 
-
 	int GetWindowWidth();
 
 	int GetWindowHeight();

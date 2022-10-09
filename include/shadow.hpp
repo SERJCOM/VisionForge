@@ -14,8 +14,8 @@ private:
     glm::vec3 look = glm::vec3(0,0,0);
 
     glm::mat4 lightView = glm::lookAt(*ptrPosition, look , glm::vec3(0.0, 1.0, 0.0));
-    float near_plane = 1.0f, far_plane = 500.5f;
-    glm::mat4 lightProjection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, near_plane, far_plane); 
+    float near_plane = 1.0f, far_plane = 1000.5f;
+    glm::mat4 lightProjection = glm::ortho(-500.0f, 500.0f, -500.0f, 500.0f, near_plane, far_plane); 
 
     bool type = false; // false = orth; 
 
@@ -46,8 +46,8 @@ public:
         glViewport(0, 0, width, height);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuff);
         glClear(GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK); 
+        // glEnable(GL_CULL_FACE);
+		// glCullFace(GL_FRONT); 
     }
 
     void SetMat4(){

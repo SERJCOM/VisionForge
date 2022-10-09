@@ -1,17 +1,15 @@
 ﻿#pragma once
 #include <iostream>
-#include "window.h"
 #include <GL/glew.h>
-#include "glm/glm.hpp"
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include "shader.h"
-#include <SFML/Graphics/Image.hpp>
+#include <functional>
 
 
 
 class Engine
 {
+private:
+	std::function<void(int& drawning)> gameLoop;
+
 public:
 	Engine(){
 		glewInit();
@@ -34,5 +32,18 @@ public:
 		glViewport(0, 0, x, y);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDisable(GL_CULL_FACE);
+	}
+
+	void SetGameLoop(std::function<void(int& drawning)> loop){
+		gameLoop = loop;
+	}
+
+	void Display(){
+		int drawning = 1;
+		while(true){
+			gameLoop(drawning);
+			if(!drawning)
+				break;
+		}
 	}
 };
