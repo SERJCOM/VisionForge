@@ -111,10 +111,9 @@ void main()
 	vec3 lighting = (lightComp.ambient  + (1.0 - shadow) * lightComp.diffuse ) * color; // calculating the final color of the fragment
 
 	vec3 result = lighting;
-
 	
-	//float gamma = 2.2;
-    //FragColor.rgb = pow(result.rgb, vec3(1.0/gamma)); // gamma correction
+	float gamma = 2.2;
+    result = pow(result.rgb, vec3(1.0/gamma)); // gamma correction
 
 	FragColor = vec4(result, 1.0);
 }

@@ -6,13 +6,11 @@
 
 
 int main() {
-    Window window(1080, 720);
+    Window window(1920, 1080);
     Engine engine;
     Camera camera(&window.window);
+
     Shader shad("..\\..\\shaders\\shader.vert", "..\\..\\shaders\\shader.frag");
-
-    Shader rectangleShader("..\\..\\shaders\\rectangle.vert", "..\\..\\shaders\\rectangle.frag");
-
     Shader shadow("..\\..\\shaders\\shadow.vert", "..\\..\\shaders\\shadow.frag");
 
     Model city1("../../obj/halo4/scene.gltf", world, &physicsCommon); 
@@ -54,7 +52,7 @@ int main() {
             camera.view = camera.updateView();
             world->update(timeStep);
             //std::cout << "cam pos: " << camera.cameraPos.x   << " " << camera.cameraPos.y << " " << camera.cameraPos.z << std::endl;
-            glm::mat4 projection = glm::perspective(glm::radians(80.0f), (float)window.GetWindowWidth() / (float)window.GetWindowHeight(), 0.1f, 500.0f);
+            glm::mat4 projection = glm::perspective(glm::radians(80.0f), (float)window.GetWindowWidth() / (float)window.GetWindowHeight(), 0.1f, 1000.0f);
             glm::mat4 view = camera.view;
 
 
@@ -64,7 +62,6 @@ int main() {
             engine.Drawning(window.GetWindowWidth(),window.GetWindowHeight());
             engine.ClearBuffers();
 
-            
             shad.use();
             shad.setMat4("projection", projection);
             shad.setMat4("view", view);
