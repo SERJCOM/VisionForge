@@ -9,7 +9,7 @@ struct LightStruct{
     int type = 0;
     float ambient = 0.8f;
     float specular = 0;
-    glm::vec3 position = glm::vec3(10.0f, 100.0f, 10.0f);
+    glm::vec3 position = glm::vec3(10.0f, 50.0f, 10.0f);
     glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 
 };

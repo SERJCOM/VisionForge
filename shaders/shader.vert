@@ -75,11 +75,10 @@ void main()
 	fragPosLight = lightSpaceMatrix * vec4(PosFrag, 1.0); // for shadows
 	
     NormalOut = mat3(transpose(inverse(model))) * Normal;
-	TexCoords = vertTexCoords;    
+	TexCoords = vertTexCoords;  
 
-	//colorOut = vec3(NUMBER_LIGHT);
-	
-	
+	//colorOut = vec3(light[0].x, light[0].y, light[0].z);
+
 	//lighting
 	int len_point = 0, len_proj = 0;
 	
