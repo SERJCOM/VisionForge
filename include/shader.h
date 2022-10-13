@@ -155,6 +155,10 @@ public:
         }
     }
 
+    void UseTexture(int number){
+        glActiveTexture(GL_TEXTURE0 + number);
+    }
+
 
 private:
     void checkCompileErrors(unsigned int shader, std::string type)

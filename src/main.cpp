@@ -36,11 +36,15 @@ int main() {
     // skybox.LoadSkyBox(skybox_path);
 
     skybox.LoadRGBEfile("../../img/Alexs_Apartment/Alexs_Apt_2k.hdr");
+    skybox.CreateHDRTexture();
+    skybox.CreateEnvironment();
 
 
     const decimal timeStep = 1.0f / 60.0f;
     float i = 0;
     sf::Event event;
+
+    shad.setInt("irradianceMap",skybox.GetEnvironmentTexture() );
 
     auto loop = [&](int& drawning){
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
@@ -53,7 +57,7 @@ int main() {
         camera.looking(&window.window);
         camera.view = camera.updateView();
         world->update(timeStep);
-        std::cout << "cam pos: " << camera.cameraPos.x   << " " << camera.cameraPos.y << " " << camera.cameraPos.z << std::endl;
+        //std::cout << "cam pos: " << camera.cameraPos.x   << " " << camera.cameraPos.y << " " << camera.cameraPos.z << std::endl;
         glm::mat4 projection = glm::perspective(glm::radians(80.0f), (float)window.GetWindowWidth() / (float)window.GetWindowHeight(), 0.1f, 1000.0f);
         glm::mat4 view = camera.view;
 
@@ -75,7 +79,6 @@ int main() {
         city1.Draw(shad);
 
         skybox.DrawSkyBox(camera.view, projection);
-        //skybox.DrawSkyBoxHDR(camera.view);
 
         window.Display();
 
