@@ -28,7 +28,11 @@ in DIRECTION_LIGHT direction_light;
 uniform vec3 cameraPos;
 uniform sampler2D texture_diffuse1;
 uniform sampler2D shadowMap;
+
+//========== P B R =================
 uniform samplerCube irradianceMap;
+uniform samplerCube prefilterMap;
+uniform sampler2D brdfLUT;
 
 struct sLightComponent{
 	vec3 ambient;
@@ -37,7 +41,7 @@ struct sLightComponent{
 };
 
 // данные материала для PBR
-vec3 albedo = vec3(0.5, 0.0, 0.0);
+vec3 albedo = vec3(0.5, 0.5, 0.5);
 float metallic = 1.0;
 float roughness = 0.2;
 float ao = 1.0;
@@ -65,8 +69,11 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness);
 void main()
 {
 	vec3 normal = normalize(NormalOut);
-
 	vec3 camDir = normalize(cameraPos - PosFrag); // направление камеры
+	vec3 R = reflect(-camDir, normal);
+
+	albedo = texture(texture_diffuse1, TexCoords).rgb;
+
 	vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
 	           
@@ -82,24 +89,28 @@ void main()
 	// BRDF Кука-Торренса
 	float NDF = DistributionGGX(normal, H, roughness);        
 	float G = GeometrySmith(normal, camDir, L, roughness);      
-	vec3 F = fresnelSchlick(max(dot(H, camDir), 0.0), F0);       
+	vec3 F = fresnelSchlickRoughness(max(dot(normal, camDir), 0.0), F0, roughness);
 	
-	vec3 kS = fresnelSchlickRoughness(max(dot(normal,camDir), 0.0), F0, roughness); 
+	vec3 kS = F;
 	vec3 kD = 1.0 - kS;
+	kD *= 1.0 - metallic;	 
+
 	vec3 irradiance = texture(irradianceMap, normal).rgb;
 	vec3 diffuse = irradiance * albedo;
-	vec3 ambient = (kD * diffuse) * ao; 
+
+	const float MAX_REFLECTION_LOD = 4.0;
+	vec3 prefilteredColor = textureLod(prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;    
+	//vec3 prefilteredColor = vec3(0.5, 0.5, 0.5);   
+
+	vec2 envBRDF = texture(brdfLUT, vec2(max(dot(normal, camDir), 0.0), roughness)).rg;
+	vec3 specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);
+	vec3 ambient = (kD * diffuse + specular) * ao; 
 	
-	vec3 numerator = NDF * G * F;
-	float denominator = 4.0 * max(dot(normal, camDir), 0.0) * max(dot(normal, L), 0.0);
-	vec3 specular = numerator / max(denominator, 0.001);  
-		
-	// Добавляем к исходящей энергетической яркости Lo
 	float NdotL = max(dot(normal, L), 0.0);                
 	Lo += (kD * albedo / PI + specular) * radiance * NdotL; 
 
-  
-    vec3 color = ambient + Lo;
+
+    vec3 color = ambient + Lo ;
 	
     color = color / (color + vec3(1.0));
     color = pow(color, vec3(1.0/2.2));  

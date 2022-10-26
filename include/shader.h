@@ -15,9 +15,7 @@ public:
     unsigned int ID;
     
 
-    Shader(){
-
-    }
+    Shader(){ }
 
 
     Shader(std::string vertf, std::string fragf) {
@@ -141,6 +139,12 @@ public:
         glActiveTexture(GL_TEXTURE0 + index);
         setInt(name.c_str(), index);
         glBindTexture(GL_TEXTURE_2D, texture);
+    }
+
+    void SetCubeMapTexture(int index, int texture, std::string name){
+        glActiveTexture(GL_TEXTURE0 + index);
+        setInt(name,    index  );
+        glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
     }
 
     void AddSSBO(void *_ssbo, int size, int index){

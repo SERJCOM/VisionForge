@@ -1,7 +1,5 @@
 #include "init.h"
 #include <reactphysics3d/utils/DebugRenderer.h>
-#include <SFML/Graphics/Image.hpp>
-
 
 
 
@@ -13,38 +11,36 @@ int main() {
     Shader shad("..\\..\\shaders\\shader.vert", "..\\..\\shaders\\shader.frag");
     Shader shadow("..\\..\\shaders\\shadow.vert", "..\\..\\shaders\\shadow.frag");
 
-     Model city1("../../obj/testtest.obj.obj", world, &physicsCommon); 
-    //Model city1("../../obj/dimaMap/untitled.obj", world, &physicsCommon); 
+    //Model city1("../../obj/testtest.obj.obj", world, &physicsCommon); 
+    //city1.RotateObject(60.0f, 50.0f, 30.0f);
+    Model city1("../../obj/dimaMap/untitled.obj", world, &physicsCommon); 
 
 
     LightManager light;
     light.LinkShader(&shad);
-    light.AddLight(0, 0.8, 0, glm::vec3(5.0f, 0.0f, 10.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    light.AddLight(0, 0.8, 0, glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     light.SetShaderParameters();
 
-    Shadow shadow1(2048, 2048);
+    //Shadow shadow1(2048, 2048);
     //shadow1.SetPosition(light.GetLight(0).position);
 
     Shape skybox;
-    // std::vector<std::string> skybox_path;
-    // skybox_path.push_back("../../img/skymap/steini4_ft.jpg");
-    // skybox_path.push_back("../../img/skymap/steini4_bk.jpg");
-    // skybox_path.push_back("../../img/skymap/steini4_up.jpg");
-    // skybox_path.push_back("../../img/skymap/steini4_dn.jpg");
-    // skybox_path.push_back("../../img/skymap/steini4_rt.jpg");
-    // skybox_path.push_back("../../img/skymap/steini4_lf.jpg");
-    // skybox.LoadSkyBox(skybox_path);
-
     skybox.LoadRGBEfile("../../img/Alexs_Apartment/Alexs_Apt_2k.hdr");
     skybox.CreateHDRTexture();
     skybox.CreateEnvironment();
+    skybox.CreatePrefilterMap();
+    skybox.CreateBRDF();
+    
 
 
     const decimal timeStep = 1.0f / 60.0f;
     float i = 0;
     sf::Event event;
 
-    shad.setInt("irradianceMap",skybox.GetEnvironmentTexture() );
+    shad.use();
+    shad.SetCubeMapTexture(9, skybox.GetEnvironmentTexture(), "irradianceMap");
+    shad.SetCubeMapTexture(10, skybox.GetPrefilterTexture(), "prefilterMap");
+    shad.SetTexture(6, skybox.GetBDRFTexture(), "brdfLUT");
 
     auto loop = [&](int& drawning){
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
@@ -62,9 +58,6 @@ int main() {
         glm::mat4 view = camera.view;
 
 
-        shadow1.Listening();
-        city1.Draw(shadow1.GetShader());
-
         engine.Drawning(window.GetWindowWidth(),window.GetWindowHeight());
         engine.ClearBuffers();
 
@@ -73,8 +66,8 @@ int main() {
         shad.setMat4("view", view);
         shad.setVec3("lightPos", glm::vec3(0, 50.0f, 0));
         shad.setVec3("cameraPos", camera.cameraPos);
-        shad.setMat4("lightSpaceMatrix", shadow1.GetMatrix());
-        shad.SetTexture(9, shadow1.GetTexture(), "shadowMap");
+        // shad.setMat4("lightSpaceMatrix", shadow1.GetMatrix());
+        // shad.SetTexture(9, shadow1.GetTexture(), "shadowMap");
 
         city1.Draw(shad);
 

@@ -9,7 +9,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-float skyboxVertices[] = {
+float 		skyboxVertices[] = {
 		-1.0f,  1.0f, -1.0f,
 		-1.0f, -1.0f, -1.0f,
 		1.0f, -1.0f, -1.0f,
@@ -52,6 +52,13 @@ float skyboxVertices[] = {
 		-1.0f, -1.0f,  1.0f,
 		1.0f, -1.0f,  1.0f
 };
+float 		quadVertices[] = {
+             // координаты      // текстурные координаты
+            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+             1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+        };
 
 class Shape{
 public:
@@ -118,8 +125,6 @@ public:
 		}
 
 		else	std::cout << "failed to load HDR" << std::endl;
-
-		CreateHDRTexture();
 	}
 
     void DrawSkyBox(glm::mat4 view_camera, glm::mat4 projection){
@@ -209,7 +214,7 @@ public:
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
 		
-		glViewport(0, 0, 32, 32); // не забудьте настроить окно просмотра в соответствии с размерами захвата
+		glViewport(0, 0, 32, 32); 
 		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 		for (unsigned int i = 0; i < 6; ++i)
 		{
@@ -225,17 +230,114 @@ public:
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);  
 	}
  
+	void CreatePrefilterMap(){
+		glGenTextures(1, &prefilterMap);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
+		for (unsigned int i = 0; i < 6; ++i)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
+		}
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+		prefilter = Shader("../../shaders/configHDR.vert", "../../shaders/prefilter.frag");
+		prefilter.use();
+		prefilter.setInt("environmentMap", 0);
+		prefilter.setMat4("projection", captureProjection);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, envirTexture);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+		unsigned int maxMipLevels = 5;
+
+		for (unsigned int mip = 0; mip < maxMipLevels; ++mip){
+			unsigned int mipWidth  = 128 * std::pow(0.5, mip);
+			unsigned int mipHeight = 128 * std::pow(0.5, mip);
+			glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
+			glViewport(0, 0, mipWidth, mipHeight);
+		
+			float roughness = (float)mip / (float)(maxMipLevels - 1);
+			prefilter.setFloat("roughness", roughness);
+			for (unsigned int i = 0; i < 6; ++i)
+			{
+				prefilter.setMat4("view", captureViews[i]);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+									GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilterMap, mip);
+		
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+				glBindVertexArray(VAO);
+				glDrawArrays(GL_TRIANGLES, 0, 36);
+				glBindVertexArray(0);
+			}
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0); 
+
+	}
+
 	unsigned int GetEnvironmentTexture(){
 		return envirTexture;
 	}
 
-private:
-    unsigned int VAO, VBO;
-	unsigned int skyboxID = 0, HDRTexture = 0, envirTexture = 0;
+	unsigned int GetPrefilterTexture(){
+		return prefilterMap;
+	}
 
-	unsigned int captureFBO, captureRBO;
-	glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
-	glm::mat4 captureViews[6] = {
+	unsigned int GetBDRFTexture(){
+		return brdfTexture;
+	}
+
+	void CreateBRDF(){
+		glGenTextures(1, &brdfTexture);
+		
+		glBindTexture(GL_TEXTURE_2D, brdfTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
+
+		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+		glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdfTexture, 0);
+
+		glGenVertexArrays(1, &quadVAO);
+        glGenBuffers(1, &quadVBO);
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+		
+		glViewport(0, 0, 512, 512);
+		BRDF = Shader("../../shaders/brdf.vert", "../../shaders/brdf.frag");
+		BRDF.use();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glBindVertexArray(quadVAO);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glBindVertexArray(0);		
+	
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);  
+	}
+
+private:
+    unsigned int 	VAO, VBO, quadVAO, quadVBO;
+	unsigned int 	skyboxID = 0, HDRTexture = 0, envirTexture = 0, prefilterMap = 0, brdfTexture = 0;
+
+	unsigned int 	captureFBO, captureRBO;
+	glm::mat4 		captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+	glm::mat4 		captureViews[6] = {
 		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
 		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
 		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
@@ -244,6 +346,8 @@ private:
 		glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
 	};	
 
-    Shader skyboxShader;
-	Shader HDRShader;
+    Shader 		skyboxShader;
+	Shader 		HDRShader;
+	Shader 		prefilter;
+	Shader 		BRDF;
 };

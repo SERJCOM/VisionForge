@@ -15,7 +15,7 @@ public:
 		glewInit();
 		glEnable(GL_TEXTURE_CUBE_MAP);
 		glEnable(GL_DEPTH_TEST);
-		
+		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	}
 
 	void TurnOnCullFace(){
