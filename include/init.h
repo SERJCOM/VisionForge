@@ -20,6 +20,7 @@
 #include "framebuffer.hpp"
 #include "scene_manager.h"
 #include "shadow.hpp"
+#include "material.hpp"
 
 PhysicsCommon physicsCommon;
 PhysicsWorld* world = physicsCommon.createPhysicsWorld();

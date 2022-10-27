@@ -11,6 +11,7 @@
 #include <map>
 #include <vector>
 #include <map>
+#include "material.hpp"
 
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -38,11 +39,17 @@ public:
     bool gammaCorrection;
 
 
-    Model(std::string path, PhysicsWorld* physworld, PhysicsCommon* physicsCommon);
+    Model(std::string path);
 
-    Model(const char* path, PhysicsWorld* physworld, PhysicsCommon* physicsCommon);
+    Model(const char* path);
 
     void Draw(Shader& shader);
+
+    void LoadModel();
+
+    void AddMaterial(Li::Material mat);
+
+    void SetPath(std::string path);
 
     void ScaleMesh(std::string name, glm::vec3 size);
 
@@ -93,31 +100,32 @@ public:
     void PrintObjectPosition();
 
     ~Model(){
-        for(int i = 0; i < concavemesh.size(); i++){
+        for(int i = 0; i < concavemesh.size(); i++)
             delete concavemesh[i].triangleArray;
-        }
-        
     }
 protected:
-    bool PhysicBool = true;
-    int number = 0;
+    bool                PhysicBool = true;
+    int                 number = 0;
+    std::string         path;
 
-    std::string rootName;
-    PhysicsCommon* physicsCommon;
-    PhysicsWorld* physworld;
-    RigidBody* body = nullptr;
+    std::string         rootName;
+    PhysicsCommon*      physicsCommon;
+    PhysicsWorld*       physworld;
+    RigidBody*          body = nullptr;
 
-    glm::vec3 objectPosition = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 objectAngleRotate = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 objectScale = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3           objectPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3           objectAngleRotate = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec3           objectScale = glm::vec3(1.0f, 1.0f, 1.0f);
 
     std::vector<sConcaveMesh> concavemesh;
 
+    Li::Material            _material;
+
     //std::map<std::string, sMeshParameters> MeshParameters;
 
-    std::vector<int> changedMeshes;
+    std::vector<int>    changedMeshes;
 
-    void loadModel(std::string path);
+    void LoadModel(std::string path);
 
     void processNode(aiNode* node, const aiScene* scene, int index);
 

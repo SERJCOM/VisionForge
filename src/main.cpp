@@ -11,10 +11,14 @@ int main() {
     Shader shad("..\\..\\shaders\\shader.vert", "..\\..\\shaders\\shader.frag");
     Shader shadow("..\\..\\shaders\\shadow.vert", "..\\..\\shaders\\shadow.frag");
 
-    //Model city1("../../obj/testtest.obj.obj", world, &physicsCommon); 
-    //city1.RotateObject(60.0f, 50.0f, 30.0f);
-    Model city1("../../obj/dimaMap/untitled.obj", world, &physicsCommon); 
+    Li::Material matHouse;
+    matHouse.AddNewMaterial("../../../../obj/RUSSIANS HOUSES/old-house/textures/Material__25_albedo.jpg", Li::Type::DIFFUSE, "Material #25");
 
+    Model city1("../../../../obj/RUSSIANS HOUSES/old-house/textures/1.fbx"); 
+    city1.ScaleObject(glm::vec3(0.01, 0.01, 0.01));
+    city1.RotateObject(90.0f, 0.0f, 0.0f);
+    city1.AddMaterial(matHouse);
+    city1.LoadModel();
 
     LightManager light;
     light.LinkShader(&shad);

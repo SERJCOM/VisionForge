@@ -10,12 +10,12 @@ public:
         return ssbo;
     }
 
-    void Init(void *data, int size, int index){
+    void Init(void *data, size_t size, size_t index){
         const void* _data = data;
         glGenBuffers(1, &ssbo);
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
         glBufferData(GL_SHADER_STORAGE_BUFFER, size, _data, GL_STATIC_DRAW);
-        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index, ssbo);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, static_cast<GLuint>(index), ssbo);
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
     }
 

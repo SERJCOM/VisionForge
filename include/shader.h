@@ -112,9 +112,9 @@ public:
     {
         glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
     }
-    void setInt(const std::string& name, int value) const
+    void setInt(const std::string& name, size_t value) const
     {
-        glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+        glUniform1i(glGetUniformLocation(ID, name.c_str()), static_cast<GLint>(value));
     }
     void setFloat(const std::string& name, float value) const
     {
@@ -147,7 +147,7 @@ public:
         glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
     }
 
-    void AddSSBO(void *_ssbo, int size, int index){
+    void AddSSBO(void *_ssbo, size_t size, int index){
         SSBO newssbo;
         newssbo.Init(_ssbo, size, index);
         ssbo.push_back(newssbo);

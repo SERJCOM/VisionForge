@@ -65,7 +65,6 @@ out vec2 TexCoords; // texture coordinates
 out vec4 fragPosLight; // position of the fragment from the side of the shadow source
 
 
-
  
 void main()
 {

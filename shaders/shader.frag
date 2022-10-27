@@ -26,7 +26,11 @@ in DIRECTION_LIGHT direction_light;
 
 
 uniform vec3 cameraPos;
-uniform sampler2D texture_diffuse1;
+uniform sampler2D texture_diffuse;
+uniform sampler2D texture_normal;
+uniform sampler2D texture_metalic;
+uniform sampler2D texture_specular;
+
 uniform sampler2D shadowMap;
 
 //========== P B R =================
@@ -45,6 +49,7 @@ vec3 albedo = vec3(0.5, 0.5, 0.5);
 float metallic = 1.0;
 float roughness = 0.2;
 float ao = 1.0;
+vec3 normalMap;
 
 
 //расчет направленного света и приведения к трем составляющим света
@@ -66,13 +71,18 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness);
 vec3 fresnelSchlick(float cosTheta, vec3 F0);
 vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness);
 
+vec3 getNormalFromMap();
+
 void main()
 {
 	vec3 normal = normalize(NormalOut);
 	vec3 camDir = normalize(cameraPos - PosFrag); // направление камеры
 	vec3 R = reflect(-camDir, normal);
 
-	albedo = texture(texture_diffuse1, TexCoords).rgb;
+	albedo = texture(texture_diffuse, TexCoords).rgb;
+	metallic = texture(texture_metalic, TexCoords).r;
+	normalMap = getNormalFromMap();
+
 
 	vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
@@ -117,7 +127,7 @@ void main()
 
 	FragColor = vec4(color, 1.0);
 	
-	//vec3 color = texture(texture_diffuse1, TexCoords).rgb; // texture
+	//vec3 color = texture(texture_diffuse, TexCoords).rgb; // texture
 
 	// sLightComponent lightComp = CalcDirLight(direction_light, normal, cameraPos, color);
 	
@@ -237,4 +247,22 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 {
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
+}
+
+vec3 getNormalFromMap()
+{
+    vec3 tangentNormal = texture(texture_normal, TexCoords).rgb * 2.0 - 1.0;
+
+
+    vec3 Q1  = dFdx(PosFrag);
+    vec3 Q2  = dFdy(PosFrag);
+    vec2 st1 = dFdx(TexCoords);
+    vec2 st2 = dFdy(TexCoords);
+
+    vec3 N   = normalize(NormalOut);
+    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
+    vec3 B  = -normalize(cross(N, T));
+    mat3 TBN = mat3(T, B, N);
+
+    return normalize(TBN * tangentNormal);
 }

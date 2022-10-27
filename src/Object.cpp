@@ -19,17 +19,16 @@ void Object::Draw(Shader& shader){
         glActiveTexture(GL_TEXTURE0 + i); 
         std::string number;
         std::string name = textures[i].type;
-        if (name == "texture_diffuse")
-            number = std::to_string(diffuseNr++);
+        // if (name == "texture_diffuse")
+        //     number = std::to_string(diffuseNr++);
 
-        glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
+        glUniform1i(glGetUniformLocation(shader.ID, (name).c_str()), i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
 
     shader.BindSSBO();
     
     glBindVertexArray(VAO);
-    //glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
     glDrawElementsInstanced(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0, 1);
 
     glBindVertexArray(0);

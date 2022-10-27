@@ -29,7 +29,7 @@ public:
 			glm::vec3 rotate_object(root["objects"][i]["rotate"][0].asInt(), root["objects"][i]["rotate"][1].asInt(), root["objects"][i]["rotate"][2].asInt());
 			glm::vec3 position_object(root["objects"][i]["position"][0].asFloat(), root["objects"][i]["position"][1].asFloat(), root["objects"][i]["position"][2].asFloat());
 			
-			Model Model(path, physworld, physicsCommon);
+			Model Model(path);
 			Model.ScaleObject(scale_object);
 			Model.RotateObject(rotate_object);
 			Model.SetObjectPosition(position_object.x, position_object.y, position_object.z);

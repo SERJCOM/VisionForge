@@ -1,16 +1,12 @@
 #include "model.h"
 
-Model::Model(std::string path, PhysicsWorld* physworld, PhysicsCommon* physicsCommon) {
-    this->physworld = physworld;
-    this->physicsCommon = physicsCommon;
-    loadModel(path);
+Model::Model(std::string path) {
+    SetPath(path);
 }
 
-Model::Model(const char* path, PhysicsWorld* physworld, PhysicsCommon* physicsCommon)
+Model::Model(const char* path)
 {
-    this->physworld = physworld;
-    this->physicsCommon = physicsCommon;
-    loadModel(path);
+    SetPath(path);
 }
 
 void Model::Draw(Shader& shader)
@@ -59,6 +55,21 @@ void Model::Draw(Shader& shader)
     for (unsigned int i = 0; i < meshes.size(); i++){
         meshes[i].Draw(shader);
     }
+}
+
+void Model::LoadModel()
+{
+    LoadModel(path);
+}
+
+void Model::AddMaterial(Li::Material mat)
+{
+    _material = mat;
+}
+
+void Model::SetPath(std::string path)
+{
+    this->path = path;
 }
 
 // void Model::ScaleMesh(std::string name, glm::vec3 size) {
@@ -230,7 +241,7 @@ void Model::PrintObjectPosition() {
 
 // PRIVATE
 
-void Model::loadModel(std::string path)
+void Model::LoadModel(std::string path)
 {
     Assimp::Importer import;
     const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_GenBoundingBoxes | aiProcess_CalcTangentSpace | aiProcess_FlipUVs | aiProcess_GenSmoothNormals);
@@ -307,9 +318,21 @@ Object Model::processMesh(aiMesh* mesh, const aiScene* scene)
         for (unsigned int j = 0; j < face.mNumIndices; j++)     indices.push_back(face.mIndices[j]);
     }
 
+
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
     std::vector<sTexture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+
+    std::vector<sTexture> normal = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
+    textures.insert(textures.end(), normal.begin(), normal.end());
+
+    std::vector<sTexture> metalic = loadMaterialTextures(material, aiTextureType_METALNESS, "texture_metalic");
+    textures.insert(textures.end(), metalic.begin(), metalic.end());
+
+    std::cout << material->GetName().C_Str() << std::endl;
+
+    // std::vector<sTexture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+    // textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
     // if(Vector3(mesh->mAABB.mMin.x, mesh->mAABB.mMin.y, mesh->mAABB.mMin.z).length() < modelBoundingBox){
 
