@@ -12,7 +12,8 @@ namespace Li{
 enum Type{
     DIFFUSE,
     NORMALS,
-    METALNESS
+    METALNESS,
+    ROUGHNESS
 };
 
 class Material{
@@ -77,6 +78,12 @@ public:
 
                     case NORMALS:
                         _type = "texture_normal";
+                        break;
+                    case METALNESS:
+                        _type = "texture_metalic";
+                        break;
+                    case ROUGHNESS:
+                        _type = "texture_roughness";
                         break;
                 }
                 _texture.type = _type;

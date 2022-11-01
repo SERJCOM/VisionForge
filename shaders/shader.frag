@@ -24,12 +24,21 @@ struct DIRECTION_LIGHT{
 
 in DIRECTION_LIGHT direction_light;
 
+// direction_light.x_pos = 30;
+// direction_light.y_pos = 0;
+// direction_light.z_pos = 0.0;
+
+// direction_light.x = 1.0;
+// direction_light.y = 0.7;
+// direction_light.z = 0.5;
+
 
 uniform vec3 cameraPos;
 uniform sampler2D texture_diffuse;
 uniform sampler2D texture_normal;
 uniform sampler2D texture_metalic;
 uniform sampler2D texture_specular;
+uniform sampler2D texture_roughness;
 
 uniform sampler2D shadowMap;
 
@@ -46,8 +55,8 @@ struct sLightComponent{
 
 // данные материала для PBR
 vec3 albedo = vec3(0.5, 0.5, 0.5);
-float metallic = 1.0;
-float roughness = 0.2;
+float metallic = 0.1;
+float roughness = 0.1;
 float ao = 1.0;
 vec3 normalMap;
 
@@ -79,9 +88,12 @@ void main()
 	vec3 camDir = normalize(cameraPos - PosFrag); // направление камеры
 	vec3 R = reflect(-camDir, normal);
 
-	albedo = texture(texture_diffuse, TexCoords).rgb;
+	
+	albedo = pow(texture(texture_diffuse, TexCoords).rgb, vec3(2.2));
 	metallic = texture(texture_metalic, TexCoords).r;
 	normalMap = getNormalFromMap();
+	normal = normalMap;
+	roughness = texture(texture_roughness, TexCoords).r;
 
 
 	vec3 F0 = vec3(0.04); 
@@ -90,11 +102,11 @@ void main()
     // Уравнение отражения
     vec3 Lo = vec3(0.0);
 
-	vec3 L = normalize(vec3(direction_light.x_pos, direction_light.y_pos, direction_light.z_pos) - PosFrag);
+	vec3 L = normalize(vec3(30, 0, 0) - PosFrag);
 	vec3 H = normalize(camDir + L);
-	float distance = length(vec3(direction_light.x_pos, direction_light.y_pos, direction_light.z_pos) - PosFrag);
+	float distance = length(vec3(30, 0, 0) - PosFrag);
 	float attenuation = 1.0 / (distance * distance);
-	vec3 radiance = vec3(direction_light.x, direction_light.y, direction_light.z) * attenuation;        
+	vec3 radiance = vec3(1.0, 1.0, 1.0) * attenuation;        
 	
 	// BRDF Кука-Торренса
 	float NDF = DistributionGGX(normal, H, roughness);        
@@ -120,7 +132,7 @@ void main()
 	Lo += (kD * albedo / PI + specular) * radiance * NdotL; 
 
 
-    vec3 color = ambient + Lo ;
+    vec3 color = ambient + Lo * 4 ;
 	
     color = color / (color + vec3(1.0));
     color = pow(color, vec3(1.0/2.2));  

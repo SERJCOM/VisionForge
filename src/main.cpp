@@ -12,17 +12,21 @@ int main() {
     Shader shadow("..\\..\\shaders\\shadow.vert", "..\\..\\shaders\\shadow.frag");
 
     Li::Material matHouse;
-    matHouse.AddNewMaterial("D:/prog/obj/dimaMap/map_color.png", Li::Type::DIFFUSE, "Default_OBJ");
+    matHouse.AddNewMaterial("D:/prog/obj/rustediron1-alt2-Unreal-Engine/rustediron2_basecolor.png", Li::Type::DIFFUSE, "DefaultMaterial");
+    matHouse.AddNewMaterial("D:/prog/obj/rustediron1-alt2-Unreal-Engine/rustediron2_metallic.png", Li::Type::METALNESS, "DefaultMaterial");
+    matHouse.AddNewMaterial("D:/prog/obj/tin-can/textures/Tin_Can_l_DefaultMaterial_Normal.png", Li::Type::NORMALS, "DefaultMaterial");
+    matHouse.AddNewMaterial("D:/prog/obj/rustediron1-alt2-Unreal-Engine/rustediron2_roughness.png", Li::Type::ROUGHNESS, "DefaultMaterial");
 
-    Model city1("D:/prog/obj/dimaMap/untitled.obj"); 
-    //Model city1("../../obj/dimaMap/untitled.obj");
-    //city1.RotateObject(90.0f, 0.0f, 0.0f);
+    Model city1("D:/prog/obj/tin-can/textures/Tin Can_l.fbx"); 
+
+    // city1.RotateObject(90.0f, 0.0f, 0.0f);
+    city1.ScaleObject(glm::vec3(0.1f, 0.1f, 0.1f));
     city1.AddMaterial(&matHouse);
     city1.LoadModel();
 
     LightManager light;
     light.LinkShader(&shad);
-    light.AddLight(0, 0.8, 0, glm::vec3(5.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    light.AddLight(0, 0.8, 0, glm::vec3(15.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
     light.SetShaderParameters();
 
     //Shadow shadow1(2048, 2048);
@@ -57,7 +61,7 @@ int main() {
         camera.looking(&window.window);
         camera.view = camera.updateView();
         world->update(timeStep);
-        //std::cout << "cam pos: " << camera.cameraPos.x   << " " << camera.cameraPos.y << " " << camera.cameraPos.z << std::endl;
+        std::cout << "cam pos: " << camera.cameraPos.x   << " " << camera.cameraPos.y << " " << camera.cameraPos.z << std::endl;
         glm::mat4 projection = glm::perspective(glm::radians(80.0f), (float)window.GetWindowWidth() / (float)window.GetWindowHeight(), 0.1f, 1000.0f);
         glm::mat4 view = camera.view;
 
