@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 #include <map>
+#include "mesh.hpp"
+#include <assimp/material.h>
+#include "Texture.h"
 
 namespace Li{
 
@@ -38,6 +41,52 @@ public:
             returnMat.push_back(it->second);
         
         return returnMat;
+    }
+
+    // TODO:: может возникать ошибка если имя не было найдено (будет возвращаться последнее значение)
+    // sMaterials GetMaterial(std::string name){
+    //     return _materials[name];
+    // }
+
+    // int Count(Li::Type name){
+    //     return _listMat.count(name);
+    // }
+
+    std::vector<sTexture> GetTexture(std::string meshName, std::vector<sTexture> &textures){
+        std::vector<sTexture> sReturn;
+
+        std::vector<sMaterials> vMaterial = GetMaterials(meshName);
+
+        for(int i = 0; i < vMaterial.size(); i++){
+            bool flag = false;
+            for(int j = 0; j < textures.size(); j++){
+                if(textures[j].path == vMaterial[i].path){
+                    sReturn.push_back(textures[j]);
+                    flag = true;
+                    break;
+                }
+            }
+            if(!flag){
+                sTexture _texture;
+                std::string _type;
+                _texture.id = Texture::LoadTextureFromFile(vMaterial[i].path);
+                switch (vMaterial[i].type){
+                    case DIFFUSE:
+                        _type = "texture_diffuse";
+                        break;
+
+                    case NORMALS:
+                        _type = "texture_normal";
+                        break;
+                }
+                _texture.type = _type;
+                _texture.path = vMaterial[i].path;
+                sReturn.push_back(_texture);
+                textures.push_back(_texture);
+            }
+        }
+
+        return sReturn;
     }
 
 private:

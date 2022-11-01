@@ -47,7 +47,7 @@ public:
 
     void LoadModel();
 
-    void AddMaterial(Li::Material mat);
+    void AddMaterial(Li::Material* mat);
 
     void SetPath(std::string path);
 
@@ -119,7 +119,7 @@ protected:
 
     std::vector<sConcaveMesh> concavemesh;
 
-    Li::Material            _material;
+    Li::Material            *_material = nullptr;
 
     //std::map<std::string, sMeshParameters> MeshParameters;
 

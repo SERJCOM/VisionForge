@@ -126,20 +126,6 @@ void main()
     color = pow(color, vec3(1.0/2.2));  
 
 	FragColor = vec4(color, 1.0);
-	
-	//vec3 color = texture(texture_diffuse, TexCoords).rgb; // texture
-
-	// sLightComponent lightComp = CalcDirLight(direction_light, normal, cameraPos, color);
-	
-	// float shadow = CalcShadow(fragPosLight); // calculating the shadow
-	// vec3 lighting = (lightComp.ambient  + (1.0 - shadow) * lightComp.diffuse ) * color; // calculating the final color of the fragment
-
-	//vec3 result = lighting;
-	
-	// float gamma = 2.2;
-    // result = pow(result.rgb, vec3(1.0/gamma)); // gamma correction
-
-	//FragColor = vec4(result, 1.0);
 }
 
 

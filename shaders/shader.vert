@@ -81,20 +81,20 @@ void main()
 	//lighting
 	int len_point = 0, len_proj = 0;
 	
-	for(int i = 0; i < NUMBER_LIGHT; i++){
-		int type = light[i].type;
+	// for(int i = 0; i < NUMBER_LIGHT; i++){
+	// 	int type = light[i].type;
 		
-		if(type == 0){
-			direction_light.ambient = light[i].ambient;
-			direction_light.specular = light[i].specular;
+	// 	if(type == 0){
+	// 		direction_light.ambient = light[i].ambient;
+	// 		direction_light.specular = light[i].specular;
 			
-			direction_light.x = light[i].x;
-			direction_light.y = light[i].y;
-			direction_light.z = light[i].z;
+	// 		direction_light.x = light[i].x;
+	// 		direction_light.y = light[i].y;
+	// 		direction_light.z = light[i].z;
 			
-			direction_light.x_pos = light[i].x_pos;
-			direction_light.y_pos = light[i].y_pos;
-			direction_light.z_pos = light[i].z_pos;
-		}
-	}
+	// 		direction_light.x_pos = light[i].x_pos;
+	// 		direction_light.y_pos = light[i].y_pos;
+	// 		direction_light.z_pos = light[i].z_pos;
+	// 	}
+	// }
 }

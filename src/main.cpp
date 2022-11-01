@@ -12,12 +12,12 @@ int main() {
     Shader shadow("..\\..\\shaders\\shadow.vert", "..\\..\\shaders\\shadow.frag");
 
     Li::Material matHouse;
-    matHouse.AddNewMaterial("../../../../obj/RUSSIANS HOUSES/old-house/textures/Material__25_albedo.jpg", Li::Type::DIFFUSE, "Material #25");
+    matHouse.AddNewMaterial("D:/prog/obj/dimaMap/map_color.png", Li::Type::DIFFUSE, "Default_OBJ");
 
-    Model city1("../../../../obj/RUSSIANS HOUSES/old-house/textures/1.fbx"); 
-    city1.ScaleObject(glm::vec3(0.01, 0.01, 0.01));
-    city1.RotateObject(90.0f, 0.0f, 0.0f);
-    city1.AddMaterial(matHouse);
+    Model city1("D:/prog/obj/dimaMap/untitled.obj"); 
+    //Model city1("../../obj/dimaMap/untitled.obj");
+    //city1.RotateObject(90.0f, 0.0f, 0.0f);
+    city1.AddMaterial(&matHouse);
     city1.LoadModel();
 
     LightManager light;
@@ -29,7 +29,7 @@ int main() {
     //shadow1.SetPosition(light.GetLight(0).position);
 
     Shape skybox;
-    skybox.LoadRGBEfile("../../img/Alexs_Apartment/Alexs_Apt_2k.hdr");
+    skybox.LoadRGBEfile("../../img/Brooklyn_Bridge_Planks/Brooklyn_Bridge_Planks_2k.hdr");
     skybox.CreateHDRTexture();
     skybox.CreateEnvironment();
     skybox.CreatePrefilterMap();

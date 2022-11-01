@@ -62,7 +62,7 @@ void Model::LoadModel()
     LoadModel(path);
 }
 
-void Model::AddMaterial(Li::Material mat)
+void Model::AddMaterial(Li::Material* mat)
 {
     _material = mat;
 }
@@ -318,25 +318,18 @@ Object Model::processMesh(aiMesh* mesh, const aiScene* scene)
         for (unsigned int j = 0; j < face.mNumIndices; j++)     indices.push_back(face.mIndices[j]);
     }
 
-
+    
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-    std::vector<sTexture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-    textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+    std::cout << "texture name: " << material->GetName().C_Str() << std::endl;
+    if(_material != nullptr){
+        std::vector<sTexture> materials = _material->GetTexture(material->GetName().C_Str(), textures_loaded);
+        textures.insert(textures.end(), materials.begin(), materials.end());
 
-    std::vector<sTexture> normal = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
-    textures.insert(textures.end(), normal.begin(), normal.end());
-
-    std::vector<sTexture> metalic = loadMaterialTextures(material, aiTextureType_METALNESS, "texture_metalic");
-    textures.insert(textures.end(), metalic.begin(), metalic.end());
-
-    std::cout << material->GetName().C_Str() << std::endl;
-
-    // std::vector<sTexture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-    // textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-
-    // if(Vector3(mesh->mAABB.mMin.x, mesh->mAABB.mMin.y, mesh->mAABB.mMin.z).length() < modelBoundingBox){
-
-    // }
+    }
+    else{
+        std::vector<sTexture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+    }
 
     return Object(vertices, indices, textures);
 }
@@ -344,12 +337,13 @@ Object Model::processMesh(aiMesh* mesh, const aiScene* scene)
 std::vector<sTexture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
 {
     std::vector<sTexture> textures;
+
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
         mat->GetTexture(type, i, &str);
 
-        //std::cout << "texture: " << mat->GetName().C_Str() << std::endl;
+        std::cout << "texture: " << mat->GetName().C_Str() << " "   << std::endl;
 
         bool skip = false;
         for (unsigned int j = 0; j < textures_loaded.size(); j++)
