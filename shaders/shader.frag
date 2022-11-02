@@ -55,7 +55,7 @@ struct sLightComponent{
 
 // данные материала для PBR
 vec3 albedo = vec3(0.5, 0.5, 0.5);
-float metallic = 0.1;
+float metallic = 1.0;
 float roughness = 0.1;
 float ao = 1.0;
 vec3 normalMap;
@@ -88,51 +88,64 @@ void main()
 	vec3 camDir = normalize(cameraPos - PosFrag); // направление камеры
 	vec3 R = reflect(-camDir, normal);
 
-	
 	albedo = pow(texture(texture_diffuse, TexCoords).rgb, vec3(2.2));
 	metallic = texture(texture_metalic, TexCoords).r;
 	normalMap = getNormalFromMap();
 	normal = normalMap;
 	roughness = texture(texture_roughness, TexCoords).r;
 
+	vec3 N = normal;
+	vec3 V  = camDir;
+
 
 	vec3 F0 = vec3(0.04); 
     F0 = mix(F0, albedo, metallic);
-	           
+	            
     // Уравнение отражения
     vec3 Lo = vec3(0.0);
 
-	vec3 L = normalize(vec3(30, 0, 0) - PosFrag);
+	vec3 L = normalize(vec3(30, 30, 0) - PosFrag);
 	vec3 H = normalize(camDir + L);
-	float distance = length(vec3(30, 0, 0) - PosFrag);
+	float distance = length(vec3(30, 30, 0) - PosFrag);
 	float attenuation = 1.0 / (distance * distance);
-	vec3 radiance = vec3(1.0, 1.0, 1.0) * attenuation;        
+	vec3 radiance = vec3(1000, 1000, 1000) * attenuation;        
 	
 	// BRDF Кука-Торренса
 	float NDF = DistributionGGX(normal, H, roughness);        
 	float G = GeometrySmith(normal, camDir, L, roughness);      
-	vec3 F = fresnelSchlickRoughness(max(dot(normal, camDir), 0.0), F0, roughness);
-	
+	vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);        
+
+	vec3 nominator = NDF * G * F;
+	float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001;
+	vec3 specular = nominator / denominator;
+
 	vec3 kS = F;
 	vec3 kD = 1.0 - kS;
 	kD *= 1.0 - metallic;	 
+
+	float NdotL = max(dot(normal, L), 0.0);                
+	Lo += (kD * albedo / PI + specular) * radiance * NdotL; 
+
+	//======================= 
+
+	F = fresnelSchlickRoughness(max(dot(normal, camDir), 0.0), F0, roughness);
+
+	kS = F;
+	kD = 1.0 - kS;
+	kD *= 1.0 - metallic;	
+
 
 	vec3 irradiance = texture(irradianceMap, normal).rgb;
 	vec3 diffuse = irradiance * albedo;
 
 	const float MAX_REFLECTION_LOD = 4.0;
 	vec3 prefilteredColor = textureLod(prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;    
-	//vec3 prefilteredColor = vec3(0.5, 0.5, 0.5);   
-
 	vec2 envBRDF = texture(brdfLUT, vec2(max(dot(normal, camDir), 0.0), roughness)).rg;
-	vec3 specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);
+	specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);
 	vec3 ambient = (kD * diffuse + specular) * ao; 
 	
-	float NdotL = max(dot(normal, L), 0.0);                
-	Lo += (kD * albedo / PI + specular) * radiance * NdotL; 
 
-
-    vec3 color = ambient + Lo * 4 ;
+    vec3 color = ambient + Lo ;
 	
     color = color / (color + vec3(1.0));
     color = pow(color, vec3(1.0/2.2));  
