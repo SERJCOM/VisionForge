@@ -12,8 +12,7 @@ vec2 Hammersley(uint i, uint N);
 vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness);
   
 void main()
-{		
-    vec3 N = normalize(localPos);    
+{	vec3 N = normalize(localPos);    
     vec3 R = N;
     vec3 V = R;
  

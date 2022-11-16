@@ -62,6 +62,8 @@ float 		quadVertices[] = {
 
 class Shape{
 public:
+	unsigned int skyboxID = 0, quadVAO = 0, quadVBO = 0;
+	Shader 		BRDF;
     void LoadSkyBox(std::vector<std::string> path) {
 		skyboxShader = Shader("../../shaders/skybox.vert", "../../shaders/skybox.frag");
 		
@@ -157,7 +159,6 @@ public:
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
 		for (unsigned int i = 0; i < 6; ++i)
 		{
-			// Обратите внимание, что мы храним каждую грань в виде 16-битных значений типа с плавающей точкой
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 512, 512, 0, GL_RGB, GL_FLOAT, nullptr);
 		}
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -187,6 +188,9 @@ public:
 			glBindVertexArray(0);
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0); 
+
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 	}
 
 	void CreateEnvironment(){
@@ -228,6 +232,8 @@ public:
 			glBindVertexArray(0);
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);  
+
+		
 	}
  
 	void CreatePrefilterMap(){
@@ -250,7 +256,8 @@ public:
 		prefilter.setInt("environmentMap", 0);
 		prefilter.setMat4("projection", captureProjection);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, envirTexture);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
+		//glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); 
 
 		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 		unsigned int maxMipLevels = 5;
@@ -263,7 +270,7 @@ public:
 			glViewport(0, 0, mipWidth, mipHeight);
 		
 			float roughness = (float)mip / (float)(maxMipLevels - 1);
-			prefilter.setFloat("roughness", roughness);
+			prefilter.setFloat("roughness", roughness);																																																				
 			for (unsigned int i = 0; i < 6; ++i)
 			{
 				prefilter.setMat4("view", captureViews[i]);
@@ -282,18 +289,31 @@ public:
 	}
 
 	unsigned int GetEnvironmentTexture(){
+		std::cout << envirTexture << " envirTexture" << std::endl;
 		return envirTexture;
 	}
 
 	unsigned int GetPrefilterTexture(){
+		std::cout << prefilterMap << " prefilterMap" << std::endl;
 		return prefilterMap;
 	}
 
 	unsigned int GetBDRFTexture(){
+		std::cout << brdfTexture << " brdfTexture" << std::endl;
 		return brdfTexture;
 	}
 
 	void CreateBRDF(){
+		glGenVertexArrays(1, &quadVAO);
+        glGenBuffers(1, &quadVBO);
+        glBindVertexArray(quadVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		
 		glGenTextures(1, &brdfTexture);
 		
 		glBindTexture(GL_TEXTURE_2D, brdfTexture);
@@ -308,16 +328,6 @@ public:
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdfTexture, 0);
 
-		glGenVertexArrays(1, &quadVAO);
-        glGenBuffers(1, &quadVBO);
-        glBindVertexArray(quadVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-
 		
 		glViewport(0, 0, 512, 512);
 		BRDF = Shader("../../shaders/brdf.vert", "../../shaders/brdf.frag");
@@ -331,9 +341,9 @@ public:
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);  
 	}
 
-private:
-    unsigned int 	VAO, VBO, quadVAO, quadVBO;
-	unsigned int 	skyboxID = 0, HDRTexture = 0, envirTexture = 0, prefilterMap = 0, brdfTexture = 0;
+// private:
+    unsigned int 	VAO = 0, VBO = 0;
+	unsigned int 	 HDRTexture = 0, envirTexture = 0, prefilterMap = 0, brdfTexture = 0;
 
 	unsigned int 	captureFBO, captureRBO;
 	glm::mat4 		captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
@@ -349,5 +359,5 @@ private:
     Shader 		skyboxShader;
 	Shader 		HDRShader;
 	Shader 		prefilter;
-	Shader 		BRDF;
+	
 };

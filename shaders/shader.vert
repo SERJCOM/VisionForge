@@ -35,9 +35,10 @@ uniform mat4 projection;
 uniform mat4 lightSpaceMatrix;
 uniform int NUMBER_LIGHT;
 
-struct DIRECTION_LIGHT{
+struct LIGHT{
 	float ambient;
 	float specular;
+
 	float x_pos; // direction of the light
 	float y_pos;
 	float z_pos;
@@ -47,11 +48,9 @@ struct DIRECTION_LIGHT{
 	float z;	
 };
 
-out DIRECTION_LIGHT direction_light;
+out LIGHT direction_light;
 
-//out POINT_LIGHT{
-	
-//} point_light[16];
+out LIGHT point_light[16];
 
 
 //out PROJECTOR{
@@ -63,7 +62,6 @@ out vec3 NormalOut; // normal
 out vec3 PosFrag; // position of the fragment without matrix projection and view
 out vec2 TexCoords; // texture coordinates 
 out vec4 fragPosLight; // position of the fragment from the side of the shadow source
-
 
  
 void main()
@@ -79,22 +77,35 @@ void main()
 	//colorOut = vec3(light[0].x, light[0].y, light[0].z);
 
 	//lighting
-	int len_point = 0, len_proj = 0;
+	int lp = 0, len_proj = 0;
 	
-	// for(int i = 0; i < NUMBER_LIGHT; i++){
-	// 	int type = light[i].type;
+	for(int i = 0; i < NUMBER_LIGHT; i++){
+		int type = light[i].type;
 		
-	// 	if(type == 0){
-	// 		direction_light.ambient = light[i].ambient;
-	// 		direction_light.specular = light[i].specular;
+		if(type == 1){
+			direction_light.ambient = light[i].ambient;
+			direction_light.specular = light[i].specular;
 			
-	// 		direction_light.x = light[i].x;
-	// 		direction_light.y = light[i].y;
-	// 		direction_light.z = light[i].z;
+			direction_light.x = light[i].x;
+			direction_light.y = light[i].y;
+			direction_light.z = light[i].z;
 			
-	// 		direction_light.x_pos = light[i].x_pos;
-	// 		direction_light.y_pos = light[i].y_pos;
-	// 		direction_light.z_pos = light[i].z_pos;
-	// 	}
-	// }
+			direction_light.x_pos = light[i].x_pos;
+			direction_light.y_pos = light[i].y_pos;
+			direction_light.z_pos = light[i].z_pos;
+		}
+		// if(type == 1){
+		// 	point_light[len_point].ambient = light[i].ambient;
+		// 	point_light[len_point].specular = light[i].specular;
+			
+		// 	point_light[len_point].x = light[i].x;
+		// 	point_light[len_point].y = light[i].y;
+		// 	point_light[len_point].z = light[i].z;
+			
+		// 	point_light[len_point].x_pos = light[i].x_pos;
+		// 	point_light[len_point].y_pos = light[i].y_pos;
+		// 	point_light[len_point].z_pos = light[i].z_pos;
+		// 	lp++;
+		// }
+	}
 }

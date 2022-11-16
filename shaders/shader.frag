@@ -8,11 +8,10 @@ in vec3 PosFrag;
 in vec2 TexCoords;
 in vec4 fragPosLight;
 
-
-struct DIRECTION_LIGHT{
+struct LIGHT{
 	float ambient;
 	float specular;
-	
+
 	float x_pos; // direction of the light
 	float y_pos;
 	float z_pos;
@@ -22,23 +21,19 @@ struct DIRECTION_LIGHT{
 	float z;	
 };
 
-in DIRECTION_LIGHT direction_light;
+in LIGHT direction_light;
+in LIGHT point_light[16];
 
-// direction_light.x_pos = 30;
-// direction_light.y_pos = 0;
-// direction_light.z_pos = 0.0;
-
-// direction_light.x = 1.0;
-// direction_light.y = 0.7;
-// direction_light.z = 0.5;
 
 
 uniform vec3 cameraPos;
+uniform bool bool_texture_diffuse;
 uniform sampler2D texture_diffuse;
 uniform sampler2D texture_normal;
 uniform sampler2D texture_metalic;
 uniform sampler2D texture_specular;
 uniform sampler2D texture_roughness;
+uniform sampler2D texture_ao;
 
 uniform sampler2D shadowMap;
 
@@ -46,6 +41,8 @@ uniform sampler2D shadowMap;
 uniform samplerCube irradianceMap;
 uniform samplerCube prefilterMap;
 uniform sampler2D brdfLUT;
+
+uniform int len_point;
 
 struct sLightComponent{
 	vec3 ambient;
@@ -56,13 +53,13 @@ struct sLightComponent{
 // данные материала для PBR
 vec3 albedo = vec3(0.5, 0.5, 0.5);
 float metallic = 1.0;
-float roughness = 0.1;
+float roughness = 1.0;
 float ao = 1.0;
 vec3 normalMap;
 
 
 //расчет направленного света и приведения к трем составляющим света
-sLightComponent CalcDirLight(DIRECTION_LIGHT light, vec3 normal, vec3 viewDir, vec3 color);
+sLightComponent CalcDirLight(LIGHT light, vec3 normal, vec3 viewDir, vec3 color);
 
 
 // модель освещения кука-торренса
@@ -93,6 +90,8 @@ void main()
 	normalMap = getNormalFromMap();
 	normal = normalMap;
 	roughness = texture(texture_roughness, TexCoords).r;
+	ao = texture(texture_ao, TexCoords).r;
+
 
 	vec3 N = normal;
 	vec3 V  = camDir;
@@ -104,34 +103,38 @@ void main()
     // Уравнение отражения
     vec3 Lo = vec3(0.0);
 
-	vec3 L = normalize(vec3(30, 30, 0) - PosFrag);
-	vec3 H = normalize(camDir + L);
-	float distance = length(vec3(30, 30, 0) - PosFrag);
-	float attenuation = 1.0 / (distance * distance);
-	vec3 radiance = vec3(1000, 1000, 1000) * attenuation;        
-	
-	// BRDF Кука-Торренса
-	float NDF = DistributionGGX(normal, H, roughness);        
-	float G = GeometrySmith(normal, camDir, L, roughness);      
-	vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);        
+	for(int i = 0; i < 1; i++){
 
-	vec3 nominator = NDF * G * F;
-	float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001;
-	vec3 specular = nominator / denominator;
+		vec3 L = normalize(vec3(15.0, 0, 0) - PosFrag);
+		vec3 H = normalize(camDir + L);
+		float distance = length(vec3(15.0, 0, 0) - PosFrag);
+		float attenuation = 1.0 / (distance * distance);
+		vec3 radiance = vec3(1000, 1000, 1000) * attenuation;        
+		
+		// BRDF Кука-Торренса
+		float NDF = DistributionGGX(normal, H, roughness);        
+		float G = GeometrySmith(normal, camDir, L, roughness);      
+		vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);        
 
-	vec3 kS = F;
-	vec3 kD = 1.0 - kS;
-	kD *= 1.0 - metallic;	 
+		vec3 nominator = NDF * G * F;
+		float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001;
+		vec3 specular = nominator / denominator;
 
-	float NdotL = max(dot(normal, L), 0.0);                
-	Lo += (kD * albedo / PI + specular) * radiance * NdotL; 
+		vec3 kS = F;
+		vec3 kD = 1.0 - kS;
+		kD *= 1.0 - metallic;	 
+
+		float NdotL = max(dot(normal, L), 0.0);                
+		Lo += (kD * albedo / PI + specular) * radiance * NdotL; 
+
+	}
 
 	//======================= 
 
-	F = fresnelSchlickRoughness(max(dot(normal, camDir), 0.0), F0, roughness);
+	vec3 F = fresnelSchlickRoughness(max(dot(normal, camDir), 0.0), F0, roughness);
 
-	kS = F;
-	kD = 1.0 - kS;
+	vec3 kS = F;
+	vec3 kD = 1.0 - kS;
 	kD *= 1.0 - metallic;	
 
 
@@ -139,10 +142,12 @@ void main()
 	vec3 diffuse = irradiance * albedo;
 
 	const float MAX_REFLECTION_LOD = 4.0;
-	vec3 prefilteredColor = textureLod(prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;    
-	vec2 envBRDF = texture(brdfLUT, vec2(max(dot(normal, camDir), 0.0), roughness)).rg;
-	specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);
-	vec3 ambient = (kD * diffuse + specular) * ao; 
+    vec3 prefilteredColor = textureLod(prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;    
+    vec2 brdf = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
+    vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
+	
+
+	vec3 ambient = (kD * diffuse + specular) * ao;
 	
 
     vec3 color = ambient + Lo ;
@@ -156,8 +161,7 @@ void main()
 
 
 
-
-sLightComponent CalcDirLight(DIRECTION_LIGHT light, vec3 normal, vec3 viewDir, vec3 color){	
+sLightComponent CalcDirLight(LIGHT light, vec3 normal, vec3 viewDir, vec3 color){	
 	vec3 lightDir = vec3(light.x_pos, light.y_pos, light.z_pos);
 	lightDir = normalize(lightDir);
 	

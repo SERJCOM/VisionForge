@@ -141,9 +141,19 @@ public:
         glBindTexture(GL_TEXTURE_2D, texture);
     }
 
+    void UseTexture(int index, int texture ){
+        glActiveTexture(GL_TEXTURE0 + index);
+        glBindTexture(GL_TEXTURE_2D, texture);
+    } 
+
     void SetCubeMapTexture(int index, int texture, std::string name){
         glActiveTexture(GL_TEXTURE0 + index);
         setInt(name,    index  );
+        glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
+    }
+
+    void SetUseMapTexture(int index, int texture, std::string name){
+        glActiveTexture(GL_TEXTURE0 + index);
         glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
     }
 

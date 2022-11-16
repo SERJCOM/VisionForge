@@ -33,6 +33,7 @@ public:
     void AddLight(LightStruct light){
         LightStruct _light = light;
         lighting.push_back(_light);
+        if(light.type == 1) pointLightCount++;
     }
 
     void AddLight(){
@@ -48,6 +49,7 @@ public:
         shader->AddSSBO(lighting.data(), sizeof(LightStruct) * lighting.size(), 0);
         shader->use();
         shader->setInt("NUMBER_LIGHT", lighting.size());
+        if(pointLightCount > 0)     shader->setInt("len_point", pointLightCount);
     }
 
     LightStruct GetLight(int index){
@@ -58,4 +60,6 @@ private:
     Shader* shader = nullptr;
 
     std::vector<LightStruct> lighting;
+
+    int pointLightCount = 0;
 };

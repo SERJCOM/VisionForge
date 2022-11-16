@@ -13,7 +13,8 @@ enum Type{
     DIFFUSE,
     NORMALS,
     METALNESS,
-    ROUGHNESS
+    ROUGHNESS,
+    AO
 };
 
 class Material{
@@ -75,7 +76,6 @@ public:
                     case DIFFUSE:
                         _type = "texture_diffuse";
                         break;
-
                     case NORMALS:
                         _type = "texture_normal";
                         break;
@@ -84,6 +84,9 @@ public:
                         break;
                     case ROUGHNESS:
                         _type = "texture_roughness";
+                        break;
+                    case AO:
+                        _type = "texture_ao";
                         break;
                 }
                 _texture.type = _type;
