@@ -27,12 +27,23 @@ in LIGHT point_light[16];
 
 
 uniform vec3 cameraPos;
+
 uniform bool bool_texture_diffuse;
 uniform sampler2D texture_diffuse;
+
+uniform bool bool_texture_normal;
 uniform sampler2D texture_normal;
+
+uniform bool bool_texture_metalic;
 uniform sampler2D texture_metalic;
+
+uniform bool bool_texture_specular;
 uniform sampler2D texture_specular;
+
+uniform bool bool_texture_roughness;
 uniform sampler2D texture_roughness;
+
+uniform bool bool_texture_ao;
 uniform sampler2D texture_ao;
 
 uniform sampler2D shadowMap;
@@ -85,12 +96,16 @@ void main()
 	vec3 camDir = normalize(cameraPos - PosFrag); // направление камеры
 	vec3 R = reflect(-camDir, normal);
 
-	albedo = pow(texture(texture_diffuse, TexCoords).rgb, vec3(2.2));
-	metallic = texture(texture_metalic, TexCoords).r;
-	normalMap = getNormalFromMap();
-	normal = normalMap;
-	roughness = texture(texture_roughness, TexCoords).r;
-	ao = texture(texture_ao, TexCoords).r;
+	
+
+	if(bool_texture_diffuse) albedo = pow(texture(texture_diffuse, TexCoords).rgb, vec3(2.2));
+	if(bool_texture_metalic) metallic = texture(texture_metalic, TexCoords).r;
+	if(bool_texture_normal) {
+		normalMap = getNormalFromMap();
+		normal = normalMap;
+	}
+	if(bool_texture_roughness) roughness = texture(texture_roughness, TexCoords).r;
+	if(bool_texture_ao) ao = texture(texture_ao, TexCoords).r;
 
 
 	vec3 N = normal;
@@ -159,7 +174,8 @@ void main()
 }
 
 
-
+//=========================================================================
+//=========================================================================
 
 sLightComponent CalcDirLight(LIGHT light, vec3 normal, vec3 viewDir, vec3 color){	
 	vec3 lightDir = vec3(light.x_pos, light.y_pos, light.z_pos);

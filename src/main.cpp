@@ -71,7 +71,7 @@ int main() {
         shad.setVec3("lightPos", glm::vec3(0, 50.0f, 0));
         shad.setVec3("cameraPos", camera.cameraPos);
 
-
+        //city1.SetObjectPosition(i, 0, 0);
         city1.Draw(shad);
 
         skybox.DrawSkyBox(camera.view, projection);

@@ -18,8 +18,11 @@ void Object::Draw(Shader& shader){
         glActiveTexture(GL_TEXTURE0 + i); 
         std::string number;
         std::string name = textures[i].type;
+        std::string sBool = "bool_" + name;
         glUniform1i(glGetUniformLocation(shader.ID, (name).c_str()), i);
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
+
+        glUniform1i(glGetUniformLocation(shader.ID, sBool.c_str()), 1);
     }
 
     shader.BindSSBO();
