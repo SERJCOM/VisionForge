@@ -20,6 +20,13 @@ add_executable(Debug
     src/Object.cpp
 )
 
+add_library(RedEngine
+    src/Model.cpp 
+    src/Window.cpp
+    src/Mesh.cpp
+    src/Object.cpp
+)
+
 target_link_libraries(Debug PUBLIC 
     OpenGL::GL 
     "C:/Program Files (x86)/glew/lib/glew32.lib" 
@@ -29,7 +36,17 @@ target_link_libraries(Debug PUBLIC
     ReactPhysics3D::ReactPhysics3D
 )
 
+target_link_libraries(RedEngine PUBLIC 
+    OpenGL::GL 
+    "C:/Program Files (x86)/glew/lib/glew32.lib" 
+    assimp::assimp 
+    sfml-graphics sfml-window sfml-system sfml-audio sfml-network
+    jsoncpp_lib
+    ReactPhysics3D::ReactPhysics3D
+)
+
 set_target_properties(Debug PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
+set_target_properties(RedEngine PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 
 target_include_directories(Debug               
     PUBLIC 
@@ -38,3 +55,12 @@ target_include_directories(Debug
         ${GLM}
         $<BUILD_INTERFACE:${SFML_INCLUDE_DIR}>
 )
+
+target_include_directories(RedEngine               
+    PUBLIC 
+        ${CMAKE_SOURCE_DIR}/include
+        ${GLEW_H}
+        ${GLM}
+        $<BUILD_INTERFACE:${SFML_INCLUDE_DIR}>
+)
+

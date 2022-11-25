@@ -5,6 +5,7 @@
 #include <vector>
 #include <SFML/Graphics/Image.hpp>
 #include "shader.h"
+#include <string>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -65,7 +66,7 @@ public:
 	unsigned int skyboxID = 0, quadVAO = 0, quadVBO = 0;
 	Shader 		BRDF;
     void LoadSkyBox(std::vector<std::string> path) {
-		skyboxShader = Shader("../../shaders/skybox.vert", "../../shaders/skybox.frag");
+		skyboxShader = Shader(std::string(SHADER_PATH) + "/skybox.vert", std::string(SHADER_PATH) +"/skybox.frag");
 		
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
@@ -98,7 +99,7 @@ public:
 	}
 
 	void LoadRGBEfile(std::string path){
-		skyboxShader = Shader("../../shaders/hdr.vert", "../../shaders/hdr.frag");
+		skyboxShader = Shader(std::string(SHADER_PATH) + "/hdr.vert",  std::string(SHADER_PATH) + "/hdr.frag");
 		skyboxShader.use();
 		skyboxShader.setInt("environmentMap", 0);
 		
@@ -145,7 +146,7 @@ public:
     }
 
 	void CreateHDRTexture(){
-		HDRShader = Shader("../../shaders/configHDR.vert", "../../shaders/configHDR.frag");
+		HDRShader = Shader(std::string(SHADER_PATH) + "/configHDR.vert", std::string(SHADER_PATH) + "/configHDR.frag");
 
 		glGenFramebuffers(1, &captureFBO);
 		glGenRenderbuffers(1, &captureRBO);
@@ -210,7 +211,7 @@ public:
 		glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);		
 
-		HDRShader = Shader("../../shaders/configHDR.vert", "../../shaders/envir.frag");
+		HDRShader = Shader(std::string(SHADER_PATH) + "/configHDR.vert", std::string(SHADER_PATH) + "/envir.frag");
 		HDRShader.use();
 
 		HDRShader.setInt("environmentMap", 0);
@@ -251,7 +252,7 @@ public:
 		
 		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-		prefilter = Shader("../../shaders/configHDR.vert", "../../shaders/prefilter.frag");
+		prefilter = Shader(std::string(SHADER_PATH) + "/configHDR.vert", std::string(SHADER_PATH) + "/prefilter.frag");
 		prefilter.use();
 		prefilter.setInt("environmentMap", 0);
 		prefilter.setMat4("projection", captureProjection);
@@ -289,17 +290,17 @@ public:
 	}
 
 	unsigned int GetEnvironmentTexture(){
-		std::cout << envirTexture << " envirTexture" << std::endl;
+		//std::cout << envirTexture << " envirTexture" << std::endl;
 		return envirTexture;
 	}
 
 	unsigned int GetPrefilterTexture(){
-		std::cout << prefilterMap << " prefilterMap" << std::endl;
+		//std::cout << prefilterMap << " prefilterMap" << std::endl;
 		return prefilterMap;
 	}
 
 	unsigned int GetBDRFTexture(){
-		std::cout << brdfTexture << " brdfTexture" << std::endl;
+		//std::cout << brdfTexture << " brdfTexture" << std::endl;
 		return brdfTexture;
 	}
 
@@ -317,7 +318,7 @@ public:
 		glGenTextures(1, &brdfTexture);
 		
 		glBindTexture(GL_TEXTURE_2D, brdfTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, 256, 256, 0, GL_RG, GL_FLOAT, 0);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -325,12 +326,12 @@ public:
 
 		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 		glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 256, 256);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdfTexture, 0);
 
 		
 		glViewport(0, 0, 512, 512);
-		BRDF = Shader("../../shaders/brdf.vert", "../../shaders/brdf.frag");
+		BRDF = Shader(std::string(SHADER_PATH)  + "/brdf.vert",std::string(SHADER_PATH) + "/brdf.frag");
 		BRDF.use();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

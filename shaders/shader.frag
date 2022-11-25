@@ -63,8 +63,8 @@ struct sLightComponent{
 
 // данные материала для PBR
 vec3 albedo = vec3(0.5, 0.5, 0.5);
-float metallic = 1.0;
-float roughness = 1.0;
+float metallic = 0.0;
+float roughness = 0.0;
 float ao = 1.0;
 vec3 normalMap;
 
@@ -98,7 +98,7 @@ void main()
 
 	
 
-	if(bool_texture_diffuse) albedo = pow(texture(texture_diffuse, TexCoords).rgb, vec3(2.2));
+	albedo = pow(texture(texture_diffuse, TexCoords).rgb, vec3(2.2));
 	if(bool_texture_metalic) metallic = texture(texture_metalic, TexCoords).r;
 	if(bool_texture_normal) {
 		normalMap = getNormalFromMap();

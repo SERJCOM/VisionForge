@@ -1,4 +1,6 @@
- #pragma once
+#pragma once
+
+#define SHADER_PATH "D:/prog/vscodeProjects/Engine/Engine/shaders"
 
 #include <iostream>
 #include "window.h"

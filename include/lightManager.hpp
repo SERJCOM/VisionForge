@@ -3,6 +3,7 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include "shader.h"
+#include <map>
 
 
 struct LightStruct{
@@ -49,6 +50,21 @@ public:
         shader->AddSSBO(lighting.data(), sizeof(LightStruct) * lighting.size(), 0);
         shader->use();
         shader->setInt("NUMBER_LIGHT", lighting.size());
+        // std::map<int> count;
+        // for(LightStruct i : lighting){
+        //     count[i.type]++;
+        // }
+        // for(int i = 0; i < count.size(); i++){
+        //     switch (i)
+        //     {
+        //     case 1:
+        //         shader->setInt("len_point", )
+        //         break;
+            
+        //     default:
+        //         break;
+        //     }
+        // }
         if(pointLightCount > 0)     shader->setInt("len_point", pointLightCount);
     }
 
