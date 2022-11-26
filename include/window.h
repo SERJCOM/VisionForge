@@ -1,15 +1,14 @@
 #pragma once
 #include <iostream>
 #include <GL/glew.h>
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/Graphics/Texture.hpp>
+#include "GLFW/glfw3.h"
 #include "shader.h"
 
 
 class Window {
 public:	
-	sf::Window window;
+
+	GLFWwindow* window;
 
 	Window(int sizeX, int sizeY);
 

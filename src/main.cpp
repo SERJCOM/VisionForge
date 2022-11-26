@@ -52,14 +52,12 @@ int main() {
 
     const decimal timeStep = 1.0f / 60.0f;
     float i = 0;
-    sf::Event event;
 
     auto loop = [&](int& drawning){
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
-            window.window.close();
-            drawning = 0;
+        if(glfwGetKey(window.window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+            glfwSetWindowShouldClose(window, true);
+            drawning = false;
         }
-        while(window.window.pollEvent(event)){}
 
         camera.move();
         camera.looking(&window.window);

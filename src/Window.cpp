@@ -1,27 +1,43 @@
 #include "window.h"
 
 Window::Window(int sizeX, int sizeY) {
-	window.create(sf::VideoMode(sizeX, sizeY), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
-	//window.setVerticalSyncEnabled(true);
-	window.setActive(true);
-	window.setFramerateLimit(60);
+	glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	window = glfwCreateWindow(sizeX, sizeY, " OpenGL", NULL, NULL);
+	glfwMakeContextCurrent(window);
+
+	if (window == NULL)
+	{
+	    std::cout << "Failed to create GLFW window" << std::endl;
+	    glfwTerminate();
+	    return -1;
+	}
 }
 
 Window::Window() {
-	window.create(sf::VideoMode(1080, 720), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
-	//window.setVerticalSyncEnabled(true);
-	window.setActive(true);
+	glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	window = glfwCreateWindow(1280, 720, " OpenGL", NULL, NULL);
+	glfwMakeContextCurrent(window);
+
 }
 
 void Window::Display() {
-	window.display();
+	glfwSwapBuffers(window);
+    glfwPollEvents();
 }
 
 
 int Window::GetWindowHeight() {
-	return window.getSize().y;
+	//return window.getSize().y;
 }
 
 int Window::GetWindowWidth() {
-	return window.getSize().x;
+	//return window.getSize().x;
 }

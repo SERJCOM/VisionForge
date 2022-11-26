@@ -2,7 +2,7 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <functional>
-
+#include "GLFW/glfw3.h"
 
 
 class Engine
@@ -45,5 +45,7 @@ public:
 			if(!drawning)
 				break;
 		}
+
+		glfwTerminate();
 	}
 };
