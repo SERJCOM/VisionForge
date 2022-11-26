@@ -12,6 +12,7 @@ include(CMakePackageConfigHelpers)
 set(GLM "D:/prog/glm-0.9.9.8")
 set(GLEW_H "C:/Program Files (x86)/glew/include")
 
+
 add_executable(Debug 
     src/main.cpp
     src/Model.cpp 

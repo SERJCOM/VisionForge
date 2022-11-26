@@ -5,57 +5,12 @@ layout (location = 0) in vec3 pos;
 layout (location = 1) in vec3 Normal;
 layout (location = 2) in vec2 vertTexCoords;
 
-
-struct LightStruct{
-	// type:
-	// 0: direction light
-	// 1: point light
-	// 2: projector
-	int type;
-	float ambient;
-	float specular;
-	
-	float x_pos; // position of the light
-	float y_pos;
-	float z_pos;
-	
-	float x; // color of the light
-	float y;
-	float z;	
-};
-
-layout(std430, binding = 0) buffer ssboData
-{
-	LightStruct light[16];
-};
-
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 lightSpaceMatrix;
 uniform int NUMBER_LIGHT;
 
-struct LIGHT{
-	float ambient;
-	float specular;
-
-	float x_pos; // direction of the light
-	float y_pos;
-	float z_pos;
-	
-	float x; // color of the light
-	float y;
-	float z;	
-};
-
-out LIGHT direction_light;
-
-out LIGHT point_light[16];
-
-
-//out PROJECTOR{
-	
-//} projector[16];
 
 out vec3 colorOut; // color 
 out vec3 NormalOut; // normal
@@ -73,39 +28,4 @@ void main()
 	
     NormalOut = mat3(transpose(inverse(model))) * Normal;
 	TexCoords = vertTexCoords;  
-
-	//colorOut = vec3(light[0].x, light[0].y, light[0].z);
-
-	//lighting
-	int lp = 0, len_proj = 0;
-	
-	for(int i = 0; i < NUMBER_LIGHT; i++){
-		int type = light[i].type;
-		
-		if(type == 1){
-			direction_light.ambient = light[i].ambient;
-			direction_light.specular = light[i].specular;
-			
-			direction_light.x = light[i].x;
-			direction_light.y = light[i].y;
-			direction_light.z = light[i].z;
-			
-			direction_light.x_pos = light[i].x_pos;
-			direction_light.y_pos = light[i].y_pos;
-			direction_light.z_pos = light[i].z_pos;
-		}
-		// if(type == 1){
-		// 	point_light[len_point].ambient = light[i].ambient;
-		// 	point_light[len_point].specular = light[i].specular;
-			
-		// 	point_light[len_point].x = light[i].x;
-		// 	point_light[len_point].y = light[i].y;
-		// 	point_light[len_point].z = light[i].z;
-			
-		// 	point_light[len_point].x_pos = light[i].x_pos;
-		// 	point_light[len_point].y_pos = light[i].y_pos;
-		// 	point_light[len_point].z_pos = light[i].z_pos;
-		// 	lp++;
-		// }
-	}
 }

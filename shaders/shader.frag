@@ -11,19 +11,13 @@ in vec4 fragPosLight;
 struct LIGHT{
 	float ambient;
 	float specular;
-
-	float x_pos; // direction of the light
-	float y_pos;
-	float z_pos;
-	
-	float x; // color of the light
-	float y;
-	float z;	
+	vec3 pos;
+	vec3 color;
 };
 
-in LIGHT direction_light;
-in LIGHT point_light[16];
 
+uniform LIGHT point_light[16];
+uniform int len_point = 0;
 
 
 uniform vec3 cameraPos;
@@ -53,8 +47,6 @@ uniform samplerCube irradianceMap;
 uniform samplerCube prefilterMap;
 uniform sampler2D brdfLUT;
 
-uniform int len_point;
-
 struct sLightComponent{
 	vec3 ambient;
 	vec3 diffuse;
@@ -64,7 +56,7 @@ struct sLightComponent{
 // данные материала для PBR
 vec3 albedo = vec3(0.5, 0.5, 0.5);
 float metallic = 0.0;
-float roughness = 0.0;
+float roughness = 1.0;
 float ao = 1.0;
 vec3 normalMap;
 
@@ -98,7 +90,7 @@ void main()
 
 	
 
-	albedo = pow(texture(texture_diffuse, TexCoords).rgb, vec3(2.2));
+	if(bool_texture_diffuse) albedo = pow(texture(texture_diffuse, TexCoords).rgb, vec3(2.2));
 	if(bool_texture_metalic) metallic = texture(texture_metalic, TexCoords).r;
 	if(bool_texture_normal) {
 		normalMap = getNormalFromMap();
@@ -118,13 +110,45 @@ void main()
     // Уравнение отражения
     vec3 Lo = vec3(0.0);
 
-	for(int i = 0; i < 1; i++){
+	// vec3 L = normalize(vec3(point_light[i].x_pos, point_light[i].y_pos, point_light[i].z_pos) - PosFrag);
+	// vec3 H = normalize(camDir + L);
+	// float distance = length(vec3(point_light[i].x_pos, point_light[i].y_pos, point_light[i].z_pos) - PosFrag);
+	// float attenuation = 1.0 / (distance * distance);
+	// vec3 radiance = vec3(vec3(point_light[i].x, point_light[i].y, point_light[i].z)) * attenuation;  
 
-		vec3 L = normalize(vec3(15.0, 0, 0) - PosFrag);
+
+
+	vec3 ppos[16];
+	// ppos[0] = point_light[0].pos;
+	// ppos[1] = point_light[1].pos;
+	// ppos[2] = point_light[2].pos;
+
+	uint j = 0;
+	for(int i = 0; i < 6; i++){
+		ppos[i] = point_light[i].pos;
+	}
+
+
+	for(int i = 0; i < len_point; i++){
+
+	// vec3 L = normalize(vec3(point_light[i].x_pos, point_light[i].y_pos, point_light[i].z_pos) - PosFrag);
+	// vec3 H = normalize(camDir + L);
+	// float distance = length(vec3(point_light[i].x_pos, point_light[i].y_pos, point_light[i].z_pos) - PosFrag);
+	// float attenuation = 1.0 / (distance * distance);
+	// vec3 radiance = vec3(vec3(point_light[i].x, point_light[i].y, point_light[i].z)) * attenuation;       
+
+		
+		vec3 L = normalize(ppos[i] - PosFrag);
 		vec3 H = normalize(camDir + L);
-		float distance = length(vec3(15.0, 0, 0) - PosFrag);
+		float distance = length(ppos[i] - PosFrag);
 		float attenuation = 1.0 / (distance * distance);
-		vec3 radiance = vec3(1000, 1000, 1000) * attenuation;        
+		vec3 radiance = vec3(1000, 1000, 1000) * attenuation;      
+
+		// vec3 L = normalize(vec3(15.0, 0, 0) - PosFrag);
+		// vec3 H = normalize(camDir + L);
+		// float distance = length(vec3(15.0, 0, 0) - PosFrag);
+		// float attenuation = 1.0 / (distance * distance);
+		// vec3 radiance = vec3(1000, 1000, 1000) * attenuation;        
 		
 		// BRDF Кука-Торренса
 		float NDF = DistributionGGX(normal, H, roughness);        
@@ -170,6 +194,8 @@ void main()
     color = color / (color + vec3(1.0));
     color = pow(color, vec3(1.0/2.2));  
 
+	// color = vec3(point_light[2].x_pos, point_light[2].y_pos, point_light[2].z_pos);
+
 	FragColor = vec4(color, 1.0);
 }
 
@@ -178,7 +204,7 @@ void main()
 //=========================================================================
 
 sLightComponent CalcDirLight(LIGHT light, vec3 normal, vec3 viewDir, vec3 color){	
-	vec3 lightDir = vec3(light.x_pos, light.y_pos, light.z_pos);
+	vec3 lightDir = light.pos;
 	lightDir = normalize(lightDir);
 	
 	float diff = max(dot(normal, lightDir), 0.0);
@@ -186,7 +212,7 @@ sLightComponent CalcDirLight(LIGHT light, vec3 normal, vec3 viewDir, vec3 color)
 	vec3 reflectDir = reflect(-lightDir, normal);
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
 
-	vec3 lightColor = vec3(light.x, light.y, light.z);
+	vec3 lightColor = light.color;
 	
 	vec3 ambient = light.ambient * color;
 	vec3 diffuse = diff * lightColor;

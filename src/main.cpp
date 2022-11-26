@@ -3,47 +3,42 @@
 #include "Timer.hpp"
 
 int main() {
-
-    Timer time;
-    time.Start();
-
-    Window window(1920, 1080);
+    Window window(1080, 720);
     Engine engine;
     Camera camera(&window.window);
 
     Shader shad(std::string(SHADER_PATH) + "/shader.vert", std::string(SHADER_PATH) +  "/shader.frag");
     Shader shadow(std::string(SHADER_PATH) +  "/shadow.vert", std::string(SHADER_PATH) +  "/shadow.frag");
-
-    time.PrintTime();
-
     
 
     Li::Material matHouse;
-    matHouse.AddNewMaterial("D:/prog/obj/free-quick-terrain-test/textures/diff2.jpg", Li::Type::DIFFUSE, "DefaultMaterial");
-    matHouse.AddNewMaterial("D:/prog/obj/free-quick-terrain-test/textures/nrm.png", Li::Type::NORMALS, "DefaultMaterial");
+    matHouse.AddNewMaterial("D:/prog/obj/moon-mare-moscoviense/textures/1_Base_Color.jpg", Li::Type::DIFFUSE, "1");
+    matHouse.AddNewMaterial("D:/prog/obj/moon-mare-moscoviense/textures/1_Normal_DirectX.jpg", Li::Type::NORMALS, "1");
+    matHouse.AddNewMaterial("D:/prog/obj/moon-mare-moscoviense/textures/1_Mixed_AO.jpg", Li::Type::AO, "1");
+    matHouse.AddNewMaterial("D:/prog/obj/moon-mare-moscoviense/textures/1_Roughness.jpg", Li::Type::ROUGHNESS, "1");
 
-    time.Start();
+    // matHouse.AddNewMaterial("D:/prog/obj/the_moon/Material__50_baseColor.jpg", Li::Type::DIFFUSE, "Material__50");
+    // matHouse.AddNewMaterial("D:/prog/obj/the_moon/Material__50_normal.jpg", Li::Type::NORMALS, "Material__50");
+    // matHouse.AddNewMaterial("D:/prog/obj/the_moon/Material__50_metallicRoughness.png", Li::Type::ROUGHNESS, "Material__50");
+    
 
-    Model city1("D:/prog/obj/free-quick-terrain-test/source/terrain.obj"); 
-
-    time.PrintTime("model start");
+    Model city1("D:/prog/obj/moon-mare-moscoviense/source/Mare Moscoviense_max_LP.fbx"); 
+    //Model city1("D:/prog/obj/the_moon/scene.gltf"); 
 
     city1.RotateObject(90.0f, 0.0f, 0.0f);
     city1.ScaleObject(glm::vec3(0.1f, 0.1f, 0.1f));
     city1.AddMaterial(&matHouse);
-    time.PrintTime("model rotate");
-
     city1.LoadModel();
-
-    time.PrintTime("model Load");
 
     LightManager light;
     light.LinkShader(&shad);
-    light.AddLight(1, 0.8, 0, glm::vec3(15.0f, 10.0f, 0.0f), glm::vec3(10000.0f, 100000.0f, 10000.0f));
+    light.AddLight(1, 0.8, 0, glm::vec3(0.0f, 260.0f, 0.0f), glm::vec3(10000.0f, 10000.0f, 10000.0f));
+    light.AddLight(1, 0.8, 0, glm::vec3(-20.0f, 260.0f, 0.0f), glm::vec3(10000.0f, 10000.0f, 10000.0f));
+    light.AddLight(1, 0.8, 0, glm::vec3(50.0f, 260.0f, 1.0f), glm::vec3(10000.0f, 10000.0f, 10000.0f));
     light.SetShaderParameters();
 
     Shape skybox;
-    skybox.LoadRGBEfile("../../img/Brooklyn_Bridge_Planks/Brooklyn_Bridge_Planks_2k.hdr");
+    skybox.LoadRGBEfile("../../img/Milkyway/Milkyway_small.hdr");
     skybox.CreateHDRTexture();
     skybox.CreateEnvironment();
     skybox.CreatePrefilterMap();
@@ -70,7 +65,7 @@ int main() {
         camera.looking(&window.window);
         camera.view = camera.updateView();
         world->update(timeStep);
-        //std::cout << "cam pos: " << camera.cameraPos.x   << " " << camera.cameraPos.y << " " << camera.cameraPos.z << std::endl;
+        std::cout << "cam pos: " << camera.cameraPos.x   << " " << camera.cameraPos.y << " " << camera.cameraPos.z << std::endl;
         glm::mat4 projection = glm::perspective(glm::radians(80.0f), (float)window.GetWindowWidth() / (float)window.GetWindowHeight(), 0.1f, 1000.0f);
         glm::mat4 view = camera.view;
 
@@ -84,8 +79,7 @@ int main() {
         shad.setVec3("lightPos", glm::vec3(0, 50.0f, 0));
         shad.setVec3("cameraPos", camera.cameraPos);
 
-        //city1.SetObjectPosition(i, 0, 0);
-        //city1.Draw(shad);
+        city1.Draw(shad);
 
         skybox.DrawSkyBox(camera.view, projection);
 

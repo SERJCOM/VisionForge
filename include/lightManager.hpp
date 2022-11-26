@@ -4,15 +4,15 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "shader.h"
 #include <map>
+#include <string>
 
 
 struct LightStruct{
-    int type = 0;
+    int type = 1;
     float ambient = 0.8f;
     float specular = 0;
     glm::vec3 position = glm::vec3(10.0f, 50.0f, 10.0f);
     glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
-
 };
 
 class LightManager{
@@ -34,7 +34,6 @@ public:
     void AddLight(LightStruct light){
         LightStruct _light = light;
         lighting.push_back(_light);
-        if(light.type == 1) pointLightCount++;
     }
 
     void AddLight(){
@@ -47,25 +46,28 @@ public:
     }
 
     void SetShaderParameters(){
-        shader->AddSSBO(lighting.data(), sizeof(LightStruct) * lighting.size(), 0);
         shader->use();
-        shader->setInt("NUMBER_LIGHT", lighting.size());
-        // std::map<int> count;
-        // for(LightStruct i : lighting){
-        //     count[i.type]++;
-        // }
-        // for(int i = 0; i < count.size(); i++){
-        //     switch (i)
-        //     {
-        //     case 1:
-        //         shader->setInt("len_point", )
-        //         break;
-            
-        //     default:
-        //         break;
-        //     }
-        // }
-        if(pointLightCount > 0)     shader->setInt("len_point", pointLightCount);
+        int index = 0;
+        for(LightStruct i : lighting){
+            shader->setFloat("point_light[" + std::to_string(index) + "].ambient" ,i.ambient);
+            shader->setFloat("point_light[" + std::to_string(index) + "].specular" ,i.specular);
+            shader->setVec3("point_light[" + std::to_string(index) + "].pos", i.position);
+            shader->setVec3("point_light[" + std::to_string(index) + "].color", i.color);
+            index++;
+        }
+
+        std::map<int, int> count;
+        for(LightStruct i : lighting){
+            count[i.type]++;
+        }
+        for(auto i : count){
+            switch (i.first)
+            {
+            case 1:
+                shader->setInt("len_point", i.second);
+                break;
+            }
+        }
     }
 
     LightStruct GetLight(int index){

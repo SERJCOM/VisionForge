@@ -14,9 +14,7 @@ class Shader {
 public:
     unsigned int ID;
     
-
     Shader(){ }
-
 
     Shader(std::string vertf, std::string fragf) {
 
@@ -60,7 +58,6 @@ public:
         glDeleteShader(fragment);
 
     }
-
 
     void InitShader(std::string vertf, std::string fragf){
         std::string vertexCode, fragmentCode;

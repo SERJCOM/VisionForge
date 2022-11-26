@@ -1,4 +1,5 @@
 #include "model.h"
+#include "Timer.hpp"
 
 Model::Model(std::string path) {
     SetPath(path);
@@ -251,6 +252,7 @@ void Model::LoadModel(std::string path)
         std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
         return;
     }
+
     directory = path.substr(0, path.find_last_of('/'));
 
     rootName = scene->mRootNode->mName.C_Str();
@@ -312,6 +314,7 @@ Object Model::processMesh(aiMesh* mesh, const aiScene* scene)
         vertices.push_back(vertex);
     }
 
+
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
         aiFace face = mesh->mFaces[i];
@@ -324,7 +327,6 @@ Object Model::processMesh(aiMesh* mesh, const aiScene* scene)
     if(_material != nullptr){
         std::vector<sTexture> materials = _material->GetTexture(material->GetName().C_Str(), textures_loaded);
         textures.insert(textures.end(), materials.begin(), materials.end());
-
     }
     else{
         std::vector<sTexture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
