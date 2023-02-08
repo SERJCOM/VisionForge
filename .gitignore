@@ -1,6 +1,6 @@
 build
 .vscode
 add_libraries/
-img/
-obj/
+img
+obj
 include/stb_image.h
