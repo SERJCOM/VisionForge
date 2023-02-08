@@ -6,6 +6,7 @@
 #include <vector>
 #include <memory>
 #include "collection.hpp"
+#include "entity.hpp"
 
 
 class Engine
@@ -41,17 +42,40 @@ public:
 		gameLoop = loop;
 	}
 
+	// void Display() const{
+	// 	int drawning = 1;
+	// 	while(true){
+	// 		gameLoop(drawning);
+	// 		if(!drawning)
+	// 			break;
+	// 	}
+
+	// 	glfwTerminate();
+	// }
+
 	void Display() const{
 		int drawning = 1;
 		while(true){
-			gameLoop(drawning);
-			if(!drawning)
-				break;
-		}
+			try{
+				for(const auto& entity : _entities){
+					entity.get()->Update();
+				}
 
-		glfwTerminate();
+				for(const auto& component : _components){
+					component.get()->Update();
+				}
+
+				if(drawning == 0){
+					break;
+				}
+			}
+			catch (...){
+				std::cout << "ERROR::UNKNOW ERROR!!!" << std::endl;
+			}
+		}
 	}
 
 private:
-	std::vector<Collection*> _components;
+	std::vector<std::shared_ptr<Collection>> _components;
+	std::vector<std::shared_ptr<Entity>> _entities;
 };

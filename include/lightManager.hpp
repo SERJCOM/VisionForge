@@ -43,20 +43,24 @@ public:
     LightManager() = default;
 
     Light* AddLight(int type, float ambient, float specular, glm::vec3 position, glm::vec3 color){
+        SetUpdate();
         Light _light(type, ambient, specular, position, color);
         return static_cast <Light*>(this->AddComponent(_light));
     }
 
     Light* AddLight(Light light){
-        return static_cast <Light*>(this->AddComponent(light));
+        SetUpdate();
+        return static_cast <Light*>(this->AddComponent(light));  
     }
 
     Light* AddLight(){
+        SetUpdate();
         return static_cast <Light*>(this->AddComponent());
     }
 
     void LinkShader(Shader* shader){
         this->shader = shader;
+        SetUpdate();
     }
 
     void SetShaderParameters() const{
@@ -88,6 +92,19 @@ public:
         return static_cast <Light*>(this->GetComponent(index));
     }
 
+    virtual void Update() override{
+        if(WasUpdated == true){
+            SetShaderParameters();
+        }
+        WasUpdated = false;
+    }
+
 private:
     Shader* shader = nullptr;
+
+    bool WasUpdated = false;
+
+    void SetUpdate(){
+        WasUpdated = true;
+    }
 };

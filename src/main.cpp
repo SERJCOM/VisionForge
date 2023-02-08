@@ -94,7 +94,7 @@ int main() {
     };
     
 
-    engine.SetGameLoop(loop);
+    //engine.SetGameLoop(loop);
 
     engine.Display();
     

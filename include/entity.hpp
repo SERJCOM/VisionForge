@@ -1,24 +1,19 @@
-// #pragma once 
-// #include "glm/glm.hpp"
-// #include <glm/gtc/matrix_transform.hpp>
-// #include <vector>
-// #include "Model.h"
-// #include ""
+#pragma once 
 
-// class Entity{
 
-// public:
+class Entity{
 
-// Entity(){
+public:
 
-// }
+    Entity() = default;
 
-// private:
+    virtual void Update(){}
+    virtual void Start(){}
 
-// ~Entity(){
+private:
 
-// }
+~Entity(){
 
-// vector<
+}
 
-// };
+};

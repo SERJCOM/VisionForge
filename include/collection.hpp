@@ -25,6 +25,8 @@ public:
         return _components.at(index).get();
     }
 
+    virtual void Update(){}
+
 protected:
     std::vector<std::shared_ptr<IComponent>> _components;
 };

@@ -19,5 +19,9 @@ public:
         return static_cast<Model*>(this->AddComponent());
     }
 
-    
+    virtual void Update() override const{
+        for(const auto& model : _components){
+            static_cast<Model*>(model.get())->Draw();
+        }
+    }
 };
