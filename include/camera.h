@@ -16,7 +16,6 @@ public:
 	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::mat4 view;
-
 	
 
 	Camera(GLFWwindow* window) {
@@ -85,8 +84,8 @@ public:
 
 		double _xpos, _ypos;
 		glfwGetCursorPos(window, &_xpos, &_ypos);
-		xpos = _xpos;
-		ypos = _ypos;
+		xpos = static_cast<float>(_xpos);
+		ypos = static_cast<float>(_ypos);
 		//std::cout << "xpos ypos " << xpos << " " << ypos << std::endl;
 
 		sf::Vector2i Position;
@@ -105,6 +104,6 @@ public:
 private:
 	float lastX = 400, lastY = 300;
 	float yaw = 0, pitch = 0;	
-	int xpos = 400, ypos = 300;	
+	float xpos = 400, ypos = 300;	
 	GLFWwindow* window;
 };

@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "shader.h"
+#include "component.hpp"
 
 struct Vertex {
     glm::vec3 Position;
@@ -19,9 +20,7 @@ struct sTexture {
 };
 
 
-
-
-class Mesh{
+class Mesh: public IComponent{
 protected:
     std::vector<glm::vec3> vert;
 
