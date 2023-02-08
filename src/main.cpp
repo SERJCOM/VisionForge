@@ -5,7 +5,7 @@
 int main() {
     Window window(1080, 720);
     Engine engine;
-    Camera camera(&window.window);
+    Camera camera(window.window);
 
     Shader shad(std::string(SHADER_PATH) + "/shader.vert", std::string(SHADER_PATH) +  "/shader.frag");
     Shader shadow(std::string(SHADER_PATH) +  "/shadow.vert", std::string(SHADER_PATH) +  "/shadow.frag");
@@ -16,19 +16,25 @@ int main() {
     matHouse.AddNewMaterial("D:/prog/obj/moon-mare-moscoviense/textures/1_Normal_DirectX.jpg", Li::Type::NORMALS, "1");
     matHouse.AddNewMaterial("D:/prog/obj/moon-mare-moscoviense/textures/1_Mixed_AO.jpg", Li::Type::AO, "1");
     matHouse.AddNewMaterial("D:/prog/obj/moon-mare-moscoviense/textures/1_Roughness.jpg", Li::Type::ROUGHNESS, "1");
-
-    // matHouse.AddNewMaterial("D:/prog/obj/the_moon/Material__50_baseColor.jpg", Li::Type::DIFFUSE, "Material__50");
-    // matHouse.AddNewMaterial("D:/prog/obj/the_moon/Material__50_normal.jpg", Li::Type::NORMALS, "Material__50");
-    // matHouse.AddNewMaterial("D:/prog/obj/the_moon/Material__50_metallicRoughness.png", Li::Type::ROUGHNESS, "Material__50");
     
 
     Model city1("D:/prog/obj/moon-mare-moscoviense/source/Mare Moscoviense_max_LP.fbx"); 
-    //Model city1("D:/prog/obj/the_moon/scene.gltf"); 
-
     city1.RotateObject(90.0f, 0.0f, 0.0f);
     city1.ScaleObject(glm::vec3(0.1f, 0.1f, 0.1f));
     city1.AddMaterial(&matHouse);
+    city1.MoveObject(0, -200, 0);
     city1.LoadModel();
+
+    Li::Material mPlane;
+    mPlane.AddNewMaterial("D:/prog/obj/moon-mare-moscoviense/textures/spitfire_d.png", Li::Type::DIFFUSE, "Material #85");
+    mPlane.AddNewMaterial("D:/prog/obj/moon-mare-moscoviense/textures/spitfire_m.png", Li::Type::METALNESS, "Material #85");
+    mPlane.AddNewMaterial("D:/prog/obj/moon-mare-moscoviense/textures/spitfire_ao.png", Li::Type::AO, "Material #85");
+    mPlane.AddNewMaterial("D:/prog/obj/moon-mare-moscoviense/textures/spitfire_r.png", Li::Type::ROUGHNESS, "Material #85");
+
+    Model plane("D:/prog/obj/supermarine-spitfire/source/spitfire.FBX");
+    plane.AddMaterial(&mPlane); 
+    //plane.RotateObject(0, 90, 0);
+    plane.LoadModel();
 
     LightManager light;
     light.LinkShader(&shad);
@@ -55,15 +61,15 @@ int main() {
 
     auto loop = [&](int& drawning){
         if(glfwGetKey(window.window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
-            glfwSetWindowShouldClose(window, true);
+            glfwSetWindowShouldClose(window.window, true);
             drawning = false;
         }
 
         camera.move();
-        camera.looking(&window.window);
+        camera.looking(window.window);
         camera.view = camera.updateView();
         world->update(timeStep);
-        std::cout << "cam pos: " << camera.cameraPos.x   << " " << camera.cameraPos.y << " " << camera.cameraPos.z << std::endl;
+        //std::cout << "cam pos: " << camera.cameraPos.x   << " " << camera.cameraPos.y << " " << camera.cameraPos.z << std::endl;
         glm::mat4 projection = glm::perspective(glm::radians(80.0f), (float)window.GetWindowWidth() / (float)window.GetWindowHeight(), 0.1f, 1000.0f);
         glm::mat4 view = camera.view;
 
@@ -78,6 +84,7 @@ int main() {
         shad.setVec3("cameraPos", camera.cameraPos);
 
         city1.Draw(shad);
+        plane.Draw(shad);
 
         skybox.DrawSkyBox(camera.view, projection);
 

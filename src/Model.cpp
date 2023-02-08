@@ -323,7 +323,8 @@ Object Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
     
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-    std::cout << "texture name: " << material->GetName().C_Str() << std::endl;
+    std::cout << "texture name: " << material->GetName().C_Str() <<  std::endl;
+    std::cout << "mesh name: " << mesh->mName.C_Str() << std::endl;
     if(_material != nullptr){
         std::vector<sTexture> materials = _material->GetTexture(material->GetName().C_Str(), textures_loaded);
         textures.insert(textures.end(), materials.begin(), materials.end());

@@ -2,26 +2,25 @@
 
 Window::Window(int sizeX, int sizeY) {
 	glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	window = glfwCreateWindow(sizeX, sizeY, " OpenGL", NULL, NULL);
 	glfwMakeContextCurrent(window);
 
 	if (window == NULL)
 	{
-	    std::cout << "Failed to create GLFW window" << std::endl;
-	    glfwTerminate();
-	    return -1;
+		std::cout << "Failed to create GLFW window" << std::endl;
+		glfwTerminate();
 	}
 }
 
 Window::Window() {
 	glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	window = glfwCreateWindow(1280, 720, " OpenGL", NULL, NULL);
 	glfwMakeContextCurrent(window);
@@ -30,14 +29,18 @@ Window::Window() {
 
 void Window::Display() {
 	glfwSwapBuffers(window);
-    glfwPollEvents();
+	glfwPollEvents();
 }
 
 
 int Window::GetWindowHeight() {
-	//return window.getSize().y;
+	int width, height;
+	glfwGetWindowSize(window, &width, &height);	
+	return height;
 }
 
 int Window::GetWindowWidth() {
-	//return window.getSize().x;
+	int width, height;
+	glfwGetWindowSize(window, &width, &height);	
+	return width;
 }

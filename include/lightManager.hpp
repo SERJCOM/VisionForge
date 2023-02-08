@@ -1,64 +1,74 @@
 #pragma once
-#include <iostream>
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include "shader.h"
 #include <map>
 #include <string>
+#include <memory>
+#include "component.hpp"
 
 
-struct LightStruct{
-    int type = 1;
-    float ambient = 0.8f;
-    float specular = 0;
-    glm::vec3 position = glm::vec3(10.0f, 50.0f, 10.0f);
-    glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
+class Light{
+public:
+    Light():type(1), ambient(0.8), specular(0), position(glm::vec3(10.0f, 50.0f, 10.0f)), color(glm::vec3(1.0f, 1.0f, 1.0f)){};
+
+    Light(int type, float ambient, float specular, glm::vec3 position,  glm::vec3 color): type(type), ambient(ambient), specular(specular), position(position), color(color){}
+
+    void SetType(int type) {this->type = type;}
+    void SetAmbient(float ambient) {this->ambient = ambient;}
+    void SetSpecular(float specular) {this->specular = specular;}
+    void SetPosition(glm::vec3 position) {this->position = position;}
+    void SetColor(glm::vec3 color) {this->color = color;}
+
+    int GetType() {return this->type;}
+    float GetAmbient() {return this->ambient;}
+    float GetSpecular() {return this->specular;}
+    glm::vec3 GetPosition() {return this->position;}
+    glm::vec3 GetColor() {return this->color;}
+
+private: 
+    int type ;
+    float ambient ;
+    float specular ;
+    glm::vec3 position ;
+    glm::vec3 color;
 };
 
-class LightManager{
+class LightManager: public Component<Light>{
 public:
-    LightManager(){
-        lighting.reserve(16);
+    LightManager() = default;
+
+    Light* AddLight(int type, float ambient, float specular, glm::vec3 position, glm::vec3 color){
+        Light _light;
+        return this->AddComponent(_light);
     }
 
-    void AddLight(int type, float ambient, float specular, glm::vec3 position, glm::vec3 color){
-        LightStruct _light;
-        _light.type = type;
-        _light.ambient = ambient;
-        _light.specular = specular;
-        _light.position = position;
-        _light.color = color;
-        lighting.push_back(_light);
+    Light* AddLight(Light light){
+        return this->AddComponent(light);
     }
 
-    void AddLight(LightStruct light){
-        LightStruct _light = light;
-        lighting.push_back(_light);
-    }
-
-    void AddLight(){
-        LightStruct _light;
-        lighting.push_back(_light);
+    Light* AddLight(){
+        return this->AddComponent();
     }
 
     void LinkShader(Shader* shader){
         this->shader = shader;
     }
 
-    void SetShaderParameters(){
+    void SetShaderParameters() const{
         shader->use();
         int index = 0;
-        for(LightStruct i : lighting){
-            shader->setFloat("point_light[" + std::to_string(index) + "].ambient" ,i.ambient);
-            shader->setFloat("point_light[" + std::to_string(index) + "].specular" ,i.specular);
-            shader->setVec3("point_light[" + std::to_string(index) + "].pos", i.position);
-            shader->setVec3("point_light[" + std::to_string(index) + "].color", i.color);
+        for(const auto i : _components){
+            shader->setFloat("point_light[" + std::to_string(index) + "].ambient" ,i->GetAmbient());
+            shader->setFloat("point_light[" + std::to_string(index) + "].specular" ,i->GetSpecular());
+            shader->setVec3("point_light[" + std::to_string(index) + "].pos", i->GetPosition());
+            shader->setVec3("point_light[" + std::to_string(index) + "].color", i->GetColor());
             index++;
         }
 
         std::map<int, int> count;
-        for(LightStruct i : lighting){
-            count[i.type]++;
+        for(const auto& i : _components){
+            count[i.get()->GetType()]++;
         }
         for(auto i : count){
             switch (i.first)
@@ -70,14 +80,10 @@ public:
         }
     }
 
-    LightStruct GetLight(int index){
-        return lighting[index];
+    Light* GetLight(int index) const{
+        return this->GetComponent(index);
     }
 
 private:
     Shader* shader = nullptr;
-
-    std::vector<LightStruct> lighting;
-
-    int pointLightCount = 0;
 };

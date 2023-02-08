@@ -12,8 +12,7 @@ include(CMakePackageConfigHelpers)
 set(GLM "D:/prog/glm-0.9.9.8")
 set(GLEW_H "C:/Program Files (x86)/glew/include")
 
-set(GLFW_DIR "C:/Program Files (x86)/GLFW/include")
-set(GLFW_LIB "C:/Program Files (x86)/GLFW/lib")
+add_subdirectory(${PROJECT_SOURCE_DIR}/libraries/glfw)
 
 add_executable(Debug 
     src/main.cpp
@@ -37,7 +36,7 @@ target_link_libraries(Debug PUBLIC
     sfml-graphics sfml-window sfml-system sfml-audio sfml-network
     jsoncpp_lib
     ReactPhysics3D::ReactPhysics3D
-    GLFW_LIB
+    glfw
 )
 
 
@@ -48,7 +47,7 @@ target_link_libraries(RedEngine PUBLIC
     sfml-graphics sfml-window sfml-system sfml-audio sfml-network
     jsoncpp_lib
     ReactPhysics3D::ReactPhysics3D
-    GLFW_LIB
+    glfw
 )
 
 set_target_properties(Debug PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
@@ -60,7 +59,7 @@ target_include_directories(Debug
         ${GLEW_H}
         ${GLM}
         $<BUILD_INTERFACE:${SFML_INCLUDE_DIR}>
-        ${GLFW_DIR}
+        
 )
 
 target_include_directories(RedEngine               
@@ -69,5 +68,5 @@ target_include_directories(RedEngine
         ${GLEW_H}
         ${GLM}
         $<BUILD_INTERFACE:${SFML_INCLUDE_DIR}>
-        ${GLFW_DIR}
+        
 )
