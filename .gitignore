@@ -2,5 +2,3 @@ build
 .vscode
 add_libraries/
 img
-obj
-include/stb_image.h
