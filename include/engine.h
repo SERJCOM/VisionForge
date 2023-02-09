@@ -6,7 +6,7 @@
 #include <vector>
 #include <memory>
 #include "collection.hpp"
-#include "entity.hpp"
+#include "Entity.hpp"
 
 
 class Engine
@@ -42,6 +42,12 @@ public:
 		gameLoop = loop;
 	}
 
+	Entity* CreateEntity(){
+		Entity* _entity = new Entity();
+		_entities.push_back(std::shared_ptr<Entity>(_entity) );
+		return _entity;
+	}
+
 	// void Display() const{
 	// 	int drawning = 1;
 	// 	while(true){
@@ -58,12 +64,14 @@ public:
 		while(true){
 			try{
 				for(const auto& entity : _entities){
-					entity.get()->Update();
+					entity.Update();
 				}
 
 				for(const auto& component : _components){
 					component.get()->Update();
 				}
+
+				
 
 				if(drawning == 0){
 					break;
