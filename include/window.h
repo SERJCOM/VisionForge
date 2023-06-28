@@ -1,28 +1,29 @@
 #pragma once
 #include <iostream>
 #include <GL/glew.h>
-#include "GLFW/glfw3.h"
-#include "shader.h"
+#include "SFML/Window/Window.hpp"
+#include <SFML/Window/VideoMode.hpp>
+#include <SFML/Window/WindowStyle.hpp>
+#include <SFML/Window/ContextSettings.hpp>
+#include "Shader.h"
 
 
-class Window {
+namespace lthm{
+
+class Window: public sf::Window {
 public:	
 
-	GLFWwindow* window;
+	Window(int x, int y){
+        this->setSize(sf::Vector2u{x, y});
+        
+    }
 
-	Window(int sizeX, int sizeY);
-
-	Window();
-
-	void Display();
-
-	int GetWindowWidth();
-
-	int GetWindowHeight();
-
-	bool running = true;
+    using sf::Window::Window;
 
 private:
 	
 	
 };
+
+
+}

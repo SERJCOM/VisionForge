@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <GL/glew.h>
-#include "shader.h"
+#include "Shader.h"
 #include <string>
 
 class Shadow{
@@ -10,16 +10,18 @@ private:
     int width, height;
     GLuint texture, framebuff;
     glm::vec3 position = glm::vec3(10.0f, 40.0f, 30.0f);
-    glm::vec3 *ptrPosition = &position;
+
     glm::vec3 look = glm::vec3(0,0,0);
 
-    glm::mat4 lightView = glm::lookAt(*ptrPosition, look , glm::vec3(0.0, 1.0, 0.0));
+    glm::mat4 lightView = glm::lookAt(position, look , glm::vec3(0.0, 1.0, 0.0));
     float near_plane = 1.0f, far_plane = 1000.5f;
     glm::mat4 lightProjection = glm::ortho(-500.0f, 500.0f, -500.0f, 500.0f, near_plane, far_plane); 
 
     bool type = false; // false = orth; 
 
 public:
+
+    Shadow() = default;
 
     Shadow(int width, int height){
         shad = Shader("..\\..\\shaders\\shadow.vert", "..\\..\\shaders\\shadow.frag");
@@ -53,9 +55,11 @@ public:
     void SetMat4(){
         glm::mat4 lightView;
         if(!type)
-            lightView = glm::lookAt(*ptrPosition, look , glm::vec3(0.0, 1.0, 0.0));
+            lightView = glm::lookAt(position , look , glm::vec3(0.0, 1.0, 0.0));
+
         shad.use();
-        shad.setMat4("lightSpaceMatrix", lightProjection * lightView);  
+        glm::mat4 temp = lightProjection * lightView;
+        shad.setMat4("lightSpaceMatrix", temp);  
     }
 
     void SetMat4(glm::mat4 look){
@@ -67,9 +71,7 @@ public:
         this->position = position;
     }
 
-    void SetPosition(glm::vec3* pos){
-        ptrPosition = pos;
-    }
+
 
     glm::mat4 GetMatrix(){
         return lightProjection * lightView;

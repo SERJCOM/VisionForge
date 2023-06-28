@@ -1,25 +1,27 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(Engine VERSION 0.1.0)
 
+set(OpenGL_GL_PREFERENCE LEGACY)    
+
+find_package(SFML 3.0.0 COMPONENTS System Window Network Audio REQUIRED)
 find_package(assimp REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(jsoncpp REQUIRED)
-find_package(SFML 2.5.1 COMPONENTS system window network audio REQUIRED)
 find_package(ReactPhysics3D  REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(glm REQUIRED)
 
 include(CMakePackageConfigHelpers)
 
-set(GLM "D:/prog/glm-0.9.9.8")
-set(GLEW_H "C:/Program Files (x86)/glew/include")
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/libraries/glfw)
 
-add_executable(Debug 
-    src/main.cpp
+add_executable(Test 
+    test/main.cpp
     src/Model.cpp 
     src/Window.cpp
     src/Mesh.cpp
     src/Object.cpp
+    src/Shape.cpp
 )
 
 add_library(RedEngine
@@ -27,46 +29,52 @@ add_library(RedEngine
     src/Window.cpp
     src/Mesh.cpp
     src/Object.cpp
+    src/Shape.cpp
 )
 
-target_link_libraries(Debug PUBLIC 
+
+
+target_link_libraries(Test PUBLIC 
     OpenGL::GL 
-    "C:/Program Files (x86)/glew/lib/glew32.lib" 
+    glm::glm
     assimp::assimp 
     sfml-graphics sfml-window sfml-system sfml-audio sfml-network
     jsoncpp_lib
     ReactPhysics3D::ReactPhysics3D
-    glfw
+    ${GLEW_LIBRARIES}
 )
+
+
 
 
 target_link_libraries(RedEngine PUBLIC 
     OpenGL::GL 
-    "C:/Program Files (x86)/glew/lib/glew32.lib" 
+    ${GLEW_LIBRARIES}
     assimp::assimp 
     sfml-graphics sfml-window sfml-system sfml-audio sfml-network
     jsoncpp_lib
     ReactPhysics3D::ReactPhysics3D
-    glfw
+
 )
 
-set_target_properties(Debug PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
+set_target_properties(Test PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 set_target_properties(RedEngine PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 
-target_include_directories(Debug               
+target_include_directories(Test               
     PUBLIC 
         ${CMAKE_SOURCE_DIR}/include
-        ${GLEW_H}
-        ${GLM}
-        $<BUILD_INTERFACE:${SFML_INCLUDE_DIR}>
-        
+
+        ${SFML_INCLUDE_DIR}
+        ${GLEW_INCLUDE_DIRS}   
 )
+
+
 
 target_include_directories(RedEngine               
     PUBLIC 
         ${CMAKE_SOURCE_DIR}/include
-        ${GLEW_H}
+        ${GLEW_INCLUDE_DIRS}
         ${GLM}
-        $<BUILD_INTERFACE:${SFML_INCLUDE_DIR}>
+        ${SFML_INCLUDE_DIR}
         
 )

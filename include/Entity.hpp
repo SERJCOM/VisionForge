@@ -1,6 +1,8 @@
 #pragma once 
 
 
+namespace lthm{
+
 class Entity{
 
 public:
@@ -10,10 +12,12 @@ public:
     virtual void Update(){}
     virtual void Start(){}
 
+    ~Entity() = default;
+
 private:
 
-~Entity(){
 
-}
 
 };
+
+}

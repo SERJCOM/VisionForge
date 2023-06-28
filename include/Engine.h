@@ -1,13 +1,23 @@
 ﻿#pragma once
 #include <iostream>
-#include <GL/glew.h>
+
 #include <functional>
-#include "GLFW/glfw3.h"
+
+#include <GL/glew.h>
+
+
 #include <vector>
 #include <memory>
 #include "collection.hpp"
 #include "Entity.hpp"
 
+
+#include <SFML/Window.hpp>
+#include <SFML/OpenGL.hpp>
+
+#include <utility>
+
+namespace lthm{
 
 class Engine
 {
@@ -16,7 +26,15 @@ private:
 
 public:
 	Engine() {
+		window_.create(sf::VideoMode({800, 600}), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
+		window_.setActive(true);
+
+		Init();
+	}
+
+	void Init(){
 		glewInit();
+
 		glEnable(GL_TEXTURE_CUBE_MAP);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
@@ -42,48 +60,45 @@ public:
 		gameLoop = loop;
 	}
 
-	Entity* CreateEntity(){
-		Entity* _entity = new Entity();
-		_entities.push_back(std::shared_ptr<Entity>(_entity) );
-		return _entity;
+
+	sf::Window& GetWindow() {
+		return window_;
 	}
 
-	// void Display() const{
-	// 	int drawning = 1;
-	// 	while(true){
-	// 		gameLoop(drawning);
-	// 		if(!drawning)
-	// 			break;
-	// 	}
 
-	// 	glfwTerminate();
-	// }
-
-	void Display() const{
+	void Display() {
 		int drawning = 1;
 		while(true){
+			gameLoop(drawning);
 			try{
-				for(const auto& entity : _entities){
-					entity.Update();
+				for(const auto& entity : entities_){
+					entity->Update();
 				}
 
-				for(const auto& component : _components){
+				for(const auto& component : components_){
 					component.get()->Update();
 				}
-
-				
 
 				if(drawning == 0){
 					break;
 				}
+
 			}
 			catch (...){
 				std::cout << "ERROR::UNKNOW ERROR!!!" << std::endl;
 			}
+
+			window_.display();
 		}
+
+		
 	}
 
 private:
-	std::vector<std::shared_ptr<Collection>> _components;
-	std::vector<std::shared_ptr<Entity>> _entities;
+	std::vector<std::shared_ptr<Collection>> components_;
+	std::vector<std::shared_ptr<lthm::Entity>> entities_;
+	sf::Window window_;
 };
+
+
+}

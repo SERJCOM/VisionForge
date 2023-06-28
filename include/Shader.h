@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "ssbo.hpp"
+#include <filesystem>
 
 
 class Shader {
@@ -16,7 +17,7 @@ public:
     
     Shader(){ }
 
-    Shader(std::string vertf, std::string fragf) {
+    Shader(std::filesystem::path vertf, std::filesystem::path fragf) {
 
         std::string vertexCode, fragmentCode;
 

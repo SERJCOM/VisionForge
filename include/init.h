@@ -1,15 +1,14 @@
 #pragma once
 
-#define SHADER_PATH "D:/prog/vscodeProjects/Engine/Engine/shaders"
 
 #include <iostream>
 #include "window.h"
-#include "engine.h"
-#include "camera.h"
+#include "Engine.h"
+#include "CameraEntity.h"
 #include "model.h"
 #include <math.h>
-#include "texture.h"
-#include "shader.h"
+#include "Texture.h"
+#include "Shader.h"
 #include <string>
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -30,5 +29,4 @@ PhysicsWorld* world = physicsCommon.createPhysicsWorld();
 
 using	std::cout;
 using	std::endl;
-
 
