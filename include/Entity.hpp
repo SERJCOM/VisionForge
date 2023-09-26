@@ -1,18 +1,20 @@
 #pragma once 
-
+#include <vector>
+#include "Component.hpp"
 
 namespace lthm{
 
-class Entity{
+class IEntity{
 
 public:
 
-    Entity() = default;
+    IEntity() = default;
 
-    virtual void Update(){}
-    virtual void Start(){}
+    virtual void Update() = 0;
+    virtual void Start() = 0;
+    virtual std::vector<std::shared_ptr<lthm::IComponent>> GetComponents() const = 0;
 
-    ~Entity() = default;
+    ~IEntity() = default;
 
 private:
 

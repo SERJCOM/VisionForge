@@ -5,10 +5,10 @@
 #include <map>
 #include <string>
 #include <memory>
-#include "collection.hpp"
+#include "Component.hpp"
 
 
-class Light: public IComponent{
+class Light: public lthm::IComponent{
 public:
 
     Light():type(1), ambient(0.8f), specular(0), position(glm::vec3(10.0f, 50.0f, 10.0f)), color(glm::vec3(1.0f, 1.0f, 1.0f)){};
@@ -38,73 +38,73 @@ private:
     glm::vec3 color;
 };
 
-class LightManager: public Collection{
-public:
-    LightManager() = default;
+// class LightManager: public Collection{
+// public:
+//     LightManager() = default;
 
-    Light* AddLight(int type, float ambient, float specular, glm::vec3 position, glm::vec3 color){
-        SetUpdate();
-        Light _light(type, ambient, specular, position, color);
-        return static_cast <Light*>(this->AddComponent(_light));
-    }
+//     Light* AddLight(int type, float ambient, float specular, glm::vec3 position, glm::vec3 color){
+//         SetUpdate();
+//         Light _light(type, ambient, specular, position, color);
+//         return static_cast <Light*>(this->AddComponent(_light));
+//     }
 
-    Light* AddLight(Light light){
-        SetUpdate();
-        return static_cast <Light*>(this->AddComponent(light));  
-    }
+//     Light* AddLight(Light light){
+//         SetUpdate();
+//         return static_cast <Light*>(this->AddComponent(light));  
+//     }
 
-    Light* AddLight(){
-        SetUpdate();
-        return static_cast <Light*>(this->AddComponent());
-    }
+//     Light* AddLight(){
+//         SetUpdate();
+//         return static_cast <Light*>(this->AddComponent());
+//     }
 
-    void LinkShader(Shader* shader){
-        this->shader = shader;
-        SetUpdate();
-    }
+//     void LinkShader(Shader* shader){
+//         this->shader = shader;
+//         SetUpdate();
+//     }
 
-    void SetShaderParameters() const{
-        shader->use();
-        int index = 0;
-        for(const auto i : _components){
-            shader->setFloat("point_light[" + std::to_string(index) + "].ambient" ,static_cast <Light*>(i.get())->GetAmbient());
-            shader->setFloat("point_light[" + std::to_string(index) + "].specular" ,static_cast <Light*>(i.get())->GetSpecular());
-            shader->setVec3("point_light[" + std::to_string(index) + "].pos", static_cast <Light*>(i.get())->GetPosition());
-            shader->setVec3("point_light[" + std::to_string(index) + "].color", static_cast <Light*>(i.get())->GetColor());
-            index++;
-        }
+//     void SetShaderParameters() const{
+//         shader->use();
+//         int index = 0;
+//         for(const auto i : _components){
+//             shader->setFloat("point_light[" + std::to_string(index) + "].ambient" ,static_cast <Light*>(i.get())->GetAmbient());
+//             shader->setFloat("point_light[" + std::to_string(index) + "].specular" ,static_cast <Light*>(i.get())->GetSpecular());
+//             shader->setVec3("point_light[" + std::to_string(index) + "].pos", static_cast <Light*>(i.get())->GetPosition());
+//             shader->setVec3("point_light[" + std::to_string(index) + "].color", static_cast <Light*>(i.get())->GetColor());
+//             index++;
+//         }
 
-        std::map<int, int> count;
-        for(const auto& i : _components){
-            count[static_cast <Light*>(i.get())->GetType()]++;
-        }
-        for(auto i : count){
-            switch (i.first)
-            {
-            case 1:
-                shader->setInt("len_point", i.second);
-                break;
-            }
-        }
-    }
+//         std::map<int, int> count;
+//         for(const auto& i : _components){
+//             count[static_cast <Light*>(i.get())->GetType()]++;
+//         }
+//         for(auto i : count){
+//             switch (i.first)
+//             {
+//             case 1:
+//                 shader->setInt("len_point", i.second);
+//                 break;
+//             }
+//         }
+//     }
 
-    Light* GetLight(int index) const{
-        return static_cast <Light*>(this->GetComponent(index));
-    }
+//     Light* GetLight(int index) const{
+//         return static_cast <Light*>(this->GetComponent(index));
+//     }
 
-    virtual void Update() override{
-        if(WasUpdated == true){
-            SetShaderParameters();
-        }
-        WasUpdated = false;
-    }
+//     virtual void Update() override{
+//         if(WasUpdated == true){
+//             SetShaderParameters();
+//         }
+//         WasUpdated = false;
+//     }
 
-private:
-    Shader* shader = nullptr;
+// private:
+//     Shader* shader = nullptr;
 
-    bool WasUpdated = false;
+//     bool WasUpdated = false;
 
-    void SetUpdate(){
-        WasUpdated = true;
-    }
-};
+//     void SetUpdate(){
+//         WasUpdated = true;
+//     }
+// };

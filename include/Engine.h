@@ -4,11 +4,18 @@
 #include <GL/glew.h>
 #include <vector>
 #include <memory>
-#include "collection.hpp"
+#include "Component.hpp"
 #include "Entity.hpp"
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
 #include <utility>
+#include <filesystem>
+#include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include "Shader.h"
+#include "CameraComponent.h"
+#include <cassert>
 
 namespace lthm{
 
@@ -19,10 +26,21 @@ private:
 
 public:
 	Engine() {
+
+		using namespace std::filesystem;
+
 		window_.create(sf::VideoMode({800, 600}), "OpenGL");
 		window_.setActive(true);
 
 		Init();
+
+		current_path_ = std::filesystem::current_path() / path("../shaders");
+		current_path_ = current_path_.lexically_normal();
+
+		shad_ = Shader(current_path_ / path("shader.vert"), current_path_  /  path("shader.frag"));
+		shadow_ = Shader(current_path_ / path("shadow.vert"), current_path_ / path("shadow.frag"));
+
+		projection_ = glm::perspective(glm::radians(80.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 0.1f, 1000.0f);
 	}
 
 	void Init(){
@@ -58,18 +76,52 @@ public:
 		return window_;
 	}
 
+	void AddEntity(std::shared_ptr<lthm::IEntity> entity){
+		entity->Start();
+		entities_.push_back(entity);
+
+		auto components = entity->GetComponents();
+		for(auto component : components){
+			RegisterComponent(component);
+		}
+	}
+
+	void RegisterComponent(std::shared_ptr<lthm::IComponent> component){
+		components_.push_back(component);
+	}
+
+	std::filesystem::path GetCurrentPath() const {
+		return current_path_;
+	}
+
+	void SetMainCamera(lthm::CameraComponent* main_camera){
+		main_camera_ = main_camera;
+	}
+
+	void SetProjectionMatrix(glm::mat4 projection){
+		projection_ = projection;
+	}
+
+	glm::mat4 GetProjectionMatrix() const {
+		return projection_;
+	}
+
+	lthm::CameraComponent* GetMainCamera() const {
+		return main_camera_;
+	}
+
 
 	void Display() {
 		int drawning = 1;
 		while(true){
-			gameLoop(drawning);
+
 			try{
-				for(const auto& entity : entities_){
+				for(auto entity : entities_){
 					entity->Update();
 				}
 
-				for(const auto& component : components_){
-					component.get()->Update();
+				for(auto component : components_){
+					component->Update();
 				}
 
 				if(drawning == 0){
@@ -81,6 +133,17 @@ public:
 				std::cout << "ERROR::UNKNOW ERROR!!!" << std::endl;
 			}
 
+			
+
+			Drawning(GetWindow().getSize().x ,GetWindow().getSize().y);
+			ClearBuffers();
+
+			UpdateMatrix();
+
+			UpdateShader();
+
+			gameLoop(drawning);
+
 			window_.display();
 		}
 
@@ -88,9 +151,34 @@ public:
 	}
 
 private:
-	std::vector<std::shared_ptr<Collection>> components_;
-	std::vector<std::shared_ptr<lthm::Entity>> entities_;
+
+	void UpdateMatrix(){
+
+		view_ = main_camera_->GetViewMatrix();
+		
+	}
+
+	void UpdateShader(){
+		shad_.use();
+		shad_.setMat4("projection", projection_);
+		shad_.setMat4("view", view_);
+		shad_.setVec3("cameraPos", main_camera_->GetCameraPos());
+	}
+
+
+	std::vector<std::shared_ptr<lthm::IEntity>> entities_;
+	std::vector<std::shared_ptr<lthm::IComponent>> components_;
 	sf::Window window_;
+
+	Shader shad_;
+	Shader shadow_;
+
+	std::filesystem::path current_path_;
+
+	glm::mat4 projection_;
+	glm::mat4 view_;
+
+	lthm::CameraComponent* main_camera_;
 };
 
 

@@ -5,23 +5,41 @@
 #include <SFML/Window/Mouse.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Window.hpp>
+#include "Component.hpp"
 
+namespace lthm{
 
-
-class CameraEntity {
+class CameraComponent : public lthm::IComponent{
 public:
+
+	void Start() override{
+
+	}
+
+	void Update() override{
+		Move();
+		Looking();
+		updateView();
+	}
+
 	glm::vec3 cameraPos = glm::vec3(-1.0f, 0.0f, 0.0f);
 	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::mat4 view;
 	
 
-	CameraEntity(sf::Window& window):window_(window) {
+	CameraComponent() = default;
+
+	void SetWindow(sf::Window& window){
+		window_ = &window;
+	}
+
+	CameraComponent(sf::Window& window):window_(&window) {
 		sf::Vector2i position;
 		position.x = 400;
 		position.y = 300;
 
-		sf::Mouse::setPosition(position, window_);
+		sf::Mouse::setPosition(position, *window_);
 
 	}
 
@@ -61,7 +79,7 @@ public:
 		cameraFront = glm::normalize(direction);
 
 
-		sf::Vector2i pos = sf::Mouse::getPosition(window_);
+		sf::Vector2i pos = sf::Mouse::getPosition(*window_);
 		std::swap(xpos, lastX);
 		std::swap(ypos, lastY);
 		xpos = pos.x;
@@ -74,6 +92,10 @@ public:
 		return view;
 	}
 
+	virtual glm::mat4 GetViewMatrix() const {
+		return view;
+	}
+
 	void SetSensitivity(float sensitivity){
 		sensitivity_ = sensitivity;
 	}
@@ -82,12 +104,18 @@ public:
 		return sensitivity_;
 	}
 
-	virtual ~CameraEntity() = default;
+	glm::vec3 GetCameraPos() const {
+		return cameraPos;
+	}
+
+	virtual ~CameraComponent() = default;
 
 protected:
 	float lastX = 400, lastY = 300;
 	float yaw = 0, pitch = 0;	
 	float xpos = 400, ypos = 300;	
 	float sensitivity_ = 0.05;
-	sf::Window& window_;
+	sf::Window* window_;
 };
+
+}

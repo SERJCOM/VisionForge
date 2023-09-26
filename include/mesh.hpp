@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Shader.h"
-#include "component.hpp"
+#include "Component.hpp"
 
 struct Vertex {
     glm::vec3 Position;
@@ -20,7 +20,7 @@ struct sTexture {
 };
 
 
-class Mesh: public IComponent{
+class Mesh: public lthm::IComponent{
 protected:
     std::vector<glm::vec3> vert;
 
@@ -48,6 +48,10 @@ public:
     void DrawRectangle(Shader& shad, int texture);
 
     virtual void Draw(Shader& shader);
+
+    void Update() override {}
+
+    void Start() override {}
 
     std::vector<Vertex> GetVertices(){
         return vertices;
