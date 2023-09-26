@@ -3,17 +3,20 @@
 
 void lthm::CameraComponent::Move()
 {
-    const float cameraSpeed = 0.5f;
+    const float cameraSpeed = 0.1f;
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))	cameraPos += cameraSpeed * cameraFront;
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))	cameraPos -= cameraSpeed * cameraFront;
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))	cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))	cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 
+    std::cout << "camerapos " << cameraPos.x << " " << cameraPos.y << " " << cameraPos.z << std::endl;
+
 }
 
 void lthm::CameraComponent::Looking()
 {
+
     window_->setMouseCursorVisible(false);
 		
     float xoffset = -(lastX - xpos);
@@ -47,5 +50,6 @@ void lthm::CameraComponent::Looking()
     Position.x = lastX;
     Position.y = lastY;
     sf::Mouse::setPosition(Position, *window_);
+
 
 }

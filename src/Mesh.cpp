@@ -46,7 +46,7 @@ void Mesh::DrawRectangle(Shader& shad, int texture){
 
     shad.use();
     glBindVertexArray(VAO);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    // glBindTexture(GL_TEXTURE_2D, texture);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 

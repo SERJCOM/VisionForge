@@ -70,7 +70,7 @@ protected:
 	float yaw = 0, pitch = 0;	
 	float xpos = 400, ypos = 300;	
 	float lastX = xpos, lastY = ypos;
-	float sensitivity_ = 0.05;
+	float sensitivity_ = 0.1;
 	glm::vec3 cameraPos = glm::vec3(-1.0f, 0.0f, 0.0f);
 	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);

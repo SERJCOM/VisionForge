@@ -20,6 +20,7 @@ public:
 
     void Update() override{
         lthm::CameraComponent& _camera = *static_cast<lthm::CameraComponent*>(camera.get());
+        camera->Update();
         // std::cout << _camera.GetCameraPos().x << " " << _camera.GetCameraPos().y << " " << _camera.GetCameraPos().z << std::endl;
     }
 

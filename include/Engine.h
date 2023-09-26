@@ -29,18 +29,20 @@ public:
 
 		using namespace std::filesystem;
 
-		window_.create(sf::VideoMode({800, 600}), "OpenGL");
+		window_.create(sf::VideoMode({1080, 720}), "OpenGL");
 		window_.setActive();
 
 		Init();
 
-		current_path_ = std::filesystem::current_path() / path("../shaders");
+		current_path_ = std::filesystem::current_path() / path("..") / path("shaders");
 		current_path_ = current_path_.lexically_normal();
+
+		// std::cout << "current_path_ " << current_path_.c_str() << std::endl;
 
 		shad_ = Shader(current_path_ / path("shader.vert"), current_path_  /  path("shader.frag"));
 		shadow_ = Shader(current_path_ / path("shadow.vert"), current_path_ / path("shadow.frag"));
 
-		projection_ = glm::perspective(glm::radians(80.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 0.1f, 1000.0f);
+		projection_ = glm::perspective(glm::radians(60.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 1.0f, 1000.0f);
 	}
 
 	void Init(){
@@ -132,6 +134,8 @@ public:
 				Drawning(GetWindow().getSize().x ,GetWindow().getSize().y);
 				ClearBuffers();
 				
+				
+
 				for(auto entity : entities_){
 					entity->Update();
 				}
@@ -140,10 +144,12 @@ public:
 					component->Update();
 				}
 
-				UpdateMatrix();
-				UpdateShader();
 				
 				gameLoop(drawning);
+
+				UpdateMatrix();
+				UpdateShader();
+
 				window_.display();
 
 			}

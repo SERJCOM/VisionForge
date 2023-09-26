@@ -14,9 +14,7 @@ ModelComponent::ModelComponent(const char* path)
 
 void ModelComponent::Draw(Shader& shader)
 {
-    
     glm::mat4 modelMat = glm::mat4(1);
-
     modelMat = glm::scale(modelMat, objectScale);
     
     shader_->use();
@@ -107,7 +105,7 @@ void ModelComponent::SetObjectRotation(glm::vec3 rot) {
 }
 
 void ModelComponent::MoveObject(float x, float y, float z) {
-    objectPosition += glm::vec3(x, y, z);
+    objectPosition = glm::vec3(x, y, z);
     // if(body != nullptr){
     //     Vector3 pos = body->getTransform().getPosition();
     //     Transform transform = body->getTransform();

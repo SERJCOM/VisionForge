@@ -18,16 +18,20 @@ using filesystem::path;
 int main() {
 
     Engine engine;
-    engine.GetWindow().setSize(sf::Vector2u{1280, 620});
+    // engine.GetWindow().setSize(sf::Vector2u{1280, 620});
 
     filesystem::path current_path = filesystem::current_path() / path("../shaders");
     current_path = current_path.lexically_normal();
     std::cout << current_path << std::endl;
 
 
-    std::shared_ptr<test::Entity> test = std::make_shared<test::Entity>(engine);
-    engine.AddEntity(test);
-    engine.SetMainCamera(test->GetCamera());
+    // std::shared_ptr<test::Entity> test = std::make_shared<test::Entity>(engine);
+    // engine.AddEntity(test);
+    // engine.SetMainCamera(test->GetCamera());
+
+
+    CameraComponent camera(engine.GetWindow());
+    engine.SetMainCamera(&camera);
 
 
     filesystem::path skybox_file = current_path / path("..") / path("test") / path("img") / path("sky.jpg");
@@ -36,13 +40,16 @@ int main() {
     Shape skybox;
     skybox.LoadRGBEfile(skybox_file.c_str());
 
-    filesystem::path model_file = filesystem::current_path() / path("../test/obj/dimaMap/untitled.obj");
+    path model_file = filesystem::current_path() / path("..") / path("test") / path("obj") / path("dimaMap") / path("untitled.obj");
     model_file.lexically_normal();
-    std::shared_ptr<MEntity> model = std::make_shared<MEntity>(engine, model_file.c_str());
-    engine.AddEntity(model);
+    // std::shared_ptr<MEntity> model = std::make_shared<MEntity>(engine, model_file.c_str());
+    // engine.AddEntity(model);
 
     
-
+    ModelComponent model(model_file.c_str());
+    // model.ScaleObject(glm::vec3(10.0, 10.0, 10.0));
+    model.MoveObject(0, 0, 0);
+    model.LoadModel();
 
     bool running = true;
     
@@ -54,9 +61,14 @@ int main() {
                 drawning = 0;
         }
 
-        skybox.DrawSkyBox(engine.GetMainCamera()->GetViewMatrix(), engine.GetProjectionMatrix());
+        camera.Update();
+
+        model.Draw(engine.GetMainShader());
+
+        // skybox.DrawSkyBox(engine.GetMainCamera()->GetViewMatrix(), engine.GetProjectionMatrix());
 
     };
+
 
     engine.SetGameLoop(loop);
 

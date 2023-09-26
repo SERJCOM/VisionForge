@@ -196,7 +196,9 @@ void main()
 
 	// color = vec3(point_light[2].x_pos, point_light[2].y_pos, point_light[2].z_pos);
 
-	FragColor = vec4(color, 1.0);
+	//FragColor = vec4(color, 1.0);
+
+	FragColor = vec4(0.3, 0.7, 0.2, 1.0);
 }
 
 
