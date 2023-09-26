@@ -30,7 +30,7 @@ public:
 		using namespace std::filesystem;
 
 		window_.create(sf::VideoMode({800, 600}), "OpenGL");
-		window_.setActive(true);
+		window_.setActive();
 
 		Init();
 
@@ -110,12 +110,28 @@ public:
 		return main_camera_;
 	}
 
+	Shader& GetMainShader()  {
+		return shad_;
+	}
+
+	const Shader& GetMainShader() const {
+		return shad_;
+	}
+
 
 	void Display() {
 		int drawning = 1;
 		while(true){
 
+			if(drawning == 0){
+				break;
+			}
+
 			try{
+
+				Drawning(GetWindow().getSize().x ,GetWindow().getSize().y);
+				ClearBuffers();
+				
 				for(auto entity : entities_){
 					entity->Update();
 				}
@@ -124,30 +140,18 @@ public:
 					component->Update();
 				}
 
-				if(drawning == 0){
-					break;
-				}
+				UpdateMatrix();
+				UpdateShader();
+				
+				gameLoop(drawning);
+				window_.display();
 
 			}
 			catch (...){
 				std::cout << "ERROR::UNKNOW ERROR!!!" << std::endl;
 			}
 
-			
-
-			Drawning(GetWindow().getSize().x ,GetWindow().getSize().y);
-			ClearBuffers();
-
-			UpdateMatrix();
-
-			UpdateShader();
-
-			gameLoop(drawning);
-
-			window_.display();
 		}
-
-		
 	}
 
 private:

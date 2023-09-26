@@ -137,6 +137,12 @@ void Shape::LoadRGBEfile(std::string path)
     }
 
     else	std::cout << "failed to load HDR" << std::endl;
+
+
+    CreateHDRTexture();
+    CreateEnvironment();
+    CreatePrefilterMap();
+    CreateBRDF();
 }
 
 void Shape::DrawSkyBox(glm::mat4 view_camera, glm::mat4 projection)

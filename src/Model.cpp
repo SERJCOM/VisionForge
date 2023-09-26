@@ -1,56 +1,25 @@
 #include "model.h"
 #include "Timer.hpp"
 
-Model::Model(std::string path) {
+using namespace lthm;
+
+ModelComponent::ModelComponent(std::string path) {
     SetPath(path);
 }
 
-Model::Model(const char* path)
+ModelComponent::ModelComponent(const char* path)
 {
     SetPath(path);
 }
 
-void Model::Draw(Shader& shader)
+void ModelComponent::Draw(Shader& shader)
 {
-    glm::vec3 vecangles;
-    glm::vec3 position;
-    if(body != nullptr){
-        Transform transform = body->getTransform();
-        position = glm::vec3(transform.getPosition().x, transform.getPosition().y, transform.getPosition().z);
-        Quaternion orientation = transform.getOrientation();
-        decimal angle;
-        Vector3 axis;
-        orientation.getRotationAngleAxis(angle, axis);
-        vecangles = glm::eulerAngles(glm::angleAxis(angle, glm::vec3(axis.x, axis.y, axis.z)));
-    }
-    else{
-        position = objectPosition;
-        vecangles = objectAngleRotate;
-    }
     
-    //  setMatrix
-
-    Quaternion orientation;
-    Vector3 positionVec;
-    orientation = Quaternion::fromEulerAngles(vecangles.x, vecangles.y, vecangles.z);
-    positionVec = Vector3(position.x, position.y, position.z);
-    glm::vec4 orient[3];
-    glm::mat4 orientMat;
-    for (int i = 0; i < 3; i++) {
-        orient[i].x = orientation.getMatrix().getRow(i).x;
-        orient[i].y = orientation.getMatrix().getRow(i).y;
-        orient[i].z = orientation.getMatrix().getRow(i).z;
-        orient[i].w = 0;
-    }
-    orientMat = glm::mat4(orient[0].x, orient[0].y, orient[0].z, orient[0].w,
-        orient[1].x, orient[1].y, orient[1].z, orient[1].w,
-        orient[2].x, orient[2].y, orient[2].z, orient[2].w,
-        0.0, 0.0, 0.0, 1.0);
     glm::mat4 modelMat = glm::mat4(1);
-    modelMat = glm::translate(modelMat, glm::vec3(position.x, position.y, position.z));
-    modelMat = modelMat * orientMat;
+
     modelMat = glm::scale(modelMat, objectScale);
     
+    shader_->use();
     shader.setMat4("model", modelMat);
 
     for (unsigned int i = 0; i < meshes.size(); i++){
@@ -58,22 +27,22 @@ void Model::Draw(Shader& shader)
     }
 }
 
-void Model::LoadModel()
+void ModelComponent::LoadModel()
 {
     LoadModel(path);
 }
 
-void Model::AddMaterial(Li::Material* mat)
+void ModelComponent::AddMaterial(Li::Material* mat)
 {
     _material = mat;
 }
 
-void Model::SetPath(std::string path)
+void ModelComponent::SetPath(std::string path)
 {
     this->path = path;
 }
 
-// void Model::ScaleMesh(std::string name, glm::vec3 size) {
+// void ModelComponent::ScaleMesh(std::string name, glm::vec3 size) {
 //     if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
 //     else   { 
 //         if(MeshParameters.find(name) == MeshParameters.end()){
@@ -84,165 +53,78 @@ void Model::SetPath(std::string path)
 //     }
 // }
 
-void Model::ScaleObject(glm::vec3 size) {
+void ModelComponent::ScaleObject(glm::vec3 size) {
     objectScale = size;
 }
 
-// void Model::RotateMesh(std::string name, float anglex, float angley, float anglez) {
+// void ModelComponent::RotateMesh(std::string name, float anglex, float angley, float anglez) {
 //     meshes[meshNames[name]].RotateMesh(anglex, angley, anglez);
 // }
 
-void Model::RotateObject(float anglex, float angley, float anglez) {
+void ModelComponent::RotateObject(float anglex, float angley, float anglez) {
     objectAngleRotate += glm::vec3(glm::radians(anglex), glm::radians(angley), glm::radians(anglez));
 
-    if(body != nullptr){
-        Quaternion orientation = Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z);
-        Transform transform;
-        transform.setOrientation(orientation);
-        body->setTransform(transform);
-    }
+    // if(body != nullptr){
+    //     Quaternion orientation = Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z);
+    //     Transform transform;
+    //     transform.setOrientation(orientation);
+    //     body->setTransform(transform);
+    // }
 }
 
-void Model::RotateObject(glm::vec3 angles) {
+void ModelComponent::RotateObject(glm::vec3 angles) {
     objectAngleRotate += glm::radians(angles);
 
-    if(body != nullptr){
-        Quaternion orientation = Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z);
-        Transform transform = body->getTransform();
-        transform.setOrientation(orientation);
-        body->setTransform(transform);
-    }
+    // if(body != nullptr){
+    //     Quaternion orientation = Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z);
+    //     Transform transform = body->getTransform();
+    //     transform.setOrientation(orientation);
+    //     body->setTransform(transform);
+    // }
 }
 
-// void Model::SetMeshRotation(std::string name, float anglex, float angley, float anglez) {
+// void ModelComponent::SetMeshRotation(std::string name, float anglex, float angley, float anglez) {
 //     meshes[meshNames[name]].SetMeshRotation(anglex, angley, anglez);
 // }
 
-void Model::SetObjectRotation(float anglex, float angley, float anglez) {
+void ModelComponent::SetObjectRotation(float anglex, float angley, float anglez) {
     objectAngleRotate = glm::radians(glm::vec3(anglex, angley, anglez));
 
-    if(body != nullptr){    
-        Transform transform = body->getTransform();
-        transform.setOrientation(Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z));
-        body->setTransform(transform);
-    }
+    // if(body != nullptr){    
+    //     Transform transform = body->getTransform();
+    //     transform.setOrientation(Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z));
+    //     body->setTransform(transform);
+    // }
 }
 
-void Model::SetObjectRotation(glm::vec3 rot) {
+void ModelComponent::SetObjectRotation(glm::vec3 rot) {
     objectAngleRotate = glm::radians(rot);
-    if(body != nullptr){
-        Transform transform = body->getTransform();
-        transform.setOrientation(Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z));
-        body->setTransform(transform);
-    }
+    // if(body != nullptr){
+    //     Transform transform = body->getTransform();
+    //     transform.setOrientation(Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z));
+    //     body->setTransform(transform);
+    // }
 }
 
-void Model::MoveObject(float x, float y, float z) {
+void ModelComponent::MoveObject(float x, float y, float z) {
     objectPosition += glm::vec3(x, y, z);
-    if(body != nullptr){
-        Vector3 pos = body->getTransform().getPosition();
-        Transform transform = body->getTransform();
-        pos = Vector3(pos.x + x, pos.y + y, pos.z + z);
-        transform.setPosition(pos);
-        body->setTransform(transform);
-    }
+    // if(body != nullptr){
+    //     Vector3 pos = body->getTransform().getPosition();
+    //     Transform transform = body->getTransform();
+    //     pos = Vector3(pos.x + x, pos.y + y, pos.z + z);
+    //     transform.setPosition(pos);
+    //     body->setTransform(transform);
+    // }
 
 }
 
-// void Model::MoveMesh(std::string name, float x, float y, float z) {
-//     if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
-//     else    meshes[meshNames[name]].MoveObject(glm::vec3(x, y, z));
-// }
-
-// void Model::SetMeshPosition(std::string name, float x, float y, float z) {
-//     if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
-//     else    meshes[meshNames[name]].SetObjectPosition(glm::vec3(x, y, z));
-// }
-
-void Model::SetObjectPosition(float x, float y, float z) {
-    objectPosition = glm::vec3(x,y,z);
-    if(body != nullptr){
-        Transform transform = body->getTransform();
-        transform.setPosition(Vector3(objectPosition.x, objectPosition.y, objectPosition.z));
-        body->setTransform(transform);
-    }
-}
-
-void Model::SetupPhysicMeshByName(std::string name) {
-    meshes[meshNames[name]].SetupPhysic(physworld, physicsCommon);
-    meshes[meshNames[name]].CreateRigidBody();
-}
-
-void Model::CreatePhysicsBody() {
-    Vector3 position(objectPosition.x, objectPosition.y, objectPosition.z);
-    Quaternion orientation = Quaternion::fromEulerAngles(glm::radians(objectAngleRotate.x), glm::radians(objectAngleRotate.y), glm::radians(objectAngleRotate.z));
-    Transform transform(position, orientation);
-    body = physworld->createRigidBody(transform);
-}
 
 
-void Model::CreateCollisionBox(glm::vec3 halfsize) {
-    const Vector3 halfExtents(halfsize.x, halfsize.y, halfsize.z);
-    BoxShape* boxShape = physicsCommon->createBoxShape(halfExtents);
-    Collider* collider;
-    collider = body->addCollider(boxShape, body->getTransform());
-}
-
-void Model::CreateCollisionSphere(float radius) {
-    SphereShape* sphereShape = physicsCommon->createSphereShape(radius);
-    body->addCollider(sphereShape, body->getTransform());
-}
-
-void Model::CreateCollisionCapsule(glm::vec2 halfSize) {
-    CapsuleShape* capsuleShape = physicsCommon->createCapsuleShape(halfSize.x, halfSize.y);
-    body->addCollider(capsuleShape, body->getTransform());
-}
-
-void Model::CreateConcaveMeshShape(){
-    
-    for(int i = 0; i < meshes.size(); i++){
-        sConcaveMesh conc;
-        concavemesh.push_back(conc);
-
-        const size_t meshesSize = meshes.size();
-        const size_t sizeVertices = meshes[i].vertices.size();
-        const size_t sizeTriangles = meshes[i].indices.size();
-
-        concavemesh.back().triangleArray = new TriangleVertexArray(
-            sizeVertices, &meshes[i].vertices[0].Position, sizeof(meshes[i].vertices), 
-        &meshes[i].vertices[0].Normal.x, sizeof(meshes[i].vertices),   
-        sizeTriangles / 3, &meshes[i].indices[0], 3 * sizeof(unsigned int),
-        rp3d::TriangleVertexArray::VertexDataType::VERTEX_FLOAT_TYPE,
-        rp3d::TriangleVertexArray::NormalDataType::NORMAL_FLOAT_TYPE,
-        rp3d::TriangleVertexArray::IndexDataType::INDEX_INTEGER_TYPE
-        );
-
-        concavemesh.back().triangleMesh = physicsCommon->createTriangleMesh();
-         concavemesh.back().triangleMesh->addSubpart(concavemesh.back().triangleArray);
-        concavemesh.back().concaveMesh = physicsCommon->createConcaveMeshShape(concavemesh.back().triangleMesh, Vector3(objectScale.x, objectScale.y, objectScale.z)) ;
-        body->addCollider(concavemesh.back().concaveMesh, body->getTransform());
-    }
-}
-
-void Model::SetTypeOfThePhysObject(bool flag) {
-    if (flag) {
-        body->setType(BodyType::KINEMATIC);
-    }
-    else {
-        body->setType(BodyType::DYNAMIC);
-    }
-}
-
-void Model::PrintObjectPosition() {
-    Transform trans = body->getTransform();
-    Vector3 pos = trans.getPosition();
-    std::cout << pos.to_string() << std::endl;
-}
 
 
 // PRIVATE
 
-void Model::LoadModel(std::string path)
+void ModelComponent::LoadModel(std::string path)
 {
     Assimp::Importer import;
     const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_GenBoundingBoxes | aiProcess_CalcTangentSpace | aiProcess_FlipUVs | aiProcess_GenSmoothNormals);
@@ -263,7 +145,7 @@ void Model::LoadModel(std::string path)
     std::cout << " count of the meshes is " << meshes.size() << std::endl;
 }
 
-void Model::processNode(aiNode* node, const aiScene* scene, int index)
+void ModelComponent::processNode(aiNode* node, const aiScene* scene, int index)
 {
     int ind = index;
     ind++;
@@ -282,7 +164,7 @@ void Model::processNode(aiNode* node, const aiScene* scene, int index)
 
 }
 
-Object Model::processMesh(aiMesh* mesh, const aiScene* scene)
+Object ModelComponent::processMesh(aiMesh* mesh, const aiScene* scene)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -337,7 +219,7 @@ Object Model::processMesh(aiMesh* mesh, const aiScene* scene)
     return Object(vertices, indices, textures);
 }
 
-std::vector<sTexture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
+std::vector<sTexture> ModelComponent::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
 {
     std::vector<sTexture> textures;
 

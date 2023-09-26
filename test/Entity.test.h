@@ -3,6 +3,9 @@
 #include "CameraComponent.h"
 #include <memory>
 #include "Engine.h"
+#include <iostream>
+
+namespace test{
 
 class Entity : public lthm::IEntity{
 public:
@@ -16,7 +19,8 @@ public:
     }
 
     void Update() override{
-
+        lthm::CameraComponent& _camera = *static_cast<lthm::CameraComponent*>(camera.get());
+        // std::cout << _camera.GetCameraPos().x << " " << _camera.GetCameraPos().y << " " << _camera.GetCameraPos().z << std::endl;
     }
 
     std::vector<std::shared_ptr<lthm::IComponent>> GetComponents() const override {
@@ -36,3 +40,5 @@ private:
 std::shared_ptr<lthm::IComponent> camera;
 lthm::Engine* engine_;
 };
+
+}

@@ -44,6 +44,7 @@ target_include_directories(Test
         ${CMAKE_SOURCE_DIR}/include
         ${GLEW_INCLUDE_DIRS}
         ${CMAKE_SOURCE_DIR}/libraries
+        ${CMAKE_SOURCE_DIR}/test
         ${SFML_INCLUDE_DIRS}
 )
 

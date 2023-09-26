@@ -20,7 +20,7 @@ struct sTexture {
 };
 
 
-class Mesh: public lthm::IComponent{
+class Mesh{
 protected:
     std::vector<glm::vec3> vert;
 
@@ -49,9 +49,6 @@ public:
 
     virtual void Draw(Shader& shader);
 
-    void Update() override {}
-
-    void Start() override {}
 
     std::vector<Vertex> GetVertices(){
         return vertices;

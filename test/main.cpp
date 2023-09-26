@@ -6,6 +6,7 @@
 
 
 #include "Entity.test.h"
+#include "Model.test.h"
 
 using namespace std;
 using namespace lthm;
@@ -24,22 +25,24 @@ int main() {
     std::cout << current_path << std::endl;
 
 
-    std::shared_ptr<Entity> test = std::make_shared<Entity>(engine);
+    std::shared_ptr<test::Entity> test = std::make_shared<test::Entity>(engine);
     engine.AddEntity(test);
-
     engine.SetMainCamera(test->GetCamera());
 
 
     filesystem::path skybox_file = current_path / path("..") / path("test") / path("img") / path("sky.jpg");
     skybox_file = skybox_file.lexically_normal();
     std::cout << skybox_file.c_str() << std::endl;
-
     Shape skybox;
     skybox.LoadRGBEfile(skybox_file.c_str());
-    skybox.CreateHDRTexture();
-    skybox.CreateEnvironment();
-    skybox.CreatePrefilterMap();
-    skybox.CreateBRDF();
+
+    filesystem::path model_file = filesystem::current_path() / path("../test/obj/dimaMap/untitled.obj");
+    model_file.lexically_normal();
+    std::shared_ptr<MEntity> model = std::make_shared<MEntity>(engine, model_file.c_str());
+    engine.AddEntity(model);
+
+    
+
 
     bool running = true;
     
