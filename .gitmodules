@@ -2,6 +2,3 @@
 	path = libraries/stb
 	url = https://github.com/nothings/stb.git
 
-[submodule "libraries/SFML"]
-	path = libraries/SFML
-	url = https://github.com/SFML/SFML.git

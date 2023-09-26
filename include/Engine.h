@@ -1,20 +1,13 @@
 ﻿#pragma once
 #include <iostream>
-
 #include <functional>
-
 #include <GL/glew.h>
-
-
 #include <vector>
 #include <memory>
 #include "collection.hpp"
 #include "Entity.hpp"
-
-
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
-
 #include <utility>
 
 namespace lthm{
@@ -26,7 +19,7 @@ private:
 
 public:
 	Engine() {
-		window_.create(sf::VideoMode({800, 600}), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
+		window_.create(sf::VideoMode({800, 600}), "OpenGL");
 		window_.setActive(true);
 
 		Init();

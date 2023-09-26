@@ -22,7 +22,7 @@ public:
 		position.y = 300;
 
 		sf::Mouse::setPosition(position, window_);
-	
+
 	}
 
 
@@ -35,7 +35,6 @@ public:
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))	cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))	cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 
-
 	}
 
 	virtual void Looking() {
@@ -43,10 +42,8 @@ public:
 		float xoffset = -(lastX - xpos);
 		float yoffset = -(ypos - lastY);
 
-		const float sensitivity = 0.01f;
-		xoffset *= sensitivity;
-		yoffset *= sensitivity;
-
+		xoffset *= sensitivity_;
+		yoffset *= sensitivity_;
 
 		yaw += xoffset;	
 		pitch += yoffset;
@@ -65,18 +62,24 @@ public:
 
 
 		sf::Vector2i pos = sf::Mouse::getPosition(window_);
+		std::swap(xpos, lastX);
+		std::swap(ypos, lastY);
 		xpos = pos.x;
 		ypos = pos.y;
 
-		sf::Vector2i position;
-		position.x = 400;
-		position.y = 300;
-		sf::Mouse::setPosition(position, window_); 
 	}
 
 	glm::mat4 updateView() {
 		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		return view;
+	}
+
+	void SetSensitivity(float sensitivity){
+		sensitivity_ = sensitivity;
+	}
+
+	float GetSensitivity() const {
+		return sensitivity_;
 	}
 
 	virtual ~CameraEntity() = default;
@@ -85,5 +88,6 @@ protected:
 	float lastX = 400, lastY = 300;
 	float yaw = 0, pitch = 0;	
 	float xpos = 400, ypos = 300;	
+	float sensitivity_ = 0.05;
 	sf::Window& window_;
 };
