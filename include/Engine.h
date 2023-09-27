@@ -29,7 +29,14 @@ public:
 
 		using namespace std::filesystem;
 
-		window_.create(sf::VideoMode({1080, 720}), "OpenGL");
+		sf::ContextSettings settings;
+		settings.depthBits = 24;
+		settings.stencilBits = 8;
+		settings.antialiasingLevel = 4;
+		settings.majorVersion = 4.6;
+		settings.minorVersion = 3;
+
+		window_.create(sf::VideoMode({1080, 720}), "OpenGL", sf::Style::Default, settings);
 		window_.setActive();
 
 		Init();
@@ -51,6 +58,7 @@ public:
 		glEnable(GL_TEXTURE_CUBE_MAP);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		// glDepthFunc(GL_LESS);
 	}
 
 	void TurnOnCullFace() {
@@ -67,6 +75,8 @@ public:
 		glViewport(0, 0, x, y);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDisable(GL_CULL_FACE);
+		// glEnable(GL_CULL_FACE);
+		// glCullFace(GL_BACK); 
 	}
 
 	void SetGameLoop(std::function<void(int& drawning)> loop){
@@ -133,8 +143,12 @@ public:
 
 				Drawning(GetWindow().getSize().x ,GetWindow().getSize().y);
 				ClearBuffers();
-				
-				
+
+				UpdateMatrix();
+				UpdateShader();
+
+				gameLoop(drawning);
+
 
 				for(auto entity : entities_){
 					entity->Update();
@@ -144,11 +158,6 @@ public:
 					component->Update();
 				}
 
-				
-				gameLoop(drawning);
-
-				UpdateMatrix();
-				UpdateShader();
 
 				window_.display();
 

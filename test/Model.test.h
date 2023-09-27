@@ -5,7 +5,6 @@
 #include "Engine.h"
 #include "material.hpp"
 #include <iostream>
-#include "mesh.hpp"
 
 class MEntity : public lthm::IEntity{
 public:
@@ -14,24 +13,15 @@ public:
 
 
         engine_ = &engine;
+        std::shared_ptr<lthm::ModelComponent> _model = std::make_shared<lthm::ModelComponent>(model_path.c_str());
 
-        mesh.Create2DRectangle();
+        // _model->ScaleObject(glm::vec3{10, 10, 10});
+        _model->SetShader(engine.GetMainShader());
+        _model->MoveObject(0, 0, 0);
+        _model->LoadModel();
 
-        // std::shared_ptr<lthm::ModelComponent> _model = std::make_shared<lthm::ModelComponent>(model_path.c_str());
 
-        // _model->ScaleObject(glm::vec3{100, 100, 100});
-        // _model->SetShader(engine.GetMainShader());
-        // _model->MoveObject(0, -100, 0);
-        // _model->LoadModel();
-
-        // auto materialpath = std::filesystem::current_path() / std::filesystem::path("../test/obj/dimaMap/map_color.png");
-        // materialpath.lexically_normal();
-        // std::cout << "materialpath " << materialpath.c_str() << std::endl;
-        // Li::Material matHouse;
-        // matHouse.AddNewMaterial(model_path.c_str() , Li::Type::DIFFUSE, "Default_OBJ");
-        // _model->AddMaterial(&matHouse);
-
-        // model = std::move(_model);
+        model = std::move(_model);
 
     }
 
@@ -40,13 +30,13 @@ public:
     }
 
     void Update() override{
-        mesh.DrawRectangle(engine_->GetMainShader(), 0);
+
     }
 
     std::vector<std::shared_ptr<lthm::IComponent>> GetComponents() const override {
         std::vector<std::shared_ptr<lthm::IComponent>> res;
 
-        // res.push_back(model);
+        res.push_back(model);
 
         return res;
     }
@@ -57,6 +47,6 @@ public:
 
 
 private:
-Mesh mesh;
+std::shared_ptr<lthm::IComponent> model;
 lthm::Engine* engine_;
 };

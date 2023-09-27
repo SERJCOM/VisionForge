@@ -18,20 +18,20 @@ using filesystem::path;
 int main() {
 
     Engine engine;
-    // engine.GetWindow().setSize(sf::Vector2u{1280, 620});
 
     filesystem::path current_path = filesystem::current_path() / path("../shaders");
     current_path = current_path.lexically_normal();
     std::cout << current_path << std::endl;
 
 
-    // std::shared_ptr<test::Entity> test = std::make_shared<test::Entity>(engine);
-    // engine.AddEntity(test);
-    // engine.SetMainCamera(test->GetCamera());
+    std::shared_ptr<test::Entity> test = std::make_shared<test::Entity>(engine);
+    engine.AddEntity(test);
+    engine.SetMainCamera(test->GetCamera());
 
-
-    CameraComponent camera(engine.GetWindow());
-    engine.SetMainCamera(&camera);
+    path model_file = filesystem::current_path() / path("..") / path("test") / path("obj") / path("halo4") / path("scene.gltf");
+    model_file.lexically_normal();
+    std::shared_ptr<MEntity> model = std::make_shared<MEntity>(engine, model_file.c_str());
+    engine.AddEntity(model);
 
 
     filesystem::path skybox_file = current_path / path("..") / path("test") / path("img") / path("sky.jpg");
@@ -40,16 +40,14 @@ int main() {
     Shape skybox;
     skybox.LoadRGBEfile(skybox_file.c_str());
 
-    path model_file = filesystem::current_path() / path("..") / path("test") / path("obj") / path("dimaMap") / path("untitled.obj");
-    model_file.lexically_normal();
-    // std::shared_ptr<MEntity> model = std::make_shared<MEntity>(engine, model_file.c_str());
-    // engine.AddEntity(model);
+    Shader& shad = engine.GetMainShader();
+    shad.use();
+    shad.SetCubeMapTexture(9, skybox.GetEnvironmentTexture(), "irradianceMap");
+    shad.SetCubeMapTexture(10, skybox.GetPrefilterTexture(), "prefilterMap");
+    shad.SetTexture(8, skybox.GetBDRFTexture(), "brdfLUT");
 
-    
-    ModelComponent model(model_file.c_str());
-    // model.ScaleObject(glm::vec3(10.0, 10.0, 10.0));
-    model.MoveObject(0, 0, 0);
-    model.LoadModel();
+
+
 
     bool running = true;
     
@@ -61,11 +59,7 @@ int main() {
                 drawning = 0;
         }
 
-        camera.Update();
-
-        model.Draw(engine.GetMainShader());
-
-        // skybox.DrawSkyBox(engine.GetMainCamera()->GetViewMatrix(), engine.GetProjectionMatrix());
+        skybox.DrawSkyBox(engine.GetMainCamera()->GetViewMatrix(), engine.GetProjectionMatrix());
 
     };
 

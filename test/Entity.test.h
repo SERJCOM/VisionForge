@@ -16,6 +16,7 @@ public:
 
     void Start() override{
         camera = std::make_shared<lthm::CameraComponent>(engine_->GetWindow());
+        Update();
     }
 
     void Update() override{
