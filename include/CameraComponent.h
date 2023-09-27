@@ -17,7 +17,6 @@ public:
 	}
 
 	void Update() override{
-		Move();
 		Looking();
 		updateView();
 	}
@@ -38,8 +37,11 @@ public:
 
 	}
 
+	void SetCameraPosition(glm::vec3 pos){
+		cameraPos = pos;
+	}
 
-	virtual void Move() ;
+	// virtual void Move() ;
 
 	virtual void Looking() ;
 
@@ -64,9 +66,18 @@ public:
 		return cameraPos;
 	}
 
+	glm::vec3 GetCameraUp() const {
+		return cameraUp;
+	}
+
+	glm::vec3 GetCameraFront() const {
+		return cameraFront;
+	}
+
+
 	virtual ~CameraComponent() = default;
 
-protected:
+private:
 	float yaw = 0, pitch = 0;	
 	float xpos = 400, ypos = 300;	
 	float lastX = xpos, lastY = ypos;
@@ -75,6 +86,8 @@ protected:
 	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	glm::mat4 view;
+
+protected:
 	sf::Window* window_;
 };
 

@@ -28,13 +28,13 @@ int main() {
     engine.AddEntity(test);
     engine.SetMainCamera(test->GetCamera());
 
-    path model_file = filesystem::current_path() / path("..") / path("test") / path("obj") / path("halo4") / path("scene.gltf");
+    path model_file = filesystem::current_path() / path("..") / path("test") / path("obj") / path("beer") / path("Beer.fbx");
     model_file.lexically_normal();
     std::shared_ptr<MEntity> model = std::make_shared<MEntity>(engine, model_file.c_str());
     engine.AddEntity(model);
 
 
-    filesystem::path skybox_file = current_path / path("..") / path("test") / path("img") / path("sky.jpg");
+    filesystem::path skybox_file = current_path / path("..") / path("test") / path("img") / path("small_empty_room_1_2k.hdr");
     skybox_file = skybox_file.lexically_normal();
     std::cout << skybox_file.c_str() << std::endl;
     Shape skybox;

@@ -20,7 +20,9 @@ public:
     }
 
     void Update() override{
-        lthm::CameraComponent& _camera = *static_cast<lthm::CameraComponent*>(camera.get());
+        Move();
+        lthm::CameraComponent& _camera = *GetCamera();
+        _camera.SetCameraPosition(pos);
         camera->Update();
         // std::cout << _camera.GetCameraPos().x << " " << _camera.GetCameraPos().y << " " << _camera.GetCameraPos().z << std::endl;
     }
@@ -33,14 +35,27 @@ public:
         return res;
     }
 
-    lthm::CameraComponent* GetCamera() const {
+    lthm::CameraComponent* GetCamera() {
         return static_cast<lthm::CameraComponent*>(camera.get());
+    }
+
+    void Move(){
+
+        auto camera = GetCamera();
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))	pos += speed * camera->GetCameraFront();
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))	pos -= speed * camera->GetCameraFront();
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))	pos -= glm::normalize(glm::cross(camera->GetCameraFront(), camera->GetCameraUp())) * speed;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))	pos += glm::normalize(glm::cross(camera->GetCameraFront(), camera->GetCameraUp())) * speed;
     }
 
 
 private:
+
 std::shared_ptr<lthm::IComponent> camera;
 lthm::Engine* engine_;
+float speed = 0.05f;
+glm::vec3 pos = glm::vec3(0);
 };
 
 }
