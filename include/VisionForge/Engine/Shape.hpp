@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <SFML/Graphics/Image.hpp>
-#include "Shader.h"
+#include "VisionForge/System/Shader.hpp"
 #include <string>
 
 #include <filesystem>

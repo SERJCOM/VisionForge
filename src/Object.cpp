@@ -1,4 +1,4 @@
-#include "object.hpp"
+#include "VisionForge/Engine/Object.hpp"
 
 Object::Object(std::vector<Vertex> vertices , std::vector<unsigned int> indices, std::vector<sTexture> textures):Mesh(vertices, indices, textures){
     this->setupMesh();

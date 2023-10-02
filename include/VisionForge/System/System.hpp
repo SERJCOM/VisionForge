@@ -4,8 +4,8 @@
 #include <GL/glew.h>
 #include <vector>
 #include <memory>
-#include "Component.hpp"
-#include "Entity.hpp"
+#include "VisionForge/EntitySystem/Component.hpp"
+#include "VisionForge/EntitySystem/Entity.hpp"
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
 #include <utility>
@@ -13,19 +13,19 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "Shader.h"
-#include "CameraComponent.h"
+#include "VisionForge/System/Shader.hpp"
+#include "VisionForge/EntitySystem/DefaulComponents/CameraComponent.hpp"
 #include <cassert>
 
 namespace lthm{
 
-class Engine
+class System
 {
 private:
 	std::function<void(int& drawning)> gameLoop;
 
 public:
-	Engine() {
+	System() {
 
 		using namespace std::filesystem;
 
@@ -44,8 +44,6 @@ public:
 		current_path_ = std::filesystem::current_path() / path("..") / path("shaders");
 		current_path_ = current_path_.lexically_normal();
 
-		// std::cout << "current_path_ " << current_path_.c_str() << std::endl;
-
 		shad_ = Shader(current_path_ / path("shader.vert"), current_path_  /  path("shader.frag"));
 		shadow_ = Shader(current_path_ / path("shadow.vert"), current_path_ / path("shadow.frag"));
 
@@ -58,7 +56,6 @@ public:
 		glEnable(GL_TEXTURE_CUBE_MAP);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-		// glDepthFunc(GL_LESS);
 	}
 
 	void TurnOnCullFace() {
@@ -74,9 +71,6 @@ public:
 	void Drawning(int x, int y) {
 		glViewport(0, 0, x, y);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glDisable(GL_CULL_FACE);
-		// glEnable(GL_CULL_FACE);
-		// glCullFace(GL_BACK); 
 	}
 
 	void SetGameLoop(std::function<void(int& drawning)> loop){
@@ -140,7 +134,6 @@ public:
 			}
 
 			try{
-
 				Drawning(GetWindow().getSize().x ,GetWindow().getSize().y);
 				ClearBuffers();
 
@@ -149,32 +142,25 @@ public:
 
 				gameLoop(drawning);
 
-
 				for(auto entity : entities_){
 					entity->Update();
 				}
-
 				for(auto component : components_){
 					component->Update();
 				}
 
-
 				window_.display();
-
 			}
 			catch (...){
 				std::cout << "ERROR::UNKNOW ERROR!!!" << std::endl;
 			}
-
 		}
 	}
 
 private:
 
 	void UpdateMatrix(){
-
 		view_ = main_camera_->GetViewMatrix();
-		
 	}
 
 	void UpdateShader(){

@@ -3,9 +3,9 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "mesh.hpp"
+#include "VisionForge/Engine/Mesh.hpp"
 #include <assimp/material.h>
-#include "Texture.h"
+#include "VisionForge/Common/Texture.hpp"
 
 namespace Li{
 

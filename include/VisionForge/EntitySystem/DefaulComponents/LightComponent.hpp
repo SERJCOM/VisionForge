@@ -1,28 +1,56 @@
 #pragma once
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
-#include "Shader.h"
+#include "VisionForge/System/Shader.hpp"
 #include <map>
 #include <string>
 #include <memory>
-#include "Component.hpp"
+#include "VisionForge/EntitySystem/Component.hpp"
 
+namespace lthm{
 
-class Light: public lthm::IComponent{
+class LightComponent: public lthm::IComponent{
 public:
 
-    Light():type(1), ambient(0.8f), specular(0), position(glm::vec3(10.0f, 50.0f, 10.0f)), color(glm::vec3(1.0f, 1.0f, 1.0f)){};
+    LightComponent():type(1), ambient(0.8f), specular(0), position(glm::vec3(10.0f, 50.0f, 10.0f)), color(glm::vec3(1.0f, 1.0f, 1.0f)){
+        id_++;
+    };
 
     template<typename I, typename F, typename D>
-    Light(I type, F ambient, D specular, glm::vec3 position,  glm::vec3 color): type(static_cast<int>(type)), ambient(static_cast<float>(ambient)), specular(static_cast<float>(specular)), position(position), color(color){}
+    LightComponent(I type, F ambient, D specular, glm::vec3 position,  glm::vec3 color): type(static_cast<int>(type)), 
+    ambient(static_cast<float>(ambient)), specular(static_cast<float>(specular)), 
+    position(position), color(color){
+        id_++;
+    }
 
-    Light(int type, float ambient, float specular, glm::vec3 position,  glm::vec3 color): type(type), ambient(ambient), specular(specular), position(position), color(color){}
+    LightComponent(int type, float ambient, float specular, glm::vec3 position,  glm::vec3 color): type(type), ambient(ambient), 
+    specular(specular), position(position), color(color){
+        id_++;
+    }
 
+    ~LightComponent(){
+        id_--;
+    }
+    
     void SetType(int type) {this->type = type;}
     void SetAmbient(float ambient) {this->ambient = ambient;}
     void SetSpecular(float specular) {this->specular = specular;}
     void SetPosition(glm::vec3 position) {this->position = position;}
     void SetColor(glm::vec3 color) {this->color = color;}
+
+    void SetShader(Shader* shader){ shader_ = shader; }
+
+    void Start() override {
+
+    }
+
+    void Update() override {
+
+    }
+
+    static int GetId() {
+        return id_;
+    }
 
     int GetType() {return this->type;}
     float GetAmbient() {return this->ambient;}
@@ -31,12 +59,18 @@ public:
     glm::vec3 GetColor() {return this->color;}
 
 private: 
+    Shader* shader_ = nullptr;
     int type ;
     float ambient ;
     float specular ;
     glm::vec3 position ;
     glm::vec3 color;
+    static int id_ ;
 };
+
+
+
+}
 
 // class LightManager: public Collection{
 // public:

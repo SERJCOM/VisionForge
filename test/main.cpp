@@ -1,12 +1,12 @@
-#include "Engine.h"
+#include "VisionForge/System/System.hpp"
 
-#include "Shader.h"
-#include "CameraComponent.h"
-#include "shape.hpp"
 
+#include "VisionForge/Engine/Shape.hpp"
+#include "VisionForge/EntitySystem/DefaulComponents/LightComponent.hpp"
 
 #include "Entity.test.h"
 #include "Model.test.h"
+
 
 using namespace std;
 using namespace lthm;
@@ -17,7 +17,7 @@ using filesystem::path;
 
 int main() {
 
-    Engine engine;
+    System engine;
 
     filesystem::path current_path = filesystem::current_path() / path("../shaders");
     current_path = current_path.lexically_normal();
@@ -28,7 +28,7 @@ int main() {
     engine.AddEntity(test);
     engine.SetMainCamera(test->GetCamera());
 
-    path model_file = filesystem::current_path() / path("..") / path("test") / path("obj") / path("beer") / path("Beer.fbx");
+    path model_file = filesystem::current_path() / path("..") / path("test") / path("obj") / path("halo4") / path("scene.gltf");
     model_file.lexically_normal();
     std::shared_ptr<MEntity> model = std::make_shared<MEntity>(engine, model_file.c_str());
     engine.AddEntity(model);

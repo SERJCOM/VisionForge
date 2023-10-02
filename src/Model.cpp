@@ -1,5 +1,5 @@
-#include "model.h"
-#include "Timer.hpp"
+#include "VisionForge/EntitySystem/DefaulComponents/ModelComponent.hpp"
+#include "VisionForge/Common/Timer.hpp"
 
 using namespace lthm;
 

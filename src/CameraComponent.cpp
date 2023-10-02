@@ -1,17 +1,6 @@
-#include "CameraComponent.h"
+#include "VisionForge/EntitySystem/DefaulComponents/CameraComponent.hpp"
 #include <iostream>
 
-// void lthm::CameraComponent::Move()
-// {
-//     const float cameraSpeed = 0.05f;
-
-//     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))	cameraPos += cameraSpeed * cameraFront;
-//     if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))	cameraPos -= cameraSpeed * cameraFront;
-//     if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))	cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-//     if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))	cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-
-//     // std::cout << "camerapos " << cameraPos.x << " " << cameraPos.y << " " << cameraPos.z << std::endl;
-// }
 
 void lthm::CameraComponent::Looking()
 {

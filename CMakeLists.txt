@@ -21,6 +21,7 @@ add_executable(Test
     src/Object.cpp
     src/Shape.cpp
     src/CameraComponent.cpp
+    src/LightComponent.cpp
 )
 
 

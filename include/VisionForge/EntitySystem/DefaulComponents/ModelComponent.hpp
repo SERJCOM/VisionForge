@@ -1,9 +1,9 @@
 #pragma once
 #include <iostream>
-#include "object.hpp"
-#include "lightManager.hpp"
-#include "Shader.h"
-#include "Texture.h"
+#include "VisionForge/Engine/Object.hpp"
+
+#include "VisionForge/System/Shader.hpp"
+#include "VisionForge/Common/Texture.hpp"
 #include <string>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -11,8 +11,8 @@
 #include <map>
 #include <vector>
 #include <map>
-#include "material.hpp"
-#include "Component.hpp"
+#include "VisionForge/Engine/Material.hpp"
+#include "VisionForge/EntitySystem/Component.hpp"
 
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>

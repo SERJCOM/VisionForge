@@ -5,7 +5,7 @@
 #include <SFML/Window/Mouse.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Window.hpp>
-#include "Component.hpp"
+#include "VisionForge/EntitySystem/Component.hpp"
 
 namespace lthm{
 

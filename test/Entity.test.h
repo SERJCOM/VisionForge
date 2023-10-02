@@ -1,8 +1,8 @@
 #pragma once
-#include "Entity.hpp"
-#include "CameraComponent.h"
+#include "VisionForge/System/System.hpp"
+#include "VisionForge/EntitySystem/DefaulComponents/CameraComponent.hpp"
 #include <memory>
-#include "Engine.h"
+
 #include <iostream>
 
 namespace test{
@@ -10,7 +10,7 @@ namespace test{
 class Entity : public lthm::IEntity{
 public:
 
-    Entity(lthm::Engine& engine){
+    Entity(lthm::System& engine){
         engine_ = &engine;
     }
 
@@ -23,13 +23,10 @@ public:
         Move();
         lthm::CameraComponent& _camera = *GetCamera();
         _camera.SetCameraPosition(pos);
-        camera->Update();
-        // std::cout << _camera.GetCameraPos().x << " " << _camera.GetCameraPos().y << " " << _camera.GetCameraPos().z << std::endl;
     }
 
     std::vector<std::shared_ptr<lthm::IComponent>> GetComponents() const override {
         std::vector<std::shared_ptr<lthm::IComponent>> res;
-
         res.push_back(camera);
 
         return res;
@@ -40,7 +37,6 @@ public:
     }
 
     void Move(){
-
         auto camera = GetCamera();
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))	pos += speed * camera->GetCameraFront();
@@ -53,8 +49,8 @@ public:
 private:
 
 std::shared_ptr<lthm::IComponent> camera;
-lthm::Engine* engine_;
-float speed = 0.05f;
+lthm::System* engine_;
+float speed = 0.5f;
 glm::vec3 pos = glm::vec3(0);
 };
 

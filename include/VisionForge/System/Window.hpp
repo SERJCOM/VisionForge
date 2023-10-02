@@ -5,7 +5,7 @@
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Window/WindowStyle.hpp>
 #include <SFML/Window/ContextSettings.hpp>
-#include "Shader.h"
+#include "VisionForge/System/Shader.hpp"
 
 
 namespace lthm{
