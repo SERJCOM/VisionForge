@@ -17,174 +17,198 @@
 #include "VisionForge/EntitySystem/DefaulComponents/CameraComponent.hpp"
 #include <cassert>
 
-namespace lthm{
+#include "VisionForge/EntitySystem/IEntitySystem.hpp"
 
-class System
+namespace lthm
 {
-private:
-	std::function<void(int& drawning)> gameLoop;
 
-public:
-	System() {
+	class System
+	{
+	private:
+		std::function<void(int &drawning)> gameLoop;
 
-		using namespace std::filesystem;
+	public:
+		System()
+		{
 
-		sf::ContextSettings settings;
-		settings.depthBits = 24;
-		settings.stencilBits = 8;
-		settings.antialiasingLevel = 4;
-		settings.majorVersion = 4.6;
-		settings.minorVersion = 3;
+			using namespace std::filesystem;
 
-		window_.create(sf::VideoMode({1080, 720}), "OpenGL", sf::Style::Default, settings);
-		window_.setActive();
+			sf::ContextSettings settings;
+			settings.depthBits = 24;
+			settings.stencilBits = 8;
+			settings.antialiasingLevel = 4;
+			settings.majorVersion = 4.6;
+			settings.minorVersion = 3;
 
-		Init();
+			window_.create(sf::VideoMode({1080, 720}), "OpenGL", sf::Style::Default, settings);
+			window_.setActive();
 
-		current_path_ = std::filesystem::current_path() / path("..") / path("shaders");
-		current_path_ = current_path_.lexically_normal();
+			Init();
 
-		shad_ = Shader(current_path_ / path("shader.vert"), current_path_  /  path("shader.frag"));
-		shadow_ = Shader(current_path_ / path("shadow.vert"), current_path_ / path("shadow.frag"));
+			current_path_ = std::filesystem::current_path() / path("..") / path("shaders");
+			current_path_ = current_path_.lexically_normal();
 
-		projection_ = glm::perspective(glm::radians(60.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 1.0f, 1000.0f);
-	}
+			shad_ = Shader(current_path_ / path("shader.vert"), current_path_ / path("shader.frag"));
+			shadow_ = Shader(current_path_ / path("shadow.vert"), current_path_ / path("shadow.frag"));
 
-	void Init(){
-		glewInit();
-
-		glEnable(GL_TEXTURE_CUBE_MAP);
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-	}
-
-	void TurnOnCullFace() {
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK); 
-	}
-
-	void ClearBuffers() {
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
-
-	void Drawning(int x, int y) {
-		glViewport(0, 0, x, y);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	}
-
-	void SetGameLoop(std::function<void(int& drawning)> loop){
-		gameLoop = loop;
-	}
-
-
-	sf::Window& GetWindow() {
-		return window_;
-	}
-
-	void AddEntity(std::shared_ptr<lthm::IEntity> entity){
-		entity->Start();
-		entities_.push_back(entity);
-
-		auto components = entity->GetComponents();
-		for(auto component : components){
-			RegisterComponent(component);
+			projection_ = glm::perspective(glm::radians(60.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 1.0f, 1000.0f);
 		}
-	}
 
-	void RegisterComponent(std::shared_ptr<lthm::IComponent> component){
-		components_.push_back(component);
-	}
+		void Init()
+		{
+			glewInit();
 
-	std::filesystem::path GetCurrentPath() const {
-		return current_path_;
-	}
+			glEnable(GL_TEXTURE_CUBE_MAP);
+			glEnable(GL_DEPTH_TEST);
+			glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		}
 
-	void SetMainCamera(lthm::CameraComponent* main_camera){
-		main_camera_ = main_camera;
-	}
+		void TurnOnCullFace()
+		{
+			glEnable(GL_CULL_FACE);
+			glCullFace(GL_BACK);
+		}
 
-	void SetProjectionMatrix(glm::mat4 projection){
-		projection_ = projection;
-	}
+		void ClearBuffers()
+		{
+			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		}
 
-	glm::mat4 GetProjectionMatrix() const {
-		return projection_;
-	}
+		void Drawning(int x, int y)
+		{
+			glViewport(0, 0, x, y);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
 
-	lthm::CameraComponent* GetMainCamera() const {
-		return main_camera_;
-	}
+		void SetGameLoop(std::function<void(int &drawning)> loop)
+		{
+			gameLoop = loop;
+		}
 
-	Shader& GetMainShader()  {
-		return shad_;
-	}
+		sf::Window &GetWindow()
+		{
+			return window_;
+		}
 
-	const Shader& GetMainShader() const {
-		return shad_;
-	}
+		void AddEntity(std::shared_ptr<lthm::IEntity> entity)
+		{
+			entity->Start();
+			entities_.push_back(entity);
 
-
-	void Display() {
-		int drawning = 1;
-		while(true){
-
-			if(drawning == 0){
-				break;
-			}
-
-			try{
-				Drawning(GetWindow().getSize().x ,GetWindow().getSize().y);
-				ClearBuffers();
-
-				UpdateMatrix();
-				UpdateShader();
-
-				gameLoop(drawning);
-
-				for(auto entity : entities_){
-					entity->Update();
-				}
-				for(auto component : components_){
-					component->Update();
-				}
-
-				window_.display();
-			}
-			catch (...){
-				std::cout << "ERROR::UNKNOW ERROR!!!" << std::endl;
+			auto components = entity->GetComponents();
+			for (auto component : components)
+			{
+				RegisterComponent(component);
 			}
 		}
-	}
 
-private:
+		void RegisterComponent(std::shared_ptr<lthm::IComponent> component)
+		{
+			components_.push_back(component);
+		}
 
-	void UpdateMatrix(){
-		view_ = main_camera_->GetViewMatrix();
-	}
+		std::filesystem::path GetCurrentPath() const
+		{
+			return current_path_;
+		}
 
-	void UpdateShader(){
-		shad_.use();
-		shad_.setMat4("projection", projection_);
-		shad_.setMat4("view", view_);
-		shad_.setVec3("cameraPos", main_camera_->GetCameraPos());
-	}
+		void SetMainCamera(lthm::CameraComponent *main_camera)
+		{
+			main_camera_ = main_camera;
+		}
 
+		void SetProjectionMatrix(glm::mat4 projection)
+		{
+			projection_ = projection;
+		}
 
-	std::vector<std::shared_ptr<lthm::IEntity>> entities_;
-	std::vector<std::shared_ptr<lthm::IComponent>> components_;
-	sf::Window window_;
+		glm::mat4 GetProjectionMatrix() const
+		{
+			return projection_;
+		}
 
-	Shader shad_;
-	Shader shadow_;
+		lthm::CameraComponent *GetMainCamera() const
+		{
+			return main_camera_;
+		}
 
-	std::filesystem::path current_path_;
+		Shader &GetMainShader()
+		{
+			return shad_;
+		}
 
-	glm::mat4 projection_;
-	glm::mat4 view_;
+		const Shader &GetMainShader() const
+		{
+			return shad_;
+		}
 
-	lthm::CameraComponent* main_camera_;
-};
+		void Display()
+		{
+			int drawning = 1;
+			while (true)
+			{
 
+				if (drawning == 0)
+				{
+					break;
+				}
+
+				try
+				{
+					Drawning(GetWindow().getSize().x, GetWindow().getSize().y);
+					ClearBuffers();
+
+					UpdateMatrix();
+					UpdateShader();
+
+					gameLoop(drawning);
+
+					for (auto entity : entities_)
+					{
+						entity->Update();
+					}
+					for (auto component : components_)
+					{
+						component->Update();
+					}
+
+					window_.display();
+				}
+				catch (...)
+				{
+					std::cout << "ERROR::UNKNOW ERROR!!!" << std::endl;
+				}
+			}
+		}
+
+	private:
+		void UpdateMatrix()
+		{
+			view_ = main_camera_->GetViewMatrix();
+		}
+
+		void UpdateShader()
+		{
+			shad_.use();
+			shad_.setMat4("projection", projection_);
+			shad_.setMat4("view", view_);
+			shad_.setVec3("cameraPos", main_camera_->GetCameraPos());
+		}
+
+		std::vector<std::shared_ptr<lthm::IEntity>> entities_;
+		std::vector<std::shared_ptr<lthm::IComponent>> components_;
+		sf::Window window_;
+
+		Shader shad_;
+		Shader shadow_;
+
+		std::filesystem::path current_path_;
+
+		glm::mat4 projection_;
+		glm::mat4 view_;
+
+		lthm::CameraComponent *main_camera_;
+	};
 
 }

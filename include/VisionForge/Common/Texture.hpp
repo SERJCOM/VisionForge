@@ -5,26 +5,28 @@
 #include <string>
 #include <vector>
 
-
-class Texture {
+class Texture
+{
 public:
 	unsigned int texture;
 	unsigned int skyboxID = 0;
-	
-	void LoadSkyBox(std::vector<std::string> path) {
+
+	void LoadSkyBox(std::vector<std::string> path)
+	{
 
 		glGenTextures(1, &skyboxID);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
 
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 6; i++)
+		{
 			sf::Image image;
-			if (!image.loadFromFile(path[i].c_str())) {
+			if (!image.loadFromFile(path[i].c_str()))
+			{
 				std::cout << "failed to load the texture" << std::endl;
 			}
 			glTexImage2D(
 				GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-				0, GL_RGB, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr()
-			);
+				0, GL_RGB, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
 		}
 
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -32,15 +34,14 @@ public:
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-		
 	}
 
-
-	static unsigned int LoadTextureFromFile(std::string name, std::string path) {
+	static unsigned int LoadTextureFromFile(std::string name, std::string path)
+	{
 		unsigned int texture;
 		sf::Image texture_im;
-		if (texture_im.loadFromFile((path + "/" + name).c_str())) {
+		if (texture_im.loadFromFile((path + "/" + name).c_str()))
+		{
 
 			glGenTextures(1, &texture);
 			glBindTexture(GL_TEXTURE_2D, texture);
@@ -53,16 +54,19 @@ public:
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			return texture;
 		}
-		else {
+		else
+		{
 			std::cout << "failed to load the texture" << std::endl;
 			return -1;
 		}
 	}
 
-	static unsigned int LoadTextureFromFile(std::string path) {
+	static unsigned int LoadTextureFromFile(std::string path)
+	{
 		unsigned int texture;
 		sf::Image texture_im;
-		if (texture_im.loadFromFile((path).c_str())) {
+		if (texture_im.loadFromFile((path).c_str()))
+		{
 
 			glGenTextures(1, &texture);
 			glBindTexture(GL_TEXTURE_2D, texture);
@@ -75,12 +79,10 @@ public:
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			return texture;
 		}
-		else {
+		else
+		{
 			std::cout << "failed to load the texture" << std::endl;
 			return -1;
 		}
 	}
-
 };
-
-
