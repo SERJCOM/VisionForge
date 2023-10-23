@@ -8,15 +8,15 @@
 
 #include "VisionForge/EntitySystem/DefaulComponents/LightComponent.hpp"
 
-class MEntity : public lthm::IEntity{
+class MEntity : public vision::IEntity{
 public:
 
-    MEntity(lthm::System& engine, std::filesystem::path model_path){
+    MEntity(vision::System& engine, std::filesystem::path model_path){
 
         using std::filesystem::path;
 
         engine_ = &engine;
-        std::shared_ptr<lthm::ModelComponent> _model = std::make_shared<lthm::ModelComponent>(model_path.c_str());
+        std::shared_ptr<vision::ModelComponent> _model = std::make_shared<vision::ModelComponent>(model_path.c_str());
 
         // Li::Material material;
         // material.AddNewMaterial(model_path.parent_path() / path("Bank_Beer_BaseColor.png"), Li::Type::DIFFUSE, "blinn3");
@@ -32,7 +32,7 @@ public:
 
         model = std::move(_model);
 
-        // std::shared_ptr<lthm::LightComponent> _light = std::make_shared<lthm::LightComponent>();
+        // std::shared_ptr<vision::LightComponent> _light = std::make_shared<vision::LightComponent>();
 
     }
 
@@ -44,21 +44,21 @@ public:
 
     }
 
-    std::vector<std::shared_ptr<lthm::IComponent>> GetComponents() const override {
-        std::vector<std::shared_ptr<lthm::IComponent>> res;
+    std::vector<std::shared_ptr<vision::IComponent>> GetComponents() const override {
+        std::vector<std::shared_ptr<vision::IComponent>> res;
 
-        res.push_back(std::dynamic_pointer_cast<lthm::IComponent>(model));
+        res.push_back(std::dynamic_pointer_cast<vision::IComponent>(model));
 
         return res;
     }
 
-    // lthm::CameraComponent* GetCamera() const {
-    //     return static_cast<lthm::CameraComponent*>(camera.get());
+    // vision::CameraComponent* GetCamera() const {
+    //     return static_cast<vision::CameraComponent*>(camera.get());
     // }
 
 
 private:
-std::shared_ptr<lthm::ModelComponent> model;
-// std::shared_ptr<lthm::IComponent> light;
-lthm::System* engine_;
+std::shared_ptr<vision::ModelComponent> model;
+// std::shared_ptr<vision::IComponent> light;
+vision::System* engine_;
 };

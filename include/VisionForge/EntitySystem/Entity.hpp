@@ -1,23 +1,25 @@
 #pragma once 
 #include <vector>
 #include "Component.hpp"
+#include <memory>
 
-namespace lthm{
+namespace vision{
+
+class Environment;
 
 class IEntity{
-
 public:
 
     IEntity() = default;
 
     virtual void Update() = 0;
     virtual void Start() = 0;
-    virtual std::vector<std::shared_ptr<lthm::IComponent>> GetComponents() const = 0;
+    virtual std::vector<std::shared_ptr<vision::IComponent>> GetComponents() const = 0;
 
     ~IEntity() = default;
 
-private:
-
+protected:
+    Environment* gEnv = nullptr;
 
 
 };

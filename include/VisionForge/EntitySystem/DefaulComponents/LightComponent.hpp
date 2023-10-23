@@ -7,9 +7,9 @@
 #include <memory>
 #include "VisionForge/EntitySystem/Component.hpp"
 
-namespace lthm{
+namespace vision{
 
-class LightComponent: public lthm::IComponent{
+class LightComponent: public vision::IComponent{
 public:
 
     LightComponent():type(1), ambient(0.8f), specular(0), position(glm::vec3(10.0f, 50.0f, 10.0f)), color(glm::vec3(1.0f, 1.0f, 1.0f)){

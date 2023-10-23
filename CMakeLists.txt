@@ -16,12 +16,14 @@ include(CMakePackageConfigHelpers)
 add_executable(Test 
     test/main.cpp
     src/Model.cpp 
-    src/Window.cpp
     src/Mesh.cpp
     src/Object.cpp
     src/Shape.cpp
     src/CameraComponent.cpp
     src/LightComponent.cpp
+    src/System.cpp
+    src/Environment.cpp
+    src/FrameBuffer.cpp
 )
 
 

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lthm{
+namespace vision{
 
 class IComponent{
 public:

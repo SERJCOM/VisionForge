@@ -17,9 +17,10 @@
 #include "VisionForge/EntitySystem/DefaulComponents/CameraComponent.hpp"
 #include <cassert>
 
-#include "VisionForge/EntitySystem/IEntitySystem.hpp"
+#include "VisionForge/EntitySystem/EntitySystem.hpp"
+#include "VisionForge/System/Framebuffer.hpp"
 
-namespace lthm
+namespace vision
 {
 
 	class System
@@ -28,176 +29,47 @@ namespace lthm
 		std::function<void(int &drawning)> gameLoop;
 
 	public:
-		System()
-		{
+		System();
 
-			using namespace std::filesystem;
+		void Init();
 
-			sf::ContextSettings settings;
-			settings.depthBits = 24;
-			settings.stencilBits = 8;
-			settings.antialiasingLevel = 4;
-			settings.majorVersion = 4.6;
-			settings.minorVersion = 3;
+		void TurnOnCullFace();
 
-			window_.create(sf::VideoMode({1080, 720}), "OpenGL", sf::Style::Default, settings);
-			window_.setActive();
+		void ClearBuffers();
 
-			Init();
+		void Drawning(int x, int y);
 
-			current_path_ = std::filesystem::current_path() / path("..") / path("shaders");
-			current_path_ = current_path_.lexically_normal();
+		void SetGameLoop(std::function<void(int &drawning)> loop);
 
-			shad_ = Shader(current_path_ / path("shader.vert"), current_path_ / path("shader.frag"));
-			shadow_ = Shader(current_path_ / path("shadow.vert"), current_path_ / path("shadow.frag"));
+		sf::Window &GetWindow();
 
-			projection_ = glm::perspective(glm::radians(60.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 1.0f, 1000.0f);
-		}
+		void AddEntity(std::shared_ptr<vision::IEntity> entity);
 
-		void Init()
-		{
-			glewInit();
+		void RegisterComponent(std::shared_ptr<vision::IComponent> component);
 
-			glEnable(GL_TEXTURE_CUBE_MAP);
-			glEnable(GL_DEPTH_TEST);
-			glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-		}
+		std::filesystem::path GetCurrentPath() const;
 
-		void TurnOnCullFace()
-		{
-			glEnable(GL_CULL_FACE);
-			glCullFace(GL_BACK);
-		}
+		void SetMainCamera(vision::CameraComponent *main_camera);
 
-		void ClearBuffers()
-		{
-			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		}
+		void SetProjectionMatrix(glm::mat4 projection);
 
-		void Drawning(int x, int y)
-		{
-			glViewport(0, 0, x, y);
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		}
+		glm::mat4 GetProjectionMatrix() const;
 
-		void SetGameLoop(std::function<void(int &drawning)> loop)
-		{
-			gameLoop = loop;
-		}
+		vision::CameraComponent *GetMainCamera() const;
 
-		sf::Window &GetWindow()
-		{
-			return window_;
-		}
+		Shader &GetMainShader();
 
-		void AddEntity(std::shared_ptr<lthm::IEntity> entity)
-		{
-			entity->Start();
-			entities_.push_back(entity);
+		const Shader &GetMainShader() const;
 
-			auto components = entity->GetComponents();
-			for (auto component : components)
-			{
-				RegisterComponent(component);
-			}
-		}
-
-		void RegisterComponent(std::shared_ptr<lthm::IComponent> component)
-		{
-			components_.push_back(component);
-		}
-
-		std::filesystem::path GetCurrentPath() const
-		{
-			return current_path_;
-		}
-
-		void SetMainCamera(lthm::CameraComponent *main_camera)
-		{
-			main_camera_ = main_camera;
-		}
-
-		void SetProjectionMatrix(glm::mat4 projection)
-		{
-			projection_ = projection;
-		}
-
-		glm::mat4 GetProjectionMatrix() const
-		{
-			return projection_;
-		}
-
-		lthm::CameraComponent *GetMainCamera() const
-		{
-			return main_camera_;
-		}
-
-		Shader &GetMainShader()
-		{
-			return shad_;
-		}
-
-		const Shader &GetMainShader() const
-		{
-			return shad_;
-		}
-
-		void Display()
-		{
-			int drawning = 1;
-			while (true)
-			{
-
-				if (drawning == 0)
-				{
-					break;
-				}
-
-				try
-				{
-					Drawning(GetWindow().getSize().x, GetWindow().getSize().y);
-					ClearBuffers();
-
-					UpdateMatrix();
-					UpdateShader();
-
-					gameLoop(drawning);
-
-					for (auto entity : entities_)
-					{
-						entity->Update();
-					}
-					for (auto component : components_)
-					{
-						component->Update();
-					}
-
-					window_.display();
-				}
-				catch (...)
-				{
-					std::cout << "ERROR::UNKNOW ERROR!!!" << std::endl;
-				}
-			}
-		}
+		void Display();
 
 	private:
-		void UpdateMatrix()
-		{
-			view_ = main_camera_->GetViewMatrix();
-		}
+		void UpdateMatrix();
 
-		void UpdateShader()
-		{
-			shad_.use();
-			shad_.setMat4("projection", projection_);
-			shad_.setMat4("view", view_);
-			shad_.setVec3("cameraPos", main_camera_->GetCameraPos());
-		}
+		void UpdateShader();
 
-		std::vector<std::shared_ptr<lthm::IEntity>> entities_;
-		std::vector<std::shared_ptr<lthm::IComponent>> components_;
+		std::vector<std::shared_ptr<vision::IEntity>> entities_;
+		std::vector<std::shared_ptr<vision::IComponent>> components_;
 		sf::Window window_;
 
 		Shader shad_;
@@ -208,7 +80,9 @@ namespace lthm
 		glm::mat4 projection_;
 		glm::mat4 view_;
 
-		lthm::CameraComponent *main_camera_;
+		vision::CameraComponent *main_camera_;
+
+		std::unique_ptr<IFrameBuffer> main_buffer_;
 	};
 
 }

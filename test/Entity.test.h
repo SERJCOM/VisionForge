@@ -7,33 +7,33 @@
 
 namespace test{
 
-class Entity : public lthm::IEntity{
+class Entity : public vision::IEntity{
 public:
 
-    Entity(lthm::System& engine){
+    Entity(vision::System& engine){
         engine_ = &engine;
     }
 
     void Start() override{
-        camera = std::make_shared<lthm::CameraComponent>(engine_->GetWindow());
+        camera = std::make_shared<vision::CameraComponent>(engine_->GetWindow());
         Update();
     }
 
     void Update() override{
         Move();
-        lthm::CameraComponent& _camera = *GetCamera();
+        vision::CameraComponent& _camera = *GetCamera();
         _camera.SetCameraPosition(pos);
     }
 
-    std::vector<std::shared_ptr<lthm::IComponent>> GetComponents() const override {
-        std::vector<std::shared_ptr<lthm::IComponent>> res;
+    std::vector<std::shared_ptr<vision::IComponent>> GetComponents() const override {
+        std::vector<std::shared_ptr<vision::IComponent>> res;
         res.push_back(camera);
 
         return res;
     }
 
-    lthm::CameraComponent* GetCamera() {
-        return static_cast<lthm::CameraComponent*>(camera.get());
+    vision::CameraComponent* GetCamera() {
+        return static_cast<vision::CameraComponent*>(camera.get());
     }
 
     void Move(){
@@ -48,8 +48,8 @@ public:
 
 private:
 
-std::shared_ptr<lthm::IComponent> camera;
-lthm::System* engine_;
+std::shared_ptr<vision::IComponent> camera;
+vision::System* engine_;
 float speed = 0.5f;
 glm::vec3 pos = glm::vec3(0);
 };

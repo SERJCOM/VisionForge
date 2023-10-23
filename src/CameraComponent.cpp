@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-void lthm::CameraComponent::Looking()
+void vision::CameraComponent::Looking()
 {
 
     window_->setMouseCursorVisible(false);

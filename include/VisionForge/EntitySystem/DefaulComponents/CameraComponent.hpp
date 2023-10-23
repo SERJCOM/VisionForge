@@ -7,9 +7,9 @@
 #include <SFML/Window/Window.hpp>
 #include "VisionForge/EntitySystem/Component.hpp"
 
-namespace lthm{
+namespace vision{
 
-class CameraComponent : public lthm::IComponent{
+class CameraComponent : public vision::IComponent{
 public:
 
 	void Start() override{

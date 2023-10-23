@@ -1,7 +1,7 @@
 #include "VisionForge/EntitySystem/DefaulComponents/ModelComponent.hpp"
 #include "VisionForge/Common/Timer.hpp"
 
-using namespace lthm;
+using namespace vision;
 
 ModelComponent::ModelComponent(std::string path) {
     SetPath(path);
