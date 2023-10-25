@@ -1,8 +1,14 @@
 #include "VisionForge/EntitySystem/DefaulComponents/CameraComponent.hpp"
 #include <iostream>
+#include "VisionForge/Engine/Engine.hpp"
+//#include "CameraComponent.hpp"
 
+void vision::CameraComponent::Start()
+{
+    SetWindow(gEngine->GetSystemPtr()->GetWindow());
+}
 
-void vision::CameraComponent::Looking()
+void vision::CameraComponent::Looking() 
 {
 
     window_->setMouseCursorVisible(false);

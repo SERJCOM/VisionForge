@@ -1,7 +1,8 @@
 #pragma once
-#include "VisionForge/System/System.hpp"
+#include "VisionForge/Engine/Engine.hpp"
 #include "VisionForge/EntitySystem/DefaulComponents/CameraComponent.hpp"
 #include <memory>
+#include "VisionForge/Common/Event.hpp"
 
 #include <iostream>
 
@@ -10,13 +11,11 @@ namespace test{
 class Entity : public vision::IEntity{
 public:
 
-    Entity(vision::System& engine){
-        engine_ = &engine;
-    }
+    Entity(){}
 
     void Start() override{
-        camera = std::make_shared<vision::CameraComponent>(engine_->GetWindow());
-        Update();
+        camera = gEngine->RegistrateComponent<vision::CameraComponent>();
+        Update(); 
     }
 
     void Update() override{
@@ -25,15 +24,13 @@ public:
         _camera.SetCameraPosition(pos);
     }
 
-    std::vector<std::shared_ptr<vision::IComponent>> GetComponents() const override {
-        std::vector<std::shared_ptr<vision::IComponent>> res;
-        res.push_back(camera);
+    void ProcessEvent(vision::GameEvents event) override {
 
-        return res;
     }
 
+
     vision::CameraComponent* GetCamera() {
-        return static_cast<vision::CameraComponent*>(camera.get());
+        return static_cast<vision::CameraComponent*>(camera);
     }
 
     void Move(){
@@ -48,8 +45,8 @@ public:
 
 private:
 
-std::shared_ptr<vision::IComponent> camera;
-vision::System* engine_;
+vision::CameraComponent* camera;
+
 float speed = 0.5f;
 glm::vec3 pos = glm::vec3(0);
 };

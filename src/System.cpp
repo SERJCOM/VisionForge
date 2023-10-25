@@ -1,4 +1,5 @@
 #include "VisionForge/System/System.hpp"
+#include "VisionForge/Engine/Engine.hpp"
 //#include "System.hpp"
 
 vision::System::System()
@@ -63,21 +64,7 @@ sf::Window &vision::System::GetWindow()
     return window_;
 }
 
-void vision::System::AddEntity(std::shared_ptr<vision::IEntity> entity)
-{
-    entity->Start();
-    entities_.push_back(entity);
 
-    auto components = entity->GetComponents();
-    for (auto component : components)
-    {
-        RegisterComponent(component);
-    }
-}
-void vision::System::RegisterComponent(std::shared_ptr<vision::IComponent> component)
-{
-    components_.push_back(component);
-}
 
 std::filesystem::path vision::System::GetCurrentPath() const
 {
@@ -130,11 +117,11 @@ void vision::System::Display()
 
             gameLoop(drawning);
 
-            for (auto entity : entities_)
+            for (auto& entity : engine_->entities_)
             {
                 entity->Update();
             }
-            for (auto component : components_)
+            for (auto& component : engine_->components_)
             {
                 component->Update();
             }

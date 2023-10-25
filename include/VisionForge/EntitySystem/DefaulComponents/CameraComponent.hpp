@@ -5,24 +5,23 @@
 #include <SFML/Window/Mouse.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Window.hpp>
+//#include "VisionForge/Engine/Engine.hpp"
 #include "VisionForge/EntitySystem/Component.hpp"
+
 
 namespace vision{
 
 class CameraComponent : public vision::IComponent{
 public:
 
-	void Start() override{
-
-	}
+	void Start() override;
 
 	void Update() override{
 		Looking();
 		updateView();
 	}
 	
-
-	CameraComponent() = default;
+	CameraComponent() {}
 
 	void SetWindow(sf::Window& window){
 		window_ = &window;
@@ -40,8 +39,6 @@ public:
 	void SetCameraPosition(glm::vec3 pos){
 		cameraPos = pos;
 	}
-
-	// virtual void Move() ;
 
 	virtual void Looking() ;
 

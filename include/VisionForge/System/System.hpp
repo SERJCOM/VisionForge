@@ -17,14 +17,16 @@
 #include "VisionForge/EntitySystem/DefaulComponents/CameraComponent.hpp"
 #include <cassert>
 
-#include "VisionForge/EntitySystem/EntitySystem.hpp"
+//#include "VisionForge/EntitySystem/EntitySystem.hpp"
 #include "VisionForge/System/Framebuffer.hpp"
 
 namespace vision
 {
+	class Engine;
 
 	class System
 	{
+
 	private:
 		std::function<void(int &drawning)> gameLoop;
 
@@ -43,13 +45,13 @@ namespace vision
 
 		sf::Window &GetWindow();
 
-		void AddEntity(std::shared_ptr<vision::IEntity> entity);
-
-		void RegisterComponent(std::shared_ptr<vision::IComponent> component);
-
 		std::filesystem::path GetCurrentPath() const;
 
 		void SetMainCamera(vision::CameraComponent *main_camera);
+
+		void SetEnginePtr(Engine* eng){
+			engine_ = eng;
+		}
 
 		void SetProjectionMatrix(glm::mat4 projection);
 
@@ -68,12 +70,14 @@ namespace vision
 
 		void UpdateShader();
 
-		std::vector<std::shared_ptr<vision::IEntity>> entities_;
-		std::vector<std::shared_ptr<vision::IComponent>> components_;
+		// std::vector<std::shared_ptr<vision::IEntity>> entities_;
+		// std::vector<std::unique_ptr<vision::IComponent>> components_;
 		sf::Window window_;
 
 		Shader shad_;
 		Shader shadow_;
+
+		Engine* engine_ = nullptr;
 
 		std::filesystem::path current_path_;
 
@@ -84,5 +88,12 @@ namespace vision
 
 		std::unique_ptr<IFrameBuffer> main_buffer_;
 	};
+
+    // template <typename T>
+    // inline T *System::RegisterComponent()
+    // {
+    //     components_.push_back(std::make_unique<T>());
+	// 	return components_.back().get();
+    // }
 
 }

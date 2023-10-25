@@ -1,64 +1,61 @@
-#pragma once
+// #pragma once
 
-#include "VisionForge/EntitySystem/DefaulComponents/ModelComponent.hpp"
-#include <memory>
-#include "VisionForge/System/System.hpp"
-#include "VisionForge/Engine/Material.hpp"
-#include <iostream>
+// #include "VisionForge/EntitySystem/DefaulComponents/ModelComponent.hpp"
+// #include <memory>
+// #include "VisionForge/System/System.hpp"
+// #include "VisionForge/Engine/Material.hpp"
+// #include <iostream>
 
-#include "VisionForge/EntitySystem/DefaulComponents/LightComponent.hpp"
 
-class MEntity : public vision::IEntity{
-public:
+// //#include "VisionForge/EntitySystem/DefaulComponents/LightComponent.hpp"
 
-    MEntity(vision::System& engine, std::filesystem::path model_path){
+// class MEntity : public vision::IEntity{
+// public:
 
-        using std::filesystem::path;
+//     MEntity(vision::System& engine, std::filesystem::path model_path){
 
-        engine_ = &engine;
-        std::shared_ptr<vision::ModelComponent> _model = std::make_shared<vision::ModelComponent>(model_path.c_str());
+//         using std::filesystem::path;
 
-        // Li::Material material;
-        // material.AddNewMaterial(model_path.parent_path() / path("Bank_Beer_BaseColor.png"), Li::Type::DIFFUSE, "blinn3");
-        // material.AddNewMaterial(model_path.parent_path() / path("Bank_Beer_Metallic.png"), Li::Type::METALNESS, "blinn3");
-        // material.AddNewMaterial(model_path.parent_path() / path("Bank_Beer_Normal.png"), Li::Type::NORMALS, "blinn3");
-        // material.AddNewMaterial(model_path.parent_path() / path("Bank_Beer_Roughness.png"), Li::Type::ROUGHNESS, "blinn3");
+//         std::shared_ptr<vision::ModelComponent> _model = std::make_shared<vision::ModelComponent>(model_path.c_str());
 
-        // _model->ScaleObject(glm::vec3{10, 10, 10});
-        // _model->AddMaterial(&material);
-        _model->SetShader(engine.GetMainShader());
-        _model->MoveObject(0, 0, 0);
-        _model->LoadModel();
+//         // Li::Material material;
+//         // material.AddNewMaterial(model_path.parent_path() / path("Bank_Beer_BaseColor.png"), Li::Type::DIFFUSE, "blinn3");
+//         // material.AddNewMaterial(model_path.parent_path() / path("Bank_Beer_Metallic.png"), Li::Type::METALNESS, "blinn3");
+//         // material.AddNewMaterial(model_path.parent_path() / path("Bank_Beer_Normal.png"), Li::Type::NORMALS, "blinn3");
+//         // material.AddNewMaterial(model_path.parent_path() / path("Bank_Beer_Roughness.png"), Li::Type::ROUGHNESS, "blinn3");
 
-        model = std::move(_model);
+//         // _model->ScaleObject(glm::vec3{10, 10, 10});
+//         // _model->AddMaterial(&material);
+//         _model->SetShader(engine.GetMainShader());
+//         _model->MoveObject(0, 0, 0);
+//         _model->LoadModel();
 
-        // std::shared_ptr<vision::LightComponent> _light = std::make_shared<vision::LightComponent>();
+//         model = std::move(_model);
 
-    }
+//         // std::shared_ptr<vision::LightComponent> _light = std::make_shared<vision::LightComponent>();
 
-    void Start() override{
+//     }
+
+//     void Start() override{
         
-    }
+//     }
 
-    void Update() override{
+//     void Update() override{
 
-    }
+//     }
 
-    std::vector<std::shared_ptr<vision::IComponent>> GetComponents() const override {
-        std::vector<std::shared_ptr<vision::IComponent>> res;
+//     void ProcessEvent(vision::GameEvents event) override {
 
-        res.push_back(std::dynamic_pointer_cast<vision::IComponent>(model));
-
-        return res;
-    }
-
-    // vision::CameraComponent* GetCamera() const {
-    //     return static_cast<vision::CameraComponent*>(camera.get());
-    // }
+//     }
 
 
-private:
-std::shared_ptr<vision::ModelComponent> model;
-// std::shared_ptr<vision::IComponent> light;
-vision::System* engine_;
-};
+//     // vision::CameraComponent* GetCamera() const {
+//     //     return static_cast<vision::CameraComponent*>(camera.get());
+//     // }
+
+
+// private:
+// std::shared_ptr<vision::ModelComponent> model;
+// // std::shared_ptr<vision::IComponent> light;
+
+// };

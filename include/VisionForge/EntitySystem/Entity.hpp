@@ -1,27 +1,48 @@
-#pragma once 
-#include <vector>
+#pragma once
+
+#include <string>
+
 #include "Component.hpp"
-#include <memory>
+#include "VisionForge/Common/Event.hpp"
 
-namespace vision{
+namespace vision
+{
 
-class Environment;
+    class Environment;
+    class Engine;
 
-class IEntity{
-public:
+    class IEntity
+    {
 
-    IEntity() = default;
+        friend class System;
 
-    virtual void Update() = 0;
-    virtual void Start() = 0;
-    virtual std::vector<std::shared_ptr<vision::IComponent>> GetComponents() const = 0;
+    public:
+        IEntity() = default;
 
-    ~IEntity() = default;
+        virtual void Update() = 0;
+        virtual void Start() = 0;
 
-protected:
-    Environment* gEnv = nullptr;
+        virtual void ProcessEvent(GameEvents event) = 0;
 
+        virtual ~IEntity() = default;
 
-};
+        std::string GetName() const;
+        void SetName(std::string classname);
+
+        void SetEnginePtr(Engine *sys){
+            gEngine = sys;
+        }
+
+    protected:
+        Environment *gEnv = nullptr;
+        Engine *gEngine = nullptr;
+
+        std::string name;
+
+    private:
+        void SetEnvironmentPtr(Environment *env);
+
+        
+    };
 
 }

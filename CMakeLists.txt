@@ -24,6 +24,7 @@ add_executable(Test
     src/System.cpp
     src/Environment.cpp
     src/FrameBuffer.cpp
+    src/Engine.cpp
 )
 
 

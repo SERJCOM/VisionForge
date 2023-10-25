@@ -10,7 +10,7 @@
 #include <assimp/postprocess.h>
 #include <map>
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include "VisionForge/Engine/Material.hpp"
 #include "VisionForge/EntitySystem/Component.hpp"
 
@@ -18,105 +18,107 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-namespace vision{
+namespace vision
+{
 
-struct sConcaveMesh{
-    TriangleVertexArray* triangleArray = nullptr;
-    TriangleMesh* triangleMesh = nullptr;
-    ConcaveMeshShape* concaveMesh = nullptr;
-};
+    struct sConcaveMesh
+    {
+        TriangleVertexArray *triangleArray = nullptr;
+        TriangleMesh *triangleMesh = nullptr;
+        ConcaveMeshShape *concaveMesh = nullptr;
+    };
 
+    struct sMeshParameters
+    {
+        std::vector<glm::vec3> meshPosition;
+        std::vector<glm::vec3> meshOrientation;
+        std::vector<glm::vec3> meshScale;
+    };
 
-struct sMeshParameters{
-    std::vector<glm::vec3> meshPosition;
-    std::vector<glm::vec3> meshOrientation;
-    std::vector<glm::vec3> meshScale;
-};
+    class ModelComponent : public IComponent
+    {
+    public:
+        std::vector<Object> meshes;
+        std::string directory;
+        std::vector<sTexture> textures_loaded;
+        std::unordered_map<std::string, int> meshNames;
+        bool gammaCorrection;
 
-class ModelComponent : public IComponent{
-public:
-    std::vector<Object> meshes;
-    std::string directory;
-    std::vector<sTexture> textures_loaded;
-    std::map <std::string, int> meshNames;
-    bool gammaCorrection;
+        ModelComponent(std::string path);
 
+        ModelComponent(const char *path);
 
-    ModelComponent(std::string path);
+        void Start() override
+        {
+        }
 
-    ModelComponent(const char* path);
+        void Update() override
+        {
+            Draw(*shader_);
+        }
 
-    void Start() override{
+        void Draw(Shader &shader);
 
-    }
+        void SetShader(Shader &shader)
+        {
+            shader_ = &shader;
+        }
 
-    void Update() override{
-        Draw(*shader_);
-    }
+        void LoadModel();
 
-    void Draw(Shader& shader);
+        void AddMaterial(Li::Material *mat);
 
-    void SetShader(Shader& shader){
-        shader_ = &shader;
-    }
+        void SetPath(std::string path);
 
-    void LoadModel();
+        void ScaleObject(glm::vec3 size);
 
-    void AddMaterial(Li::Material* mat);
+        void RotateObject(float anglex, float angley, float anglez);
 
-    void SetPath(std::string path);
+        void RotateObject(glm::vec3 angles);
 
-    void ScaleObject(glm::vec3 size);
+        void SetObjectRotation(float anglex, float angley, float anglez);
 
+        void SetObjectRotation(glm::vec3 rot);
 
-    void RotateObject(float anglex, float angley, float anglez);
+        void MoveObject(float x, float y, float z);
 
-    void RotateObject(glm::vec3 angles);
+        static float DegToRad(float angle)
+        {
+            return static_cast<float>(angle) * 3.13f / 180.0f;
+        }
 
-                        
-    void SetObjectRotation(float anglex, float angley, float anglez);
+        ~ModelComponent()
+        {
+            for (int i = 0; i < concavemesh.size(); i++)
+                delete concavemesh[i].triangleArray;
+        }
 
-    void SetObjectRotation(glm::vec3 rot);
+    protected:
+        Shader *shader_;
 
-    void MoveObject(float x, float y, float z);
+        bool PhysicBool = true;
+        int number = 0;
+        std::string path;
 
-    static float DegToRad(float angle) {
-        return static_cast<float>(angle) * 3.13f / 180.0f;
-    }
+        std::string rootName;
 
+        glm::vec3 objectPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+        glm::vec3 objectAngleRotate = glm::vec3(0.0f, 0.0f, 0.0f);
+        glm::vec3 objectScale = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    ~ModelComponent(){
-        for(int i = 0; i < concavemesh.size(); i++)
-            delete concavemesh[i].triangleArray;
-    }
-protected:
+        std::vector<sConcaveMesh> concavemesh;
 
-    Shader* shader_;
+        Li::Material *_material = nullptr;
 
-    bool                PhysicBool = true;
-    int                 number = 0;
-    std::string         path;
+        std::vector<int> changedMeshes;
 
-    std::string         rootName;
+        void LoadModel(std::string path);
 
-    glm::vec3           objectPosition = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3           objectAngleRotate = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3           objectScale = glm::vec3(1.0f, 1.0f, 1.0f);
+        void processNode(aiNode *node, const aiScene *scene, int index);
 
-    std::vector<sConcaveMesh> concavemesh;
+        Object processMesh(aiMesh *mesh, const aiScene *scene);
 
-    Li::Material            *_material = nullptr;
-
-
-    std::vector<int>    changedMeshes;
-
-    void LoadModel(std::string path);
-
-    void processNode(aiNode* node, const aiScene* scene, int index);
-
-    Object processMesh(aiMesh* mesh, const aiScene* scene);
-
-    std::vector<sTexture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName);
-};
+        std::vector<sTexture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
+    };
 
 }
