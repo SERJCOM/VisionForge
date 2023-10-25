@@ -17,7 +17,8 @@ namespace vision
 
         virtual void Start() = 0;
 
-        void SetEnginePtr(Engine *sys){
+        void SetEnginePtr(Engine *sys)
+        {
             gEngine = sys;
         }
 
@@ -26,10 +27,10 @@ namespace vision
         Engine *gEngine = nullptr;
 
     private:
-        void SetEnvironmentPtr(Environment *env){
+        void SetEnvironmentPtr(Environment *env)
+        {
             gEnv = env;
         }
-        
     };
 
 }

@@ -3,15 +3,17 @@
 #include <GL/glew.h>
 #include <vector>
 
-class SSBO{
+class SSBO
+{
 public:
-
-    GLuint GetSSBO(){
+    GLuint GetSSBO()
+    {
         return ssbo;
     }
 
-    void Init(void *data, size_t size, size_t index){
-        const void* _data = data;
+    void Init(void *data, size_t size, size_t index)
+    {
+        const void *_data = data;
         glGenBuffers(1, &ssbo);
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
         glBufferData(GL_SHADER_STORAGE_BUFFER, size, _data, GL_STATIC_DRAW);
@@ -19,12 +21,12 @@ public:
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); // unbind
     }
 
-    void Bind(){
+    void Bind()
+    {
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
     }
-
 
 private:
     GLuint ssbo;

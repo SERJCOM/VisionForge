@@ -7,68 +7,72 @@
 #include <memory>
 #include "VisionForge/EntitySystem/Component.hpp"
 
-namespace vision{
+namespace vision
+{
 
-class LightComponent: public vision::IComponent{
-public:
+    class LightComponent : public vision::IComponent
+    {
+    public:
+        LightComponent() : type(1), ambient(0.8f), specular(0), position(glm::vec3(10.0f, 50.0f, 10.0f)), color(glm::vec3(1.0f, 1.0f, 1.0f))
+        {
+            id_++;
+        };
 
-    LightComponent():type(1), ambient(0.8f), specular(0), position(glm::vec3(10.0f, 50.0f, 10.0f)), color(glm::vec3(1.0f, 1.0f, 1.0f)){
-        id_++;
+        template <typename I, typename F, typename D>
+        LightComponent(I type, F ambient, D specular, glm::vec3 position, glm::vec3 color) : type(static_cast<int>(type)),
+                                                                                             ambient(static_cast<float>(ambient)), specular(static_cast<float>(specular)),
+                                                                                             position(position), color(color)
+        {
+            id_++;
+        }
+
+        LightComponent(int type, float ambient, float specular, glm::vec3 position, glm::vec3 color) : type(type), ambient(ambient),
+                                                                                                       specular(specular), position(position), color(color)
+        {
+            id_++;
+        }
+
+        ~LightComponent()
+        {
+            id_--;
+        }
+
+        void SetType(int type) { this->type = type; }
+        void SetAmbient(float ambient) { this->ambient = ambient; }
+        void SetSpecular(float specular) { this->specular = specular; }
+        void SetPosition(glm::vec3 position) { this->position = position; }
+        void SetColor(glm::vec3 color) { this->color = color; }
+
+        void SetShader(Shader *shader) { shader_ = shader; }
+
+        void Start() override
+        {
+        }
+
+        void Update() override
+        {
+        }
+
+        static int GetId()
+        {
+            return id_;
+        }
+
+        int GetType() { return this->type; }
+        float GetAmbient() { return this->ambient; }
+        float GetSpecular() { return this->specular; }
+        glm::vec3 GetPosition() { return this->position; }
+        glm::vec3 GetColor() { return this->color; }
+
+    private:
+        Shader *shader_ = nullptr;
+        int type;
+        float ambient;
+        float specular;
+        glm::vec3 position;
+        glm::vec3 color;
+        static int id_;
     };
-
-    template<typename I, typename F, typename D>
-    LightComponent(I type, F ambient, D specular, glm::vec3 position,  glm::vec3 color): type(static_cast<int>(type)), 
-    ambient(static_cast<float>(ambient)), specular(static_cast<float>(specular)), 
-    position(position), color(color){
-        id_++;
-    }
-
-    LightComponent(int type, float ambient, float specular, glm::vec3 position,  glm::vec3 color): type(type), ambient(ambient), 
-    specular(specular), position(position), color(color){
-        id_++;
-    }
-
-    ~LightComponent(){
-        id_--;
-    }
-    
-    void SetType(int type) {this->type = type;}
-    void SetAmbient(float ambient) {this->ambient = ambient;}
-    void SetSpecular(float specular) {this->specular = specular;}
-    void SetPosition(glm::vec3 position) {this->position = position;}
-    void SetColor(glm::vec3 color) {this->color = color;}
-
-    void SetShader(Shader* shader){ shader_ = shader; }
-
-    void Start() override {
-
-    }
-
-    void Update() override {
-
-    }
-
-    static int GetId() {
-        return id_;
-    }
-
-    int GetType() {return this->type;}
-    float GetAmbient() {return this->ambient;}
-    float GetSpecular() {return this->specular;}
-    glm::vec3 GetPosition() {return this->position;}
-    glm::vec3 GetColor() {return this->color;}
-
-private: 
-    Shader* shader_ = nullptr;
-    int type ;
-    float ambient ;
-    float specular ;
-    glm::vec3 position ;
-    glm::vec3 color;
-    static int id_ ;
-};
-
-
 
 }
 
@@ -84,7 +88,7 @@ private:
 
 //     Light* AddLight(Light light){
 //         SetUpdate();
-//         return static_cast <Light*>(this->AddComponent(light));  
+//         return static_cast <Light*>(this->AddComponent(light));
 //     }
 
 //     Light* AddLight(){

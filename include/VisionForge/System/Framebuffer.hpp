@@ -1,30 +1,30 @@
-#pragma once 
+#pragma once
 #include <iostream>
 #include <GL/glew.h>
 #include <memory>
 #include <cassert>
 
-namespace vision{
+namespace vision
+{
 
-class IFrameBuffer{
-public:
+    class IFrameBuffer
+    {
+    public:
+        IFrameBuffer() = default;
+        virtual ~IFrameBuffer() = default;
 
-    IFrameBuffer() = default;
-    virtual ~IFrameBuffer() = default;
+        virtual void ClearBuffer() = 0;
 
-    virtual void ClearBuffer() = 0;
+        virtual void UseFrameBuffer() = 0;
 
-    virtual void UseFrameBuffer() = 0;
+        virtual int GetTexture()
+        {
+            std::cerr << "This method is not supported" << std::endl;
+            assert(false);
+        }
+    };
 
-    virtual int GetTexture() {
-        std::cerr << "This method is not supported" << std::endl;
-        assert(false);
-    }
-
-};
-
-
-std::unique_ptr<IFrameBuffer> CreateCommonFrameBuffer();
-std::unique_ptr<IFrameBuffer> CreateTextureWrittingFrameBuffer();
+    std::unique_ptr<IFrameBuffer> CreateCommonFrameBuffer();
+    std::unique_ptr<IFrameBuffer> CreateTextureWrittingFrameBuffer();
 
 }

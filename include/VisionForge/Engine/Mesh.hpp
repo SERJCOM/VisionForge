@@ -7,20 +7,22 @@
 #include "VisionForge/System/Shader.hpp"
 #include "VisionForge/EntitySystem/Component.hpp"
 
-struct Vertex {
+struct Vertex
+{
     glm::vec3 Position;
     glm::vec2 TexCoords;
     glm::vec3 Normal;
 };
 
-struct sTexture {
+struct sTexture
+{
     unsigned int id;
     std::string type;
     std::string path;
 };
 
-
-class Mesh{
+class Mesh
+{
 protected:
     std::vector<glm::vec3> vert;
 
@@ -33,7 +35,7 @@ protected:
 public:
     unsigned int VAO, VBO, EBO;
 
-    std::vector<Vertex>       vertices;    
+    std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<sTexture> textures;
 
@@ -41,25 +43,26 @@ public:
 
     Mesh(std::vector<glm::vec3> vertices);
 
-    Mesh(){}
+    Mesh() {}
 
     void Create2DRectangle();
 
-    void DrawRectangle(Shader& shad, int texture);
+    void DrawRectangle(Shader &shad, int texture);
 
-    virtual void Draw(Shader& shader);
+    virtual void Draw(Shader &shader);
 
-
-    std::vector<Vertex> GetVertices(){
+    std::vector<Vertex> GetVertices()
+    {
         return vertices;
     }
 
-    std::vector<unsigned int> GetIndices(){
+    std::vector<unsigned int> GetIndices()
+    {
         return indices;
     }
 
-    std::vector<sTexture> GetTexture(){
+    std::vector<sTexture> GetTexture()
+    {
         return textures;
     }
-    
 };

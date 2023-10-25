@@ -6,7 +6,6 @@
 // #include "VisionForge/Engine/Material.hpp"
 // #include <iostream>
 
-
 // //#include "VisionForge/EntitySystem/DefaulComponents/LightComponent.hpp"
 
 // class MEntity : public vision::IEntity{
@@ -37,7 +36,7 @@
 //     }
 
 //     void Start() override{
-        
+
 //     }
 
 //     void Update() override{
@@ -48,11 +47,9 @@
 
 //     }
 
-
 //     // vision::CameraComponent* GetCamera() const {
 //     //     return static_cast<vision::CameraComponent*>(camera.get());
 //     // }
-
 
 // private:
 // std::shared_ptr<vision::ModelComponent> model;

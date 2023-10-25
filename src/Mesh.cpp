@@ -1,30 +1,31 @@
 #include "VisionForge/Engine/Mesh.hpp"
 
-
-
-Mesh::Mesh(std::vector<Vertex> vertices , std::vector<unsigned int> indices, std::vector<sTexture> textures){
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<sTexture> textures)
+{
     this->vertices = vertices;
     this->indices = indices;
     this->textures = textures;
 
-    //SetupMesh();
+    // SetupMesh();
 }
 
-Mesh::Mesh(std::vector<glm::vec3> vertices){
+Mesh::Mesh(std::vector<glm::vec3> vertices)
+{
     vert = vertices;
 }
 
-void Mesh::Create2DRectangle(){
+void Mesh::Create2DRectangle()
+{
     float m[] = {
-	-1.0f,  1.0f,  0.0f, 1.0f,
-	-1.0f, -1.0f,  0.0f, 0.0f,
-	1.0f, -1.0f,  1.0f, 0.0f,
-	-1.0f,  1.0f,  0.0f, 1.0f,
-	1.0f, -1.0f,  1.0f, 0.0f,
-	1.0f,  1.0f,  1.0f, 1.0f
-    };
+        -1.0f, 1.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, 0.0f, 0.0f,
+        1.0f, -1.0f, 1.0f, 0.0f,
+        -1.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, -1.0f, 1.0f, 0.0f,
+        1.0f, 1.0f, 1.0f, 1.0f};
 
-    for(int i = 0; i < 24; i++)     quadVertices[i] = m[i];
+    for (int i = 0; i < 24; i++)
+        quadVertices[i] = m[i];
 
     this->width;
     this->height;
@@ -35,12 +36,13 @@ void Mesh::Create2DRectangle(){
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(2 * sizeof(float)));
 }
 
-void Mesh::DrawRectangle(Shader& shad, int texture){
+void Mesh::DrawRectangle(Shader &shad, int texture)
+{
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDisable(GL_DEPTH_TEST);
 
@@ -50,29 +52,25 @@ void Mesh::DrawRectangle(Shader& shad, int texture){
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void Mesh::Draw(Shader& shader){
+void Mesh::Draw(Shader &shader)
+{
     glActiveTexture(GL_TEXTURE0);
 
-        unsigned int diffuseNr = 1;
-        for (unsigned int i = 0; i < textures.size(); i++)
-        {
-            glActiveTexture(GL_TEXTURE0 + i); 
-            std::string number;
-            std::string name = textures[i].type;
-            if (name == "texture_diffuse")
-                number = std::to_string(diffuseNr++);
-            
-            glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
-            glBindTexture(GL_TEXTURE_2D, textures[i].id);
-        }
+    unsigned int diffuseNr = 1;
+    for (unsigned int i = 0; i < textures.size(); i++)
+    {
+        glActiveTexture(GL_TEXTURE0 + i);
+        std::string number;
+        std::string name = textures[i].type;
+        if (name == "texture_diffuse")
+            number = std::to_string(diffuseNr++);
 
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, indices.size() * 3);
-        glBindVertexArray(0);
-        glActiveTexture(GL_TEXTURE0);
+        glUniform1i(glGetUniformLocation(shader.ID, (name + number).c_str()), i);
+        glBindTexture(GL_TEXTURE_2D, textures[i].id);
+    }
+
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, indices.size() * 3);
+    glBindVertexArray(0);
+    glActiveTexture(GL_TEXTURE0);
 }
-
-
-
-
-

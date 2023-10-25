@@ -29,7 +29,8 @@ namespace vision
         std::string GetName() const;
         void SetName(std::string classname);
 
-        void SetEnginePtr(Engine *sys){
+        void SetEnginePtr(Engine *sys)
+        {
             gEngine = sys;
         }
 
@@ -41,8 +42,6 @@ namespace vision
 
     private:
         void SetEnvironmentPtr(Environment *env);
-
-        
     };
 
 }

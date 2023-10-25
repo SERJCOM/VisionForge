@@ -1,7 +1,8 @@
 #include "VisionForge/EntitySystem/DefaulComponents/LightComponent.hpp"
 
-namespace vision{
+namespace vision
+{
 
-int LightComponent::id_ = 0;
+    int LightComponent::id_ = 0;
 
 }

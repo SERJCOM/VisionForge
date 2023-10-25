@@ -43,7 +43,6 @@ namespace vision
 
     private:
         std::unique_ptr<System> system_;
-        
 
         std::vector<std::unique_ptr<IComponent>> components_;
         std::vector<std::unique_ptr<IEntity>> entities_;
@@ -53,12 +52,10 @@ namespace vision
     template <typename T>
     T *Engine::RegistrateComponent()
     {
-
         components_.push_back(std::make_unique<T>());
         components_.back()->SetEnginePtr(this);
         components_.back()->Start();
-        //components_.back()->SetEnvironmentPtr(env)
-        return static_cast<T*>(components_.back().get());
+        return static_cast<T *>(components_.back().get());
     }
 
     template <typename T>
@@ -74,6 +71,6 @@ namespace vision
         name_entity_[name.data()] = entities_.back().get();
         entities_.back()->SetEnginePtr(this);
         entities_.back()->Start();
-        return dynamic_cast<T*>(entities_.back().get());
+        return static_cast<T *>(entities_.back().get());
     }
 }

@@ -1,7 +1,7 @@
 #include "VisionForge/Engine/Engine.hpp"
-//#include "Engine.hpp"
+// #include "Engine.hpp"
 
-using namespace vision; 
+using namespace vision;
 
 vision::Engine::Engine()
 {
@@ -16,7 +16,8 @@ void vision::Engine::Display()
 
 IEntity *vision::Engine::GetEntity(std::string_view name) const
 {
-    if(name_entity_.count(name.data()) == 0){
+    if (name_entity_.count(name.data()) == 0)
+    {
         return nullptr;
     }
 

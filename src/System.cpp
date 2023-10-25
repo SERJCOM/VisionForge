@@ -1,6 +1,6 @@
 #include "VisionForge/System/System.hpp"
 #include "VisionForge/Engine/Engine.hpp"
-//#include "System.hpp"
+// #include "System.hpp"
 
 vision::System::System()
 {
@@ -64,8 +64,6 @@ sf::Window &vision::System::GetWindow()
     return window_;
 }
 
-
-
 std::filesystem::path vision::System::GetCurrentPath() const
 {
     return current_path_;
@@ -117,11 +115,11 @@ void vision::System::Display()
 
             gameLoop(drawning);
 
-            for (auto& entity : engine_->entities_)
+            for (auto &entity : engine_->entities_)
             {
                 entity->Update();
             }
-            for (auto& component : engine_->components_)
+            for (auto &component : engine_->components_)
             {
                 component->Update();
             }
