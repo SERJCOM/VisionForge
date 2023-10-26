@@ -1,22 +1,15 @@
 ﻿#pragma once
-#include <iostream>
+
 #include <functional>
-#include <GL/glew.h>
-#include <vector>
 #include <memory>
-#include "VisionForge/EntitySystem/Component.hpp"
-#include "VisionForge/EntitySystem/Entity.hpp"
 #include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
-#include <utility>
 #include <filesystem>
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 #include "VisionForge/System/Shader.hpp"
 #include "VisionForge/EntitySystem/DefaulComponents/CameraComponent.hpp"
-#include <cassert>
-
 #include "VisionForge/System/Framebuffer.hpp"
 
 namespace vision

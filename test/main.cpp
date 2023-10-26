@@ -1,6 +1,6 @@
 #include "VisionForge/Engine/Engine.hpp"
 
-#include "VisionForge/Engine/Shape.hpp"
+#include "VisionForge/Engine/Skybox.hpp"
 #include "VisionForge/EntitySystem/DefaulComponents/LightComponent.hpp"
 
 #include "Entity.test.h"
@@ -20,22 +20,18 @@ int main()
     current_path = current_path.lexically_normal();
     std::cout << current_path << std::endl;
 
+    System *system = engine.GetSystemPtr();
+
     test::Entity *test = engine.RegistrateEntity<test::Entity>("test");
-    engine.GetSystemPtr()->SetMainCamera(test->GetCamera());
+    system->SetMainCamera(test->GetCamera());
+
 
     filesystem::path skybox_file = current_path / path("..") / path("test") / path("img") / path("small_empty_room_1_2k.hdr");
     skybox_file = skybox_file.lexically_normal();
     std::cout << skybox_file.c_str() << std::endl;
-    Shape skybox;
-    skybox.LoadRGBEfile(skybox_file.c_str());
 
-    Shader &shad = engine.GetSystemPtr()->GetMainShader();
-    shad.use();
-    shad.SetCubeMapTexture(9, skybox.GetEnvironmentTexture(), "irradianceMap");
-    shad.SetCubeMapTexture(10, skybox.GetPrefilterTexture(), "prefilterMap");
-    shad.SetTexture(8, skybox.GetBDRFTexture(), "brdfLUT");
+    engine.GetEnvironmentPtr()->GetSkyBoxPtr()->LoadSkyBox(skybox_file.c_str());
 
-    System *system = engine.GetSystemPtr();
 
     bool running = true;
 
@@ -48,7 +44,6 @@ int main()
                 drawning = 0;
         }
 
-        skybox.DrawSkyBox(system->GetMainCamera()->GetViewMatrix(), system->GetProjectionMatrix());
     };
 
     engine.GetSystemPtr()->SetGameLoop(loop);

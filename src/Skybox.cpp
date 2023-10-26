@@ -1,12 +1,13 @@
-#include "VisionForge/Engine/Shape.hpp"
+#include "VisionForge/Engine/Skybox.hpp"
 
 #include <filesystem>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
-#include <iostream>
+
 
 using namespace std;
+using namespace vision;
 
 float skyboxVertices[108] = {
     -1.0f, 1.0f, -1.0f,
@@ -77,43 +78,25 @@ float quadVertices[] = {
 
 std::filesystem::path shader_path = std::filesystem::current_path() / std::filesystem::path("../shaders");
 
-void Shape::LoadSkyBox(std::vector<std::string> path)
-{
-
-    skyboxShader = Shader(shader_path / filesystem::path("skybox.vert"), shader_path / filesystem::path("skybox.frag"));
-
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-
-    glGenTextures(1, &skyboxID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxID);
-    for (int i = 0; i < 6; i++)
-    {
-        sf::Image image;
-        if (!image.loadFromFile(path[i].c_str()))
-        {
-            std::cout << "failed to load the texture" << std::endl;
-        }
-        glTexImage2D(
-            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-            0, GL_RGB, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getPixelsPtr());
-    }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    skyboxShader.use();
-    skyboxShader.setInt("skybox", 0);
+Skybox::Skybox(Shader* main_shader){
+    main_shader_ = main_shader;
 }
 
-void Shape::LoadRGBEfile(std::string path)
+
+void Skybox::LoadSkyBox(std::filesystem::path filepath)
+{
+    LoadRGBEfile(filepath.c_str());
+
+    
+    main_shader_->use();
+    main_shader_->SetCubeMapTexture(9, GetEnvironmentTexture(), "irradianceMap");
+    main_shader_->SetCubeMapTexture(10, GetPrefilterTexture(), "prefilterMap");
+    main_shader_->SetTexture(8, GetBDRFTexture(), "brdfLUT");
+
+    
+
+}
+void Skybox::LoadRGBEfile(std::string path)
 {
 
     skyboxShader = Shader(shader_path / filesystem::path("hdr.vert"), shader_path / filesystem::path("hdr.frag"));
@@ -154,7 +137,7 @@ void Shape::LoadRGBEfile(std::string path)
     CreateBRDF();
 }
 
-void Shape::DrawSkyBox(glm::mat4 view_camera, glm::mat4 projection)
+void Skybox::DrawSkyBox(glm::mat4 view_camera, glm::mat4 projection)
 {
     glDepthFunc(GL_LEQUAL);
     skyboxShader.use();
@@ -170,7 +153,7 @@ void Shape::DrawSkyBox(glm::mat4 view_camera, glm::mat4 projection)
     glDepthFunc(GL_LESS);
 }
 
-void Shape::CreateHDRTexture()
+void Skybox::CreateHDRTexture()
 {
     HDRShader = Shader(shader_path / filesystem::path("configHDR.vert"), shader_path / filesystem::path("configHDR.frag"));
 
@@ -219,7 +202,7 @@ void Shape::CreateHDRTexture()
     glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 }
 
-void Shape::CreateEnvironment()
+void Skybox::CreateEnvironment()
 {
     glGenTextures(1, &envirTexture);
     glBindTexture(GL_TEXTURE_CUBE_MAP, envirTexture);
@@ -261,7 +244,7 @@ void Shape::CreateEnvironment()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Shape::CreatePrefilterMap()
+void Skybox::CreatePrefilterMap()
 {
     glGenTextures(1, &prefilterMap);
     glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
@@ -314,7 +297,19 @@ void Shape::CreatePrefilterMap()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Shape::CreateBRDF()
+unsigned int vision::Skybox::GetEnvironmentTexture()
+{
+    return envirTexture;
+}
+unsigned int vision::Skybox::GetPrefilterTexture()
+{
+    return prefilterMap;
+}
+unsigned int vision::Skybox::GetBDRFTexture()
+{
+    return brdfTexture;
+}
+void Skybox::CreateBRDF()
 {
     glGenVertexArrays(1, &quadVAO);
     glGenBuffers(1, &quadVBO);

@@ -1,5 +1,5 @@
 #include "VisionForge/Engine/Engine.hpp"
-// #include "Engine.hpp"
+
 
 using namespace vision;
 
@@ -7,6 +7,8 @@ vision::Engine::Engine()
 {
     system_ = std::make_unique<System>();
     system_->SetEnginePtr(this);
+
+    env_ = std::make_unique<Environment>(&GetSystemPtr()->GetMainShader());
 }
 
 void vision::Engine::Display()
@@ -27,4 +29,8 @@ IEntity *vision::Engine::GetEntity(std::string_view name) const
 System *vision::Engine::GetSystemPtr()
 {
     return system_.get();
+}
+Environment *vision::Engine::GetEnvironmentPtr()
+{
+    return env_.get();
 }

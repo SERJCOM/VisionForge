@@ -1,6 +1,11 @@
+#include <GL/glew.h>
+#include <SFML/OpenGL.hpp>
+#include <cassert>
+#include <iostream>
+#include <utility>
+
 #include "VisionForge/System/System.hpp"
 #include "VisionForge/Engine/Engine.hpp"
-// #include "System.hpp"
 
 vision::System::System()
 {
@@ -99,7 +104,6 @@ void vision::System::Display()
     int drawning = 1;
     while (true)
     {
-
         if (drawning == 0)
         {
             break;
@@ -124,11 +128,14 @@ void vision::System::Display()
                 component->Update();
             }
 
+            Environment* env = engine_->GetEnvironmentPtr();
+            env->GetSkyBoxPtr()->DrawSkyBox(view_, projection_);
+
             window_.display();
         }
         catch (...)
         {
-            std::cout << "ERROR::UNKNOW ERROR!!!" << std::endl;
+            std::cerr << "ERROR::UNKNOW ERROR!!!" << std::endl;
         }
     }
 }

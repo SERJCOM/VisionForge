@@ -11,7 +11,10 @@ namespace vision
     public:
         IComponent() = default;
 
-        ~IComponent() = default;
+        virtual ~IComponent() = default;
+
+        IComponent& operator=(IComponent&) = delete;
+        IComponent(IComponent&) = delete;
 
         virtual void Update() = 0;
 
@@ -22,15 +25,17 @@ namespace vision
             gEngine = sys;
         }
 
+        void SetEnvironmentPtr(Environment *env)
+        {
+            gEnv = env;
+        }
+
     protected:
         Environment *gEnv = nullptr;
         Engine *gEngine = nullptr;
 
     private:
-        void SetEnvironmentPtr(Environment *env)
-        {
-            gEnv = env;
-        }
+        
     };
 
 }

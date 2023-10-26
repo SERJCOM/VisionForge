@@ -34,6 +34,10 @@ namespace vision
             gEngine = sys;
         }
 
+        void SetEnvironmentPtr(Environment *env){
+            gEnv = env;
+        }
+
     protected:
         Environment *gEnv = nullptr;
         Engine *gEngine = nullptr;
@@ -41,7 +45,7 @@ namespace vision
         std::string name;
 
     private:
-        void SetEnvironmentPtr(Environment *env);
+        
     };
 
 }

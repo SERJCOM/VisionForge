@@ -18,7 +18,7 @@ add_executable(Test
     src/Model.cpp 
     src/Mesh.cpp
     src/Object.cpp
-    src/Shape.cpp
+    src/Skybox.cpp
     src/CameraComponent.cpp
     src/LightComponent.cpp
     src/System.cpp

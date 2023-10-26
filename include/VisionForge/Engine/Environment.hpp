@@ -1,27 +1,27 @@
 #pragma once
+#include <memory>
+
 #include "VisionForge/EntitySystem/Component.hpp"
 #include "VisionForge/EntitySystem/Entity.hpp"
-#include <memory>
+#include "VisionForge/Engine/Skybox.hpp"
+#include "VisionForge/System/Shader.hpp"
 
 namespace vision
 {
 
-    class Environment
+    class Environment 
     {
     public:
-        Environment(/* args */);
+        Environment(Shader* mainshader);
 
         virtual ~Environment();
 
-        template <typename T, typename... Y>
-        std::shared_ptr<IComponent> GetOrCreateComponent(Y &&...y);
+        Skybox* GetSkyBoxPtr();
 
-    protected:
+    private:
+        std::unique_ptr<Skybox> skybox_;
+        Shader* main_shader_ = nullptr;
+
     };
-
-    template <typename T, typename... Y>
-    inline std::shared_ptr<IComponent> Environment::GetOrCreateComponent(Y &&...y)
-    {
-    }
 
 }

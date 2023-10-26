@@ -18,6 +18,7 @@ meanwhile the System module controls only visualization
 #include "VisionForge/System/System.hpp"
 #include "VisionForge/EntitySystem/Entity.hpp"
 #include "VisionForge/EntitySystem/Component.hpp"
+#include "VisionForge/Engine/Environment.hpp"
 
 namespace vision
 {
@@ -27,6 +28,8 @@ namespace vision
         friend class System;
 
     public:
+
+
         Engine();
 
         void Display();
@@ -41,19 +44,25 @@ namespace vision
 
         System *GetSystemPtr();
 
+        Environment* GetEnvironmentPtr();
+
     private:
         std::unique_ptr<System> system_;
+        std::unique_ptr<Environment> env_;
 
         std::vector<std::unique_ptr<IComponent>> components_;
         std::vector<std::unique_ptr<IEntity>> entities_;
         std::unordered_map<std::string, IEntity *> name_entity_;
     };
 
+
+
     template <typename T>
     T *Engine::RegistrateComponent()
     {
         components_.push_back(std::make_unique<T>());
         components_.back()->SetEnginePtr(this);
+        components_.back()->SetEnvironmentPtr(env_.get());
         components_.back()->Start();
         return static_cast<T *>(components_.back().get());
     }
@@ -70,6 +79,7 @@ namespace vision
         entities_.push_back(std::make_unique<T>());
         name_entity_[name.data()] = entities_.back().get();
         entities_.back()->SetEnginePtr(this);
+        entities_.back()->SetEnvironmentPtr(env_.get());
         entities_.back()->Start();
         return static_cast<T *>(entities_.back().get());
     }
