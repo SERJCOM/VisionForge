@@ -14,7 +14,7 @@ include(CMakePackageConfigHelpers)
 
 
 set(EngineFiles 
-src/Model.cpp 
+src/ModelComponent.cpp 
 src/Mesh.cpp
 src/Object.cpp
 src/Skybox.cpp

@@ -7,7 +7,7 @@
 #include <assimp/material.h>
 #include "VisionForge/Common/Texture.hpp"
 
-namespace Li
+namespace vision
 {
 
     enum Type
@@ -28,7 +28,7 @@ namespace Li
             int type;
         };
 
-        void AddNewMaterial(std::string path, Li::Type type, std::string name)
+        void AddNewMaterial(std::string path, Type type, std::string name)
         {
             sMaterials mat;
             mat.path = path;

@@ -13,6 +13,8 @@ public:
     {
         test = gEngine->RegistrateEntity<test::Entity>("character");
         gEngine->GetSystemPtr()->SetMainCamera(test->GetCamera());
+
+        mentity = gEngine->RegistrateEntity<MEntity>("mentity");
     }
 
     void Update() override
@@ -21,4 +23,6 @@ public:
 
 private:
     test::Entity *test;
+
+    MEntity *mentity;
 };

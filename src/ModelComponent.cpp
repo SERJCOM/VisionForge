@@ -13,17 +13,16 @@ ModelComponent::ModelComponent(const char *path)
     SetPath(path);
 }
 
-void ModelComponent::Draw(Shader &shader)
+void ModelComponent::Draw()
 {
     glm::mat4 modelMat = glm::mat4(1);
-    modelMat = glm::scale(modelMat, objectScale);
+    modelMat = glm::scale(modelMat, GetObjectSize());
 
-    shader_->use();
-    shader.setMat4("model", modelMat);
+    gEngine->GetSystemPtr()->GetCurrentShader()->setMat4("model", modelMat);
 
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
-        meshes[i].Draw(shader);
+        meshes[i].Draw(*gEngine->GetSystemPtr()->GetCurrentShader());
     }
 }
 
@@ -32,96 +31,16 @@ void ModelComponent::LoadModel()
     LoadModel(path);
 }
 
-void ModelComponent::AddMaterial(Li::Material *mat)
+void ModelComponent::AddMaterial(Material *mat)
 {
     _material = mat;
 }
 
-void ModelComponent::SetPath(std::string path)
+void ModelComponent::SetPath(std::filesystem::path path)
 {
-    this->path = path;
+    this->path = path.c_str();
 }
 
-// void ModelComponent::ScaleMesh(std::string name, glm::vec3 size) {
-//     if (meshNames.find(name) == meshNames.end())    std::cout << "the element was not found\n";
-//     else   {
-//         if(MeshParameters.find(name) == MeshParameters.end()){
-//             sMeshParameters mm;
-//             MeshParameters.insert(make_pair(name, mm));
-//         }
-//         meshes[meshNames[name]].ScaleMesh(size);
-//     }
-// }
-
-void ModelComponent::ScaleObject(glm::vec3 size)
-{
-    objectScale = size;
-}
-
-// void ModelComponent::RotateMesh(std::string name, float anglex, float angley, float anglez) {
-//     meshes[meshNames[name]].RotateMesh(anglex, angley, anglez);
-// }
-
-void ModelComponent::RotateObject(float anglex, float angley, float anglez)
-{
-    objectAngleRotate += glm::vec3(glm::radians(anglex), glm::radians(angley), glm::radians(anglez));
-
-    // if(body != nullptr){
-    //     Quaternion orientation = Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z);
-    //     Transform transform;
-    //     transform.setOrientation(orientation);
-    //     body->setTransform(transform);
-    // }
-}
-
-void ModelComponent::RotateObject(glm::vec3 angles)
-{
-    objectAngleRotate += glm::radians(angles);
-
-    // if(body != nullptr){
-    //     Quaternion orientation = Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z);
-    //     Transform transform = body->getTransform();
-    //     transform.setOrientation(orientation);
-    //     body->setTransform(transform);
-    // }
-}
-
-// void ModelComponent::SetMeshRotation(std::string name, float anglex, float angley, float anglez) {
-//     meshes[meshNames[name]].SetMeshRotation(anglex, angley, anglez);
-// }
-
-void ModelComponent::SetObjectRotation(float anglex, float angley, float anglez)
-{
-    objectAngleRotate = glm::radians(glm::vec3(anglex, angley, anglez));
-
-    // if(body != nullptr){
-    //     Transform transform = body->getTransform();
-    //     transform.setOrientation(Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z));
-    //     body->setTransform(transform);
-    // }
-}
-
-void ModelComponent::SetObjectRotation(glm::vec3 rot)
-{
-    objectAngleRotate = glm::radians(rot);
-    // if(body != nullptr){
-    //     Transform transform = body->getTransform();
-    //     transform.setOrientation(Quaternion::fromEulerAngles(objectAngleRotate.x, objectAngleRotate.y, objectAngleRotate.z));
-    //     body->setTransform(transform);
-    // }
-}
-
-void ModelComponent::MoveObject(float x, float y, float z)
-{
-    objectPosition = glm::vec3(x, y, z);
-    // if(body != nullptr){
-    //     Vector3 pos = body->getTransform().getPosition();
-    //     Transform transform = body->getTransform();
-    //     pos = Vector3(pos.x + x, pos.y + y, pos.z + z);
-    //     transform.setPosition(pos);
-    //     body->setTransform(transform);
-    // }
-}
 
 // PRIVATE
 
@@ -163,7 +82,7 @@ void ModelComponent::processNode(aiNode *node, const aiScene *scene, int index)
         processNode(node->mChildren[i], scene, ind);
 }
 
-Object ModelComponent::processMesh(aiMesh *mesh, const aiScene *scene)
+Mesh ModelComponent::processMesh(aiMesh *mesh, const aiScene *scene)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -217,7 +136,7 @@ Object ModelComponent::processMesh(aiMesh *mesh, const aiScene *scene)
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
     }
 
-    return Object(vertices, indices, textures);
+    return Mesh(vertices, indices, textures);
 }
 
 std::vector<sTexture> ModelComponent::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)

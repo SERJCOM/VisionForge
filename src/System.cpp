@@ -7,6 +7,7 @@
 #include "VisionForge/System/System.hpp"
 #include "VisionForge/Engine/Engine.hpp"
 
+
 vision::System::System()
 {
     using namespace std::filesystem;
@@ -32,6 +33,9 @@ vision::System::System()
     shadow_ = Shader(current_path_ / path("shadow.vert"), current_path_ / path("shadow.frag"));
 
     projection_ = glm::perspective(glm::radians(60.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 1.0f, 1000.0f);
+
+    current_shader_ = &shad_;
+
 }
 
 void vision::System::Init()
@@ -94,10 +98,11 @@ Shader &vision::System::GetMainShader()
     return shad_;
 }
 
-const Shader &vision::System::GetMainShader() const
+Shader *vision::System::GetCurrentShader()
 {
-    return shad_;
+    return current_shader_;
 }
+
 
 void vision::System::Display()
 {

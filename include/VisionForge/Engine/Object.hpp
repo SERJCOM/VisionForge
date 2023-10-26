@@ -1,55 +1,42 @@
 #pragma once
-#include "VisionForge/Engine/Mesh.hpp"
-#include <reactphysics3d/reactphysics3d.h>
-#include <assimp/mesh.h>
 
-using namespace reactphysics3d;
+#include <glm/glm.hpp>
 
-struct Physics
+namespace vision
 {
-    glm::vec3 meshScale = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 angleRotate = glm::vec3(0.0f, 0.0f, 0.0f);
-    Quaternion orientation = Quaternion::fromEulerAngles(0, 0, 0);
-    glm::vec3 meshPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+    class Environment;
+    class Engine;
 
-    PhysicsCommon *physicsCommon;
-    PhysicsWorld *world;
-    RigidBody *body;
+    class Object
+    {
+    public:
+        Object() = default;
 
-    bool physicsEnable = false;
-};
+        virtual ~Object() = default;
 
-class Object : public Mesh
-{
-public:
-    Object(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<sTexture> textures);
+        virtual void SetObjectPosition(glm::vec3 pos);
+        virtual void MoveObject(glm::vec3 pos);
+        glm::vec3 GetObjectPosition() const;
 
-    void SetupPhysic(PhysicsWorld *physworld, PhysicsCommon *physicsCommon);
+        virtual void SetObjectSize(glm::vec3 size);
+        virtual void ScaleObject(glm::vec3 size);
+        glm::vec3 GetObjectSize() const;
 
-    void CreateRigidBody();
+        virtual void SetObjectRotation(glm::vec3 rotate);
+        virtual void RotateObject(glm::vec3 rotate);
+        glm::vec3 GetObjectRotation() const;
 
-    void ScaleMesh(glm::vec3 size);
+        void SetEnginePtr(Engine *sys);
 
-    void RotateMesh(float anglex, float angley, float anglez);
+        void SetEnvironmentPtr(Environment *env);
 
-    void SetMeshRotation(float anglex, float angley, float anglez);
+    protected:
+        Environment *gEnv ;
+        Engine *gEngine ;
 
-    void MoveObject(glm::vec3 position);
+        glm::vec3 pos_ = glm::vec3(0, 0, 0);
+        glm::vec3 size_ = glm::vec3(1, 1, 1);
+        glm::vec3 rotate_ = glm::vec3(0, 0, 0);
+    };
 
-    void SetObjectPosition(glm::vec3 position);
-
-    virtual void Draw(Shader &shader);
-
-    void bodyAddColiderBox(glm::vec3 halfsize);
-
-    ~Object();
-
-protected:
-    Physics phys;
-
-    glm::mat4 modelMat;
-
-    void SetMatrix(Shader *shad);
-
-    virtual void setupMesh();
-};
+}

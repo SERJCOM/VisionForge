@@ -1,17 +1,13 @@
 #pragma once
 
-#include <string>
 
-#include "Component.hpp"
 #include "VisionForge/Common/Event.hpp"
+#include "VisionForge/Engine/Object.hpp"
 
 namespace vision
 {
 
-    class Environment;
-    class Engine;
-
-    class IEntity
+    class IEntity : public Object
     {
 
         friend class System;
@@ -26,25 +22,6 @@ namespace vision
 
         virtual ~IEntity() = default;
 
-        std::string GetName() const;
-        void SetName(std::string classname);
-
-        void SetEnginePtr(Engine *sys)
-        {
-            gEngine = sys;
-        }
-
-        void SetEnvironmentPtr(Environment *env){
-            gEnv = env;
-        }
-
-    protected:
-        Environment *gEnv = nullptr;
-        Engine *gEngine = nullptr;
-
-        std::string name;
-
-    private:
         
     };
 

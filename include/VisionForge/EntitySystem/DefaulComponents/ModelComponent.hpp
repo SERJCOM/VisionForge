@@ -1,9 +1,6 @@
 #pragma once
 #include <iostream>
-#include "VisionForge/Engine/Object.hpp"
 
-#include "VisionForge/System/Shader.hpp"
-#include "VisionForge/Common/Texture.hpp"
 #include <string>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -11,22 +8,21 @@
 #include <map>
 #include <vector>
 #include <unordered_map>
-#include "VisionForge/Engine/Material.hpp"
-#include "VisionForge/EntitySystem/Component.hpp"
-
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <filesystem>
+
+#include "VisionForge/Engine/Material.hpp"
+#include "VisionForge/EntitySystem/Component.hpp"
+#include "VisionForge/System/Shader.hpp"
+#include "VisionForge/Common/Texture.hpp"
+#include "VisionForge/Engine/Mesh.hpp"
+#include "VisionForge/Engine/Engine.hpp"
 
 namespace vision
 {
 
-    struct sConcaveMesh
-    {
-        TriangleVertexArray *triangleArray = nullptr;
-        TriangleMesh *triangleMesh = nullptr;
-        ConcaveMeshShape *concaveMesh = nullptr;
-    };
 
     struct sMeshParameters
     {
@@ -38,15 +34,12 @@ namespace vision
     class ModelComponent : public IComponent
     {
     public:
-        std::vector<Object> meshes;
-        std::string directory;
-        std::vector<sTexture> textures_loaded;
-        std::unordered_map<std::string, int> meshNames;
-        bool gammaCorrection;
-
+        
         ModelComponent(std::string path);
 
         ModelComponent(const char *path);
+
+        ModelComponent(){}
 
         void Start() override
         {
@@ -54,61 +47,39 @@ namespace vision
 
         void Update() override
         {
-            Draw(*shader_);
+            Draw();
         }
 
-        void Draw(Shader &shader);
+        void Draw();
 
-        void SetShader(Shader &shader)
-        {
-            shader_ = &shader;
-        }
 
         void LoadModel();
 
-        void AddMaterial(Li::Material *mat);
+        void AddMaterial(Material *mat);
 
-        void SetPath(std::string path);
+        void SetPath(std::filesystem::path path);
 
-        void ScaleObject(glm::vec3 size);
-
-        void RotateObject(float anglex, float angley, float anglez);
-
-        void RotateObject(glm::vec3 angles);
-
-        void SetObjectRotation(float anglex, float angley, float anglez);
-
-        void SetObjectRotation(glm::vec3 rot);
-
-        void MoveObject(float x, float y, float z);
+        
 
         static float DegToRad(float angle)
         {
             return static_cast<float>(angle) * 3.13f / 180.0f;
         }
 
-        ~ModelComponent()
-        {
-            for (int i = 0; i < concavemesh.size(); i++)
-                delete concavemesh[i].triangleArray;
-        }
-
     protected:
-        Shader *shader_;
 
-        bool PhysicBool = true;
         int number = 0;
         std::string path;
 
         std::string rootName;
 
-        glm::vec3 objectPosition = glm::vec3(0.0f, 0.0f, 0.0f);
-        glm::vec3 objectAngleRotate = glm::vec3(0.0f, 0.0f, 0.0f);
-        glm::vec3 objectScale = glm::vec3(1.0f, 1.0f, 1.0f);
+        std::vector<Mesh> meshes;
+        std::string directory;
+        std::vector<sTexture> textures_loaded;
+        std::unordered_map<std::string, int> meshNames;
+        bool gammaCorrection;
 
-        std::vector<sConcaveMesh> concavemesh;
-
-        Li::Material *_material = nullptr;
+        Material *_material = nullptr;
 
         std::vector<int> changedMeshes;
 
@@ -116,7 +87,7 @@ namespace vision
 
         void processNode(aiNode *node, const aiScene *scene, int index);
 
-        Object processMesh(aiMesh *mesh, const aiScene *scene);
+        Mesh processMesh(aiMesh *mesh, const aiScene *scene);
 
         std::vector<sTexture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
     };

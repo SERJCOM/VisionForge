@@ -53,7 +53,7 @@ namespace vision
 
 		Shader &GetMainShader();
 
-		const Shader &GetMainShader() const;
+		Shader * GetCurrentShader();
 
 		void Display();
 
@@ -66,6 +66,8 @@ namespace vision
 
 		Shader shad_;
 		Shader shadow_;
+
+		Shader* current_shader_ = nullptr;
 
 		Engine *engine_ = nullptr;
 

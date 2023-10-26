@@ -1,12 +1,11 @@
 #pragma once
 
+#include "VisionForge/Engine/Object.hpp"
+
 namespace vision
 {
 
-    class Environment;
-    class Engine;
-
-    class IComponent
+    class IComponent : public Object
     {
     public:
         IComponent() = default;
@@ -20,22 +19,6 @@ namespace vision
 
         virtual void Start() = 0;
 
-        void SetEnginePtr(Engine *sys)
-        {
-            gEngine = sys;
-        }
-
-        void SetEnvironmentPtr(Environment *env)
-        {
-            gEnv = env;
-        }
-
-    protected:
-        Environment *gEnv = nullptr;
-        Engine *gEngine = nullptr;
-
-    private:
-        
     };
 
 }

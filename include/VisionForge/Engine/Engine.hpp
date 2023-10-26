@@ -30,7 +30,6 @@ namespace vision
 
     public:
 
-
         Engine();
 
         void Display();
