@@ -4,6 +4,7 @@
 #include "Entity.test.h"
 #include "Model.test.h"
 
+
 class GameClass : public vision::IGameClass
 {
 
