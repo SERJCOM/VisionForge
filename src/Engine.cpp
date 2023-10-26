@@ -1,6 +1,7 @@
 #include "VisionForge/Engine/Engine.hpp"
 
 
+
 using namespace vision;
 
 vision::Engine::Engine()
@@ -13,6 +14,12 @@ vision::Engine::Engine()
 
 void vision::Engine::Display()
 {
+    if(game_class_ == nullptr){
+        std::cerr << "ERROR!!! Missing main class" << std::endl;
+        assert(false);
+    }
+
+    game_class_->Start();
     system_->Display();
 }
 
@@ -33,4 +40,16 @@ System *vision::Engine::GetSystemPtr()
 Environment *vision::Engine::GetEnvironmentPtr()
 {
     return env_.get();
+}
+
+IGameClass *vision::Engine::GetGameClassPtr()
+{
+    return game_class_;
+}
+void vision::Engine::SetGameClass(vision::IGameClass *game)
+{
+    game_class_ = game;
+    game_class_->SetEnginePtr(this);
+    game_class_->SetEnvironmentPtr(env_.get());
+
 }

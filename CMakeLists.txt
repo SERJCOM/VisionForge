@@ -13,18 +13,21 @@ find_package(glm REQUIRED)
 include(CMakePackageConfigHelpers)
 
 
+set(EngineFiles 
+src/Model.cpp 
+src/Mesh.cpp
+src/Object.cpp
+src/Skybox.cpp
+src/CameraComponent.cpp
+src/LightComponent.cpp
+src/System.cpp
+src/Environment.cpp
+src/FrameBuffer.cpp
+src/Engine.cpp)
+
 add_executable(Test 
     test/main.cpp
-    src/Model.cpp 
-    src/Mesh.cpp
-    src/Object.cpp
-    src/Skybox.cpp
-    src/CameraComponent.cpp
-    src/LightComponent.cpp
-    src/System.cpp
-    src/Environment.cpp
-    src/FrameBuffer.cpp
-    src/Engine.cpp
+    ${EngineFiles}
 )
 
 

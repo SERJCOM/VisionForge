@@ -128,6 +128,8 @@ void vision::System::Display()
                 component->Update();
             }
 
+            engine_->GetGameClassPtr()->Update();
+
             Environment* env = engine_->GetEnvironmentPtr();
             env->GetSkyBoxPtr()->DrawSkyBox(view_, projection_);
 
