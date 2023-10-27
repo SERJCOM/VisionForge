@@ -43,9 +43,9 @@ namespace vision
         std::vector<unsigned int> indices;
         std::vector<sTexture> textures;
 
-        glm::mat4 modelMat;
+        
 
-        void SetMatrix(Shader *shad);
+        void SetMatrix(Shader &shad);
 
         void setupMesh();
     };

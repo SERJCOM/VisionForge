@@ -1,8 +1,11 @@
 #include "VisionForge/Engine/Mesh.hpp"
 
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 using namespace vision;
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<sTexture> textures) 
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<sTexture> textures)
 {
     this->vertices = std::move(vertices);
     this->indices = std::move(indices);
@@ -17,6 +20,9 @@ Mesh::~Mesh()
 
 void Mesh::Draw(Shader &shader)
 {
+
+    SetMatrix(shader);
+
     glActiveTexture(GL_TEXTURE0);
 
     unsigned int diffuseNr = 1;
@@ -41,44 +47,21 @@ void Mesh::Draw(Shader &shader)
     glActiveTexture(GL_TEXTURE0);
 }
 
-void Mesh::SetMatrix(Shader *shad)
+void Mesh::SetMatrix(Shader &shad)
 {
-    // Quaternion orientation;
-    // Vector3 position;
-    // if (phys.physicsEnable)
-    // {
-    //     Transform transform = phys.body->getTransform();
-    //     position = transform.getPosition();
-    //     orientation = transform.getOrientation();
-    // }
-    // else
-    // {
-    //     orientation = Quaternion::fromEulerAngles(phys.angleRotate.x, phys.angleRotate.y, phys.angleRotate.z);
-    //     position = Vector3(phys.meshPosition.x, phys.meshPosition.y, phys.meshPosition.z);
-    // }
-    // glm::vec4 orient[3];
-    // glm::mat4 orientMat;
-    // for (int i = 0; i < 3; i++)
-    // {
-    //     orient[i].x = orientation.getMatrix().getRow(i).x;
-    //     orient[i].y = orientation.getMatrix().getRow(i).y;
-    //     orient[i].z = orientation.getMatrix().getRow(i).z;
-    //     orient[i].w = 0;
-    // }
-    // orientMat = glm::mat4(orient[0].x, orient[0].y, orient[0].z, orient[0].w,
-    //                       orient[1].x, orient[1].y, orient[1].z, orient[1].w,
-    //                       orient[2].x, orient[2].y, orient[2].z, orient[2].w,
-    //                       0.0, 0.0, 0.0, 1.0);
-    // modelMat = glm::mat4(1);
-    // modelMat = glm::translate(modelMat, glm::vec3(position.x, position.y, position.z));
-    // modelMat = modelMat * orientMat;
-    // modelMat = glm::scale(modelMat, phys.meshScale);
 
-    // shad->setMat4("model", modelMat);
+    glm::mat4 modelMat = glm::mat4(1);
+
+    
+
+    modelMat = glm::translate(modelMat, GetObjectPosition());
+
+    modelMat = glm::rotate(modelMat, angle_, rotate_);
+
+    modelMat = glm::scale(modelMat, GetObjectSize());
+
+    shad.setMat4("model", modelMat);
 }
-
-
-
 
 void Mesh::setupMesh()
 {

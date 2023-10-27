@@ -52,14 +52,52 @@ namespace vision
 
         void Draw();
 
-
         void LoadModel();
 
         void AddMaterial(Material *mat);
 
         void SetPath(std::filesystem::path path);
 
-        
+        void ScaleObject(glm::vec3 size) override{
+            Object::ScaleObject(size);
+
+            ProcessMesh([size](Mesh& mesh){
+                mesh.ScaleObject(size);
+            });
+        }
+
+        void SetObjectSize(glm::vec3 size) override{
+            Object::SetObjectSize(size);
+
+            ProcessMesh([size](Mesh& mesh){
+                mesh.SetObjectSize(size);
+            });
+        }
+
+        void SetObjectPosition(glm::vec3 pos) override{
+            Object::SetObjectPosition(pos);
+
+            ProcessMesh([pos](Mesh& mesh){
+                mesh.SetObjectPosition(pos);
+            });            
+        }
+
+        void MoveObject(glm::vec3 pos) override {
+            Object::MoveObject(pos);
+
+            ProcessMesh([pos](Mesh& mesh){
+                mesh.MoveObject(pos);
+            });  
+        }
+
+        void SetObjectRotation(double angle, glm::vec3 axis) override{
+            Object::SetObjectRotation(angle, axis);
+
+            ProcessMesh([angle, axis](Mesh& mesh){
+                mesh.SetObjectRotation(angle, axis);
+            });  
+        }
+
 
         static float DegToRad(float angle)
         {
@@ -67,6 +105,14 @@ namespace vision
         }
 
     protected:
+
+        template<typename T>
+        void ProcessMesh(T func){
+            for(auto& mesh : meshes){
+                func(mesh);
+            }
+        }
+
 
         int number = 0;
         std::string path;
@@ -77,11 +123,9 @@ namespace vision
         std::string directory;
         std::vector<sTexture> textures_loaded;
         std::unordered_map<std::string, int> meshNames;
-        bool gammaCorrection;
 
         Material *_material = nullptr;
 
-        std::vector<int> changedMeshes;
 
         void LoadModel(std::string path);
 

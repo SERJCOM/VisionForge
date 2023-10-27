@@ -27,14 +27,15 @@ glm::vec3 vision::Object::GetObjectSize() const
     return size_;
 }
 
-void vision::Object::RotateObject(glm::vec3 rotate)
+void vision::Object::RotateObject(double angle, glm::vec3 axis)
 {
-    rotate_ += rotate;
+    angle_ += angle;
+    rotate_ = axis;
 }
 
-glm::vec3 vision::Object::GetObjectRotation() const
+std::pair<double, glm::vec3> vision::Object::GetObjectRotation() const
 {
-    return rotate_;
+    return {angle_, rotate_};
 }
 
 void vision::Object::SetEnginePtr(Engine *sys)
@@ -47,9 +48,10 @@ void vision::Object::SetEnvironmentPtr(Environment *env)
     gEnv = env;
 }
 
-void vision::Object::SetObjectRotation(glm::vec3 rotate)
+void vision::Object::SetObjectRotation(double angle, glm::vec3 axis)
 {
-    rotate_ = rotate;
+    angle_ = angle;
+    rotate_ = axis;
 }
 
 glm::vec3 vision::Object::GetObjectPosition() const
