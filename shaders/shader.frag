@@ -9,10 +9,11 @@ in vec2 TexCoords;
 in vec4 fragPosLight;
 
 struct LIGHT{
-	float ambient;
-	float specular;
+	vec3 ambient;
+	vec3 specular;
 	vec3 pos;
 	vec3 color;
+	vec3 brightness;
 };
 
 
@@ -55,14 +56,12 @@ struct sLightComponent{
 
 // данные материала для PBR
 vec3 albedo = vec3(0.5, 0.5, 0.5);
-float metallic = 0.0;
+float metallic = 1.0;
 float roughness = 1.0;
-float ao = 1.0;
+float ao = 0.5;
 vec3 normalMap;
 
 
-//расчет направленного света и приведения к трем составляющим света
-sLightComponent CalcDirLight(LIGHT light, vec3 normal, vec3 viewDir, vec3 color);
 
 
 // модель освещения кука-торренса
@@ -110,45 +109,16 @@ void main()
     // Уравнение отражения
     vec3 Lo = vec3(0.0);
 
-	// vec3 L = normalize(vec3(point_light[i].x_pos, point_light[i].y_pos, point_light[i].z_pos) - PosFrag);
-	// vec3 H = normalize(camDir + L);
-	// float distance = length(vec3(point_light[i].x_pos, point_light[i].y_pos, point_light[i].z_pos) - PosFrag);
-	// float attenuation = 1.0 / (distance * distance);
-	// vec3 radiance = vec3(vec3(point_light[i].x, point_light[i].y, point_light[i].z)) * attenuation;  
-
-
-
-	vec3 ppos[16];
-	// ppos[0] = point_light[0].pos;
-	// ppos[1] = point_light[1].pos;
-	// ppos[2] = point_light[2].pos;
-
-	uint j = 0;
-	for(int i = 0; i < 6; i++){
-		ppos[i] = point_light[i].pos;
-	}
-
 
 	for(int i = 0; i < len_point; i++){
 
-	// vec3 L = normalize(vec3(point_light[i].x_pos, point_light[i].y_pos, point_light[i].z_pos) - PosFrag);
-	// vec3 H = normalize(camDir + L);
-	// float distance = length(vec3(point_light[i].x_pos, point_light[i].y_pos, point_light[i].z_pos) - PosFrag);
-	// float attenuation = 1.0 / (distance * distance);
-	// vec3 radiance = vec3(vec3(point_light[i].x, point_light[i].y, point_light[i].z)) * attenuation;       
-
-		
-		vec3 L = normalize(ppos[i] - PosFrag);
+		vec3 L = normalize(point_light[i].pos - PosFrag);
 		vec3 H = normalize(camDir + L);
-		float distance = length(ppos[i] - PosFrag);
+		float distance = length(point_light[i].pos - PosFrag);
 		float attenuation = 1.0 / (distance * distance);
-		vec3 radiance = vec3(1000, 1000, 1000) * attenuation;      
+		vec3 radiance = point_light[i].color * attenuation * point_light[i].brightness ;      
 
-		// vec3 L = normalize(vec3(15.0, 0, 0) - PosFrag);
-		// vec3 H = normalize(camDir + L);
-		// float distance = length(vec3(15.0, 0, 0) - PosFrag);
-		// float attenuation = 1.0 / (distance * distance);
-		// vec3 radiance = vec3(1000, 1000, 1000) * attenuation;        
+  
 		
 		// BRDF Кука-Торренса
 		float NDF = DistributionGGX(normal, H, roughness);        
@@ -191,43 +161,19 @@ void main()
 
     vec3 color = ambient + Lo ;
 	
-    color = color / (color + vec3(1.0));
-    color = pow(color, vec3(1.0/2.2));  
+    // color = color / (color + vec3(1.0));
+    // color = pow(color, vec3(1.0/2.2));  
 
-	// color = vec3(point_light[2].x_pos, point_light[2].y_pos, point_light[2].z_pos);
 
 	FragColor = vec4(color, 1.0);
 
-	//FragColor = vec4(0.3, 0.7, 0.2, 1.0);
 }
 
 
 //=========================================================================
 //=========================================================================
 
-sLightComponent CalcDirLight(LIGHT light, vec3 normal, vec3 viewDir, vec3 color){	
-	vec3 lightDir = light.pos;
-	lightDir = normalize(lightDir);
-	
-	float diff = max(dot(normal, lightDir), 0.0);
-	
-	vec3 reflectDir = reflect(-lightDir, normal);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
 
-	vec3 lightColor = light.color;
-	
-	vec3 ambient = light.ambient * color;
-	vec3 diffuse = diff * lightColor;
-    vec3 specular = vec3(light.specular);
-
-	sLightComponent lightReturn;
-	lightReturn.ambient = ambient;
-	lightReturn.diffuse = diffuse;
-	lightReturn.specular = specular;
-	
-	//return (ambient + diffuse + specular);
-	return lightReturn;
-}
 
 float CookTorrance(vec3 _normal, vec3 _light, vec3 _view, float roughness_val){
 	if (roughness_val <= 0.0) return 0.0;

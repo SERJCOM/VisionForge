@@ -8,41 +8,69 @@
 #include "VisionForge/System/System.hpp"
 #include "VisionForge/Engine/Material.hpp"
 #include "VisionForge/Engine/Engine.hpp"
+#include "VisionForge/EntitySystem/DefaulComponents/LightComponent.hpp"
 
 
 class MEntity : public vision::IEntity{
 public:
 
-    MEntity(){
+MEntity(){
 
 
-    }
+}
 
-    void Start() override{
+void Start() override{
 
-        using std::filesystem::path;
+    using std::filesystem::path;
 
-        model = gEngine->RegistrateComponent<vision::ModelComponent>();
-        model->SetPath(std::filesystem::current_path() / std::filesystem::path("..") / std::filesystem::path("test") / std::filesystem::path("obj") / std::filesystem::path("testtest.obj"));
-        model->LoadModel();
-        
-    }
+    model = gEngine->RegistrateComponent<vision::ModelComponent>();
 
-    void Update() override{
-        i+= 0.005;
+    auto dir_path = std::filesystem::current_path() / path("..") / path("test") / path("obj")  ;
 
-        model->SetObjectSize(glm::vec3(100 , 100 , 100 ));
-        model->SetObjectPosition(glm::vec3(200, 0, 200));
-        model->SetObjectRotation(i, glm::vec3(0.0, 1.0, 0));
-    }
+    model->SetPath(dir_path / path("testtest.obj"));
 
-    void ProcessEvent(vision::GameEvents event) override {
+    vision::Material mat;
+    mat.AddNewMaterial(dir_path  / path("Room01") / path("Bank_Beer_BaseColor.png"), vision::Type::DIFFUSE, "blinn3");
+    mat.AddNewMaterial(dir_path  / path("Room01") / path("Bank_Beer_Metallic.png"), vision::Type::METALNESS, "blinn3");
+    mat.AddNewMaterial(dir_path  / path("Room01") / path("Bank_Beer_Normal.png"), vision::Type::NORMALS, "blinn3");
+    mat.AddNewMaterial(dir_path  / path("Room01") / path("Bank_Beer_Roughness.png"), vision::Type::ROUGHNESS, "blinn3");
 
-    }
+
+    // model->AddMaterial(&mat );
+    model->LoadModel();
+
+    light = gEngine->GetEnvironmentPtr()->GetLightManagerPtr()->AddLight<vision::PointLight>();
+
+    light->SetObjectPosition(glm::vec3(-5, 0, 0));
+    light->color = glm::vec3(100, 100, 100);
+    light->brightness = glm::vec3(1000, 1000, 1000);
+
+
+    room = gEngine->RegistrateComponent<vision::ModelComponent>();
+    room->SetPath(dir_path / path("Room01") / path("room.obj"));
+    room->LoadModel();
+    
+
+    // model->SetObjectSize(glm::vec3(100 , 100 , 100 ));
+    //model->SetObjectPosition(glm::vec3(200, 0, 200));
+    
+}
+
+void Update() override{
+    i+= 0.0001;
+
+    // model->SetObjectRotation(i, glm::vec3(0.0, 1.0, 0));
+}
+
+void ProcessEvent(vision::GameEvents event) override {
+
+}
 
 
 private:
 vision::ModelComponent* model;
+vision::ModelComponent* room;
+vision::PointLight* light;
 
 double i = 0;
 

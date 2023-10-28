@@ -32,7 +32,7 @@ vision::System::System()
     shad_ = Shader(current_path_ / path("shader.vert"), current_path_ / path("shader.frag"));
     shadow_ = Shader(current_path_ / path("shadow.vert"), current_path_ / path("shadow.frag"));
 
-    projection_ = glm::perspective(glm::radians(60.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 1.0f, 1000.0f);
+    projection_ = glm::perspective(glm::radians(60.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 0.1f, 1000.0f);
 
     current_shader_ = &shad_;
 
@@ -44,6 +44,7 @@ void vision::System::Init()
     glEnable(GL_TEXTURE_CUBE_MAP);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+    glEnable(GL_MULTISAMPLE);
 }
 
 void vision::System::TurnOnCullFace()
@@ -121,6 +122,8 @@ void vision::System::Display()
 
             UpdateMatrix();
             UpdateShader();
+
+            engine_->GetEnvironmentPtr()->GetLightManagerPtr()->Draw();
 
             gameLoop(drawning);
 

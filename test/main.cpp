@@ -12,23 +12,32 @@ using filesystem::path;
 
 int main()
 {
-
     Engine engine;
 
     System *system = engine.GetSystemPtr();
 
-    filesystem::path current_path = filesystem::current_path() / path("../shaders");
-    current_path = current_path.lexically_normal();
-    filesystem::path skybox_file = current_path / path("..") / path("test") / path("img") / path("small_empty_room_1_2k.hdr");
-    skybox_file = skybox_file.lexically_normal();
-
-    engine.GetEnvironmentPtr()->GetSkyBoxPtr()->LoadSkyBox(skybox_file.c_str());
-
     GameClass game;
     engine.SetGameClass(&game);
 
-    bool running = true;
+    // unsigned int depthCubemap;
+    // glGenTextures(1, &depthCubemap);
 
+    // const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+    // glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+    // for (unsigned int i = 0; i < 6; ++i)
+    //     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 
+    //                  SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);  
+
+    // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  
+
+
+
+
+    bool running = true;
     auto loop = [&](int &drawning)
     {
         sf::Event event;
@@ -36,7 +45,7 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 drawning = 0;
-        }
+            }
     };
 
     engine.GetSystemPtr()->SetGameLoop(loop);

@@ -37,7 +37,7 @@ namespace vision
         glm::vec3 pos_ = glm::vec3(0, 0, 0);
         glm::vec3 size_ = glm::vec3(1, 1, 1);
 
-        glm::vec3 rotate_ = glm::vec3(0, 0, 0);
+        glm::vec3 rotate_ = glm::vec3(0, 1, 0);
         float angle_ = 0;
     };
 

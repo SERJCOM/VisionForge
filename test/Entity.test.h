@@ -3,6 +3,7 @@
 #include "VisionForge/EntitySystem/DefaulComponents/CameraComponent.hpp"
 #include <memory>
 #include "VisionForge/Common/Event.hpp"
+#include "VisionForge/Common/Common.hpp"
 
 #include <iostream>
 
@@ -22,9 +23,13 @@ namespace test
 
         void Update() override
         {
+            using namespace vision;
+
             Move();
             vision::CameraComponent &_camera = *GetCamera();
             _camera.SetCameraPosition(pos);
+
+            std::cout << pos << std::endl;
         }
 
         void ProcessEvent(vision::GameEvents event) override
@@ -53,7 +58,7 @@ namespace test
     private:
         vision::CameraComponent *camera;
 
-        float speed = 0.5f;
+        float speed = 0.01f;
         glm::vec3 pos = glm::vec3(0);
     };
 

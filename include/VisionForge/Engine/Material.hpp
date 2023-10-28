@@ -22,6 +22,9 @@ namespace vision
     class Material
     {
     public:
+
+    Material(){}
+
         struct sMaterials
         {
             std::string path;
