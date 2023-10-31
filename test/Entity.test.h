@@ -58,7 +58,7 @@ namespace test
     private:
         vision::CameraComponent *camera;
 
-        float speed = 0.01f;
+        float speed = 1.0f;
         glm::vec3 pos = glm::vec3(0);
     };
 

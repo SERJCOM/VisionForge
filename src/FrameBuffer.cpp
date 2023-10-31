@@ -2,16 +2,20 @@
 
 using namespace vision;
 
-std::unique_ptr<IFrameBuffer> vision::CreateCommonFrameBuffer()
+std::unique_ptr<FrameBuffer> vision::CreateCommonFrameBuffer(int fbo)
 {
-    return std::unique_ptr<IFrameBuffer>();
+    if(fbo == -1){
+        return std::make_unique<FrameBuffer>();
+    }
+
+    return std::make_unique<FrameBuffer>(fbo);
 }
 
-class TextureWRFramebuffer : public IFrameBuffer
+class TextureWRFramebuffer : public FrameBuffer
 {
 
 private:
-    unsigned int fbo, texture, rbo, framebuff, width, height;
+    unsigned int texture, rbo, framebuff, width, height;
 
 public:
     TextureWRFramebuffer(int width, int height)
@@ -52,7 +56,7 @@ public:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void UseFrameBuffer() override
+    void UseBuffer() override
     {
         glViewport(0, 0, width, height);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuff);
@@ -65,7 +69,7 @@ public:
     }
 };
 
-std::unique_ptr<IFrameBuffer> vision::CreateTextureWrittingFrameBuffer()
+std::unique_ptr<FrameBuffer> vision::CreateTextureWrittingFrameBuffer()
 {
-    return std::unique_ptr<IFrameBuffer>();
+    return std::unique_ptr<FrameBuffer>();
 }

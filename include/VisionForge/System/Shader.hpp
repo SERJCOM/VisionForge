@@ -9,6 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "VisionForge/System/Ssbo.hpp"
 #include <filesystem>
+#include <optional>
 
 class Shader
 {
@@ -20,77 +21,67 @@ public:
     Shader(std::filesystem::path vertf, std::filesystem::path fragf)
     {
 
-        std::string vertexCode, fragmentCode;
+        InitShader(vertf, fragf);
+    }
 
-        std::ifstream vShaderFile(vertf.c_str());
-        std::ifstream fShaderFile(fragf.c_str());
-        std::stringstream vShaderStream, fShaderStream;
+    Shader(std::filesystem::path vertf, std::filesystem::path fragf, std::filesystem::path geomf)
+    {
 
-        vShaderStream << vShaderFile.rdbuf();
-        fShaderStream << fShaderFile.rdbuf();
+        unsigned int vertex, fragment, geom;
 
-        vShaderFile.close();
-        fShaderFile.close();
-
-        vertexCode = vShaderStream.str();
-        fragmentCode = fShaderStream.str();
-
-        const char *vShaderCode = vertexCode.c_str();
-        const char *fShaderCode = fragmentCode.c_str();
-
-        unsigned int vertex, fragment;
-
+        std::string prog = ReadFile(vertf);
+        const char *shaderCode = prog.c_str();
         vertex = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertex, 1, &vShaderCode, NULL);
+        glShaderSource(vertex, 1, &shaderCode, NULL);
         glCompileShader(vertex);
         checkCompileErrors(vertex, "VERTEX");
 
+        prog = ReadFile(fragf);
+        shaderCode = prog.c_str();
         fragment = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragment, 1, &fShaderCode, NULL);
+        glShaderSource(fragment, 1, &shaderCode, NULL);
         glCompileShader(fragment);
         checkCompileErrors(fragment, "FRAGMENT");
+
+        prog = ReadFile(geomf);
+        shaderCode = prog.c_str();
+        geom = glCreateShader(GL_GEOMETRY_SHADER);
+        glShaderSource(geom, 1, &shaderCode, NULL);
+        glCompileShader(geom);
+        checkCompileErrors(geom, "GEOMETRY");
+
 
         ID = glCreateProgram();
         glAttachShader(ID, vertex);
         glAttachShader(ID, fragment);
+        glAttachShader(ID, geom);
         glLinkProgram(ID);
         checkCompileErrors(ID, "PROGRAM");
 
         glDeleteShader(vertex);
         glDeleteShader(fragment);
+        glDeleteShader(geom);
+
     }
 
     void InitShader(std::string vertf, std::string fragf)
     {
-        std::string vertexCode, fragmentCode;
+        unsigned int vertex, fragment, geom;
 
-        std::ifstream vShaderFile(vertf.c_str());
-        std::ifstream fShaderFile(fragf.c_str());
-        std::stringstream vShaderStream, fShaderStream;
-
-        vShaderStream << vShaderFile.rdbuf();
-        fShaderStream << fShaderFile.rdbuf();
-
-        vShaderFile.close();
-        fShaderFile.close();
-
-        vertexCode = vShaderStream.str();
-        fragmentCode = fShaderStream.str();
-
-        const char *vShaderCode = vertexCode.c_str();
-        const char *fShaderCode = fragmentCode.c_str();
-
-        unsigned int vertex, fragment;
-
+        std::string prog = ReadFile(vertf);
+        const char *shaderCode = prog.c_str();
         vertex = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertex, 1, &vShaderCode, NULL);
+        glShaderSource(vertex, 1, &shaderCode, NULL);
         glCompileShader(vertex);
         checkCompileErrors(vertex, "VERTEX");
 
+        prog = ReadFile(fragf);
+        shaderCode = prog.c_str();
         fragment = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragment, 1, &fShaderCode, NULL);
+        glShaderSource(fragment, 1, &shaderCode, NULL);
         glCompileShader(fragment);
         checkCompileErrors(fragment, "FRAGMENT");
+
 
         ID = glCreateProgram();
         glAttachShader(ID, vertex);
@@ -100,6 +91,7 @@ public:
 
         glDeleteShader(vertex);
         glDeleteShader(fragment);
+        
     }
 
     void use()
@@ -141,6 +133,7 @@ public:
         glBindTexture(GL_TEXTURE_2D, texture);
     }
 
+
     void UseTexture(int index, int texture)
     {
         glActiveTexture(GL_TEXTURE0 + index);
@@ -181,6 +174,20 @@ public:
     }
 
 private:
+
+    std::string ReadFile(std::filesystem::path path){
+        std::string code;
+
+        std::ifstream filestream(path);
+
+        std::stringstream sstream ;
+        sstream << filestream.rdbuf();
+
+        code = sstream.str();
+
+        return code;
+    }
+
     void checkCompileErrors(unsigned int shader, std::string type)
     {
         int success;

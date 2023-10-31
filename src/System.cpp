@@ -21,20 +21,30 @@ vision::System::System()
 
     window_.create(sf::VideoMode({1080, 720}), "OpenGL", sf::Style::Default, settings);
     window_.setActive();
+    window_.setFramerateLimit(60);
+
+    
+
+    main_buffer_ = vision::CreateCommonFrameBuffer(0);
 
     Init();
-
-    main_buffer_ = vision::CreateCommonFrameBuffer();
 
     current_path_ = std::filesystem::current_path() / path("..") / path("shaders");
     current_path_ = current_path_.lexically_normal();
 
     shad_ = Shader(current_path_ / path("shader.vert"), current_path_ / path("shader.frag"));
-    shadow_ = Shader(current_path_ / path("shadow.vert"), current_path_ / path("shadow.frag"));
+    shadow = Shader(current_path_ / path("shadow.vert"), current_path_ / path("shadow.frag"), current_path_ / path("shadow.geom"));
 
     projection_ = glm::perspective(glm::radians(60.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 0.1f, 1000.0f);
 
     current_shader_ = &shad_;
+
+    shad_.use();
+    shad_.setInt("depthMap", 7);
+
+
+
+    TestShadows();
 
 }
 
@@ -53,15 +63,11 @@ void vision::System::TurnOnCullFace()
     glCullFace(GL_BACK);
 }
 
-void vision::System::ClearBuffers()
-{
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
+
 void vision::System::Drawning(int x, int y)
 {
+    main_buffer_->UseBuffer();
     glViewport(0, 0, x, y);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void vision::System::SetGameLoop(std::function<void(int &drawning)> loop)
@@ -117,15 +123,54 @@ void vision::System::Display()
 
         try
         {
+
+            gameLoop(drawning);
+
+            //
+
+            
+            glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+            glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+            glClear(GL_DEPTH_BUFFER_BIT);
+
+            shadow.use();
+            for(int i = 0; i < shadowTransforms.size(); i++){
+                shadow.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+            }
+
+            current_shader_ = &shadow;
+
+            shadow.setFloat("far_plane", far);
+            shadow.setVec3("lightPos", lightPos);
+
+            for (auto &component : engine_->components_)
+            {
+                component->Update();
+            }
+
+            
+
+            //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+            //
+
             Drawning(GetWindow().getSize().x, GetWindow().getSize().y);
-            ClearBuffers();
+            main_buffer_->ClearBuffer();
 
             UpdateMatrix();
             UpdateShader();
 
+            glActiveTexture(GL_TEXTURE7);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+
+
+            shad_.setFloat("far_plane", far);
+            shad_.setVec3("lightPos", lightPos);
+
+            current_shader_ = &shad_;
+
             engine_->GetEnvironmentPtr()->GetLightManagerPtr()->Draw();
 
-            gameLoop(drawning);
 
             for (auto &entity : engine_->entities_)
             {

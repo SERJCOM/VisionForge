@@ -42,7 +42,7 @@ void Draw(){
         std::string id = std::to_string(i);
         shader_->setVec3("point_light[" + id + "].pos", lights_[i]->GetObjectPosition());
         shader_->setVec3("point_light[" + id + "].color", lights_[i]->color);
-        shader_->setVec3("point_light[" + id + "].brightness", lights_[i]->brightness);
+        //shader_->setVec3("point_light[" + id + "].brightness", lights_[i]->brightness);
     }
 }
 

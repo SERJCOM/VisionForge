@@ -7,24 +7,61 @@
 namespace vision
 {
 
-    class IFrameBuffer
+    class FrameBuffer
     {
     public:
-        IFrameBuffer() = default;
-        virtual ~IFrameBuffer() = default;
+        FrameBuffer(){
+            glGenFramebuffers(1, &fbo);
+        }
 
-        virtual void ClearBuffer() = 0;
+        FrameBuffer(int fbo){
+            this->fbo = fbo;
+        }
 
-        virtual void UseFrameBuffer() = 0;
+
+
+        FrameBuffer(FrameBuffer&) = delete;
+        FrameBuffer& operator=(FrameBuffer&) = delete;
+
+
+
+        virtual ~FrameBuffer(){
+            if(fbo != 0)
+                glDeleteFramebuffers(1, &fbo);
+        }
+
+        virtual void UseBuffer(){
+            glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        }
+
+        virtual void DontUseBuffer(){
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
+
+        virtual void ClearBuffer(){
+            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
+
+        int GetFBO() const {
+            return fbo;
+        }
 
         virtual int GetTexture()
         {
             std::cerr << "This method is not supported" << std::endl;
             assert(false);
         }
+
+        protected:
+
+
+        unsigned int fbo = 0;
+
     };
 
-    std::unique_ptr<IFrameBuffer> CreateCommonFrameBuffer();
-    std::unique_ptr<IFrameBuffer> CreateTextureWrittingFrameBuffer();
+
+    std::unique_ptr<FrameBuffer> CreateCommonFrameBuffer(int fbo = -1);
+    std::unique_ptr<FrameBuffer> CreateTextureWrittingFrameBuffer();
 
 }
