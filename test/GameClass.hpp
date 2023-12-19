@@ -22,7 +22,7 @@ public:
 
         std::filesystem::path test_dir = std::filesystem::current_path() / path("../test");
 
-        gEngine->GetEnvironmentPtr()->GetSkyBoxPtr()->LoadSkyBox(test_dir / path("img") / path("moonless_golf_2k.hdr"));
+        gEngine->GetEnvironmentPtr()->GetSkyBoxPtr()->LoadSkyBox(test_dir / path("promenade_de_vidy_8k.hdr"));
     }
 
     void Update() override

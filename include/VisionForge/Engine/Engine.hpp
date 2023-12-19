@@ -20,6 +20,7 @@ meanwhile the System module controls only visualization
 #include "VisionForge/EntitySystem/Component.hpp"
 #include "VisionForge/Engine/Environment.hpp"
 #include "VisionForge/Engine/GameClass.hpp"
+#include "VisionForge/Common/InputManager.hpp"
 
 namespace vision
 {
@@ -50,13 +51,19 @@ namespace vision
 
         void SetGameClass(IGameClass* game);
 
+        input::IInputManager* GetInputManager();
+
+        
+
     private:
         std::unique_ptr<System> system_;
         std::unique_ptr<Environment> env_;
+        std::unique_ptr<input::IInputManager> input_manager_;
 
         std::vector<std::unique_ptr<IComponent>> components_;
         std::vector<std::unique_ptr<IEntity>> entities_;
         std::unordered_map<std::string, IEntity *> name_entity_;
+
 
         IGameClass* game_class_ = nullptr;
     };

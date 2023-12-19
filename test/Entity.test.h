@@ -19,21 +19,22 @@ namespace test
         {
             camera = gEngine->RegistrateComponent<vision::CameraComponent>();
             Update();
+
+            ConfMove();
         }
 
         void Update() override
         {
             using namespace vision;
 
-            Move();
-            vision::CameraComponent &_camera = *GetCamera();
-            _camera.SetCameraPosition(pos);
+            camera->SetCameraPosition(pos);
 
             std::cout << pos << std::endl;
         }
 
         void ProcessEvent(vision::GameEvents event) override
         {
+            
         }
 
         vision::CameraComponent *GetCamera()
@@ -41,18 +42,42 @@ namespace test
             return static_cast<vision::CameraComponent *>(camera);
         }
 
-        void Move()
+        void ConfMove()
         {
-            auto camera = GetCamera();
-
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+            auto forward = [&](int, int){
                 pos += speed * camera->GetCameraFront();
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+            };
+
+            auto back = [&](int, int){
                 pos -= speed * camera->GetCameraFront();
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+            };
+
+            auto left = [&](int, int){
                 pos -= glm::normalize(glm::cross(camera->GetCameraFront(), camera->GetCameraUp())) * speed;
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+            };
+
+            auto right = [&](int, int){
                 pos += glm::normalize(glm::cross(camera->GetCameraFront(), camera->GetCameraUp())) * speed;
+            };
+
+            vision::input::DeviceParametrs parameter;
+            parameter.SetKeyIndex(sf::Keyboard::W);
+            parameter.SetDeviceType(vision::input::DeviceType::KEYBOARD);
+
+            gEngine->GetInputManager()->CreateNewInput(parameter, "forward");
+            gEngine->GetInputManager()->AddInputEvent("forward", forward);
+
+            parameter.SetKeyIndex(sf::Keyboard::S);
+            gEngine->GetInputManager()->CreateNewInput(parameter, "back");
+            gEngine->GetInputManager()->AddInputEvent("back", back);
+
+            parameter.SetKeyIndex(sf::Keyboard::A);
+            gEngine->GetInputManager()->CreateNewInput(parameter, "left");
+            gEngine->GetInputManager()->AddInputEvent("left", left);
+
+            parameter.SetKeyIndex(sf::Keyboard::D);
+            gEngine->GetInputManager()->CreateNewInput(parameter, "right");
+            gEngine->GetInputManager()->AddInputEvent("right", right);
         }
 
     private:

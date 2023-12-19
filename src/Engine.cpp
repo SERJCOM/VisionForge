@@ -2,6 +2,7 @@
 
 
 
+
 using namespace vision;
 
 vision::Engine::Engine()
@@ -10,6 +11,8 @@ vision::Engine::Engine()
     system_->SetEnginePtr(this);
 
     env_ = std::make_unique<Environment>(&GetSystemPtr()->GetMainShader());
+
+    input_manager_ = input::CreateBasicInputManager();
 }
 
 void vision::Engine::Display()
@@ -51,5 +54,9 @@ void vision::Engine::SetGameClass(vision::IGameClass *game)
     game_class_ = game;
     game_class_->SetEnginePtr(this);
     game_class_->SetEnvironmentPtr(env_.get());
+}
 
+input::IInputManager *vision::Engine::GetInputManager()
+{
+    return input_manager_.get();
 }

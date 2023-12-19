@@ -27,7 +27,7 @@ void Start() override{
 
     auto dir_path = std::filesystem::current_path() / path("..") / path("test") / path("obj")  ;
 
-    model->SetPath(dir_path / path("testtest.obj"));
+    // model->SetPath(dir_path / path("testtest.obj"));
 
     vision::Material mat;
     // mat.AddNewMaterial(dir_path  / path("Room01") / path("Bank_Beer_BaseColor.png"), vision::Type::DIFFUSE, "blinn3");
@@ -46,12 +46,12 @@ void Start() override{
     //light->brightness = glm::vec3(10, 10, 10);
 
 
-    room = gEngine->RegistrateComponent<vision::ModelComponent>();
-    room->SetPath(dir_path / path("dimaMap") / path("untitled.obj"));
-    room->LoadModel();
+    // room = gEngine->RegistrateComponent<vision::ModelComponent>();
+    // room->SetPath(dir_path / path("dimaMap") / path("untitled.obj"));
+    // room->LoadModel();
     
 
-    room->SetObjectSize(glm::vec3(0.1 , 0.1, 0.1));
+    // room->SetObjectSize(glm::vec3(0.1 , 0.1, 0.1));
     // model->SetObjectPosition(glm::vec3(200, 0, 200));
     
 }

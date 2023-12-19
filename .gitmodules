@@ -2,3 +2,18 @@
 	path = libraries/stb
 	url = https://github.com/nothings/stb.git
 
+[submodule "libraries/SFML"]
+	path = libraries/SFML
+	url = https://github.com/SFML/SFML.git
+[submodule "libraries/assimp"]
+	path = libraries/assimp
+	url = https://github.com/assimp/assimp.git
+[submodule "libraries/jsoncpp"]
+	path = libraries/jsoncpp
+	url = https://github.com/open-source-parsers/jsoncpp.git
+[submodule "libraries/glew"]
+	path = libraries/glew
+	url = https://github.com/nigels-com/glew.git
+[submodule "libraries/glm"]
+	path = libraries/glm
+	url = https://github.com/g-truc/glm.git

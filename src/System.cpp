@@ -143,6 +143,8 @@ void vision::System::Display()
             shadow.setFloat("far_plane", far);
             shadow.setVec3("lightPos", lightPos);
 
+            engine_->GetInputManager()->Update();
+
             for (auto &component : engine_->components_)
             {
                 component->Update();
