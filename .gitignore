@@ -4,5 +4,5 @@ add_libraries/
 img
 libraries/
 
-test/assets/models
+test/assets/
 
