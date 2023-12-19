@@ -2,6 +2,7 @@ build
 .vscode
 add_libraries/
 img
+libraries
 
 test/img
 test/obj
