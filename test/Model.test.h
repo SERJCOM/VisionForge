@@ -25,9 +25,9 @@ void Start() override{
 
     model = gEngine->RegistrateComponent<vision::ModelComponent>();
 
-    auto dir_path = std::filesystem::current_path() / path("..") / path("test") / path("obj")  ;
+    auto dir_path = std::filesystem::current_path() / path("..") / path("test") / path("assets") / path("models") / path("girl") ;
 
-    // model->SetPath(dir_path / path("testtest.obj"));
+    model->SetPath(dir_path / path("1118_nao_walk.fbx"));
 
     vision::Material mat;
     // mat.AddNewMaterial(dir_path  / path("Room01") / path("Bank_Beer_BaseColor.png"), vision::Type::DIFFUSE, "blinn3");

@@ -29,7 +29,7 @@ namespace test
 
             camera->SetCameraPosition(pos);
 
-            std::cout << pos << std::endl;
+            // std::cout << pos << std::endl;
         }
 
         void ProcessEvent(vision::GameEvents event) override
