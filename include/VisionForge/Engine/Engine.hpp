@@ -1,5 +1,5 @@
 /*
-A class is needed to control all Engine Modules except System module.
+This class is needed to control all Engine Modules except System module.
 The class assignment is Registration Components, Entities, Displaying , and other.
 the pattern is Facade-Singleton
 

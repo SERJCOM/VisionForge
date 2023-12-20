@@ -37,7 +37,7 @@ void Start() override{
 
 
     // model->AddMaterial(&mat );
-    model->LoadModel();
+    // model->LoadModel();
 
     light = gEngine->GetEnvironmentPtr()->GetLightManagerPtr()->AddLight<vision::PointLight>();
 

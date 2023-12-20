@@ -207,7 +207,7 @@ void vision::System::UpdateShader()
     shad_.use();
     shad_.setMat4("projection", projection_);
     shad_.setMat4("view", view_);
-    shad_.setVec3("cameraPos", main_camera_->GetCameraPos());
+    shad_.setVec3("cameraPos", main_camera_->GetObjectPosition());
 }
 
 void vision::System::SetProjectionMatrix(glm::mat4 projection)

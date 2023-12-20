@@ -7,11 +7,12 @@
 #include <SFML/Window/Window.hpp>
 // #include "VisionForge/Engine/Engine.hpp"
 #include "VisionForge/EntitySystem/Component.hpp"
+#include "VisionForge/EntitySystem/Components/CameraInterface.hpp"
 
 namespace vision
 {
 
-	class CameraComponent : public vision::IComponent
+	class CameraComponent : public ICameraComponents
 	{
 	public:
 		void Start() override;
@@ -38,20 +39,16 @@ namespace vision
 			sf::Mouse::setPosition(position, *window_);
 		}
 
-		void SetCameraPosition(glm::vec3 pos)
-		{
-			cameraPos = pos;
-		}
 
-		virtual void Looking();
+		void Looking() override;
 
 		glm::mat4 updateView()
 		{
-			view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+			view = glm::lookAt(pos_, pos_ + cameraFront, cameraUp);
 			return view;
 		}
 
-		virtual glm::mat4 GetViewMatrix() const
+		glm::mat4 GetViewMatrix() const override
 		{
 			return view;
 		}
@@ -66,17 +63,13 @@ namespace vision
 			return sensitivity_;
 		}
 
-		glm::vec3 GetCameraPos() const
-		{
-			return cameraPos;
-		}
 
-		glm::vec3 GetCameraUp() const
+		glm::vec3 GetCameraUp() const override
 		{
 			return cameraUp;
 		}
 
-		glm::vec3 GetCameraFront() const
+		glm::vec3 GetCameraFront() const override
 		{
 			return cameraFront;
 		}
@@ -88,7 +81,6 @@ namespace vision
 		float xpos = 400, ypos = 300;
 		float lastX = xpos, lastY = ypos;
 		float sensitivity_ = 0.1;
-		glm::vec3 cameraPos = glm::vec3(-1.0f, 0.0f, 0.0f);
 		glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, 0.0f);
 		glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 		glm::mat4 view;

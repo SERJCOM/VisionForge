@@ -27,7 +27,7 @@ namespace test
         {
             using namespace vision;
 
-            camera->SetCameraPosition(pos);
+            camera->SetObjectPosition(pos);
 
             // std::cout << pos << std::endl;
         }
