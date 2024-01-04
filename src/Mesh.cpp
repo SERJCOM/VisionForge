@@ -49,10 +49,7 @@ void Mesh::Draw(Shader &shader)
 
 void Mesh::SetMatrix(Shader &shad)
 {
-
-    glm::mat4 modelMat = glm::mat4(1);
-
-    
+    glm::mat4 modelMat = glm::mat4(1);    
 
     modelMat = glm::translate(modelMat, GetObjectPosition());
 

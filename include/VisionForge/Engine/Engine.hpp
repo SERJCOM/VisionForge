@@ -21,6 +21,7 @@ meanwhile the System module controls only visualization
 #include "VisionForge/Engine/Environment.hpp"
 #include "VisionForge/Engine/GameClass.hpp"
 #include "VisionForge/Common/InputManager.hpp"
+#include "VisionForge/Engine/LightManager.hpp"
 
 namespace vision
 {
@@ -51,7 +52,8 @@ namespace vision
 
         void SetGameClass(IGameClass* game);
 
-        input::IInputManager* GetInputManager();
+        input::IInputManager* GetInputManagerPtr();
+
 
         
 

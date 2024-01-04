@@ -14,11 +14,21 @@ struct LIGHT{
 	vec3 brightness;
 };
 
+struct LIGHT_POINT_SHADOW{
+	LIGHT light;
+	samplerCube depthmap;
+};
+
 const float PI = 3.14159265359;
+const int SHADOW_MAX = 8;
+
 
 
 uniform LIGHT point_light[16];
 uniform int len_point = 0;
+
+uniform LIGHT_POINT_SHADOW point_light_shadow[SHADOW_MAX];
+uniform int len_point_light_shadow = 0;
 
 uniform float far_plane;
 uniform vec3 lightPos;
@@ -54,10 +64,10 @@ uniform sampler2D brdfLUT; // 7
 
 
 // данные материала для PBR
-vec3 albedo = vec3(0.5, 0.5, 0.5);
+vec3 albedo = vec3(0.9, 0.9, 0.9);
 float metallic = 1.0;
-float roughness = 1.0;
-float ao = 0;
+float roughness = 0.1;
+float ao = 0.2;
 
 
 
@@ -108,6 +118,11 @@ void main()
     vec3 Lo = vec3(0.0);
 
 
+	// debug
+	vec3 shadow_pos_d = vec3(-24, 2, -19);
+	vec3 brightness = vec3(10, 10, 10);
+
+
 	for(int i = 0; i < len_point; i++){
 
 		vec3 L = normalize(point_light[i].pos - PosFrag);
@@ -116,7 +131,7 @@ void main()
 		float attenuation = 1.0 / (distance * distance);
 		vec3 radiance = point_light[i].color * attenuation ;
 		
-		float shadow = CubeShadowCalculation(PosFrag, point_light[i].pos) ;
+		float shadow = CubeShadowCalculation(PosFrag, shadow_pos_d) ;
 
 		
 		float NDF = DistributionGGX(normal, H, roughness);        
@@ -131,8 +146,14 @@ void main()
 		vec3 kD = 1.0 - kS;
 		kD *= 1.0 - metallic;	 
 
+		float shadow_distance = length(shadow_pos_d - PosFrag);
+		float shadow_attenuation = 1.0 / (shadow_distance * shadow_distance);
+		vec3 shadow_color = (1 - shadow ) * shadow_attenuation *  point_light[i].color * brightness;
+
 		float NdotL = max(dot(normal, L), 0.0);                
-		Lo += (kD * albedo / PI + specular) * radiance * NdotL * (1 - shadow); 
+		Lo += (kD * albedo / PI + specular) * radiance * NdotL + shadow_color; 
+
+		// Lo += (kD * albedo / PI + specular) * radiance * NdotL ; 
 
 	}
 
@@ -168,6 +189,8 @@ void main()
 
 	FragColor = vec4(color, 1.0);
 
+
+	// FragColor = vec4(1.0, 0.5, 0.3, 1.0);
 }
 
 

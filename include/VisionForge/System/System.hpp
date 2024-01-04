@@ -84,7 +84,7 @@ namespace vision
 			far = 25.0f;
 			glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far); 
 
-			lightPos = glm::vec3(5, 1, 1);
+			lightPos = glm::vec3(-24, 2, -19);
 
 			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 1.0, 0.0, 0.0), glm::vec3(0.0,-1.0, 0.0)));
 shadowTransforms.push_back(shadowProj * 

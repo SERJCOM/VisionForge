@@ -5,6 +5,8 @@
 #include "VisionForge/Common/Event.hpp"
 #include "VisionForge/Common/Common.hpp"
 
+#include "VisionForge/EntitySystem/DefaulComponents/LightComponent.hpp"
+
 #include <iostream>
 
 namespace test
@@ -18,9 +20,16 @@ namespace test
         void Start() override
         {
             camera = gEngine->RegistrateComponent<vision::CameraComponent>();
-            Update();
+            // Update();
 
             ConfMove();
+
+            light = gEngine->GetEnvironmentPtr()->GetLightManagerPtr()->AddLight<vision::PointLight>();
+            light->SetObjectPosition(glm::vec3(10, 12, 20));
+            light->color = glm::vec3(1, 1, 1);
+            light->brightness = glm::vec3(10, 10, 10);
+
+            light->SetObjectPosition(glm::vec3(17, 27, 12));
         }
 
         void Update() override
@@ -29,7 +38,9 @@ namespace test
 
             camera->SetObjectPosition(pos);
 
-            // std::cout << pos << std::endl;
+            std::cout << pos << std::endl;
+
+            
         }
 
         void ProcessEvent(vision::GameEvents event) override
@@ -64,20 +75,20 @@ namespace test
             parameter.SetKeyIndex(sf::Keyboard::W);
             parameter.SetDeviceType(vision::input::DeviceType::KEYBOARD);
 
-            gEngine->GetInputManager()->CreateNewInput(parameter, "forward");
-            gEngine->GetInputManager()->AddInputEvent("forward", forward);
+            gEngine->GetInputManagerPtr()->CreateNewInput(parameter, "forward");
+            gEngine->GetInputManagerPtr()->AddInputEvent("forward", forward);
 
             parameter.SetKeyIndex(sf::Keyboard::S);
-            gEngine->GetInputManager()->CreateNewInput(parameter, "back");
-            gEngine->GetInputManager()->AddInputEvent("back", back);
+            gEngine->GetInputManagerPtr()->CreateNewInput(parameter, "back");
+            gEngine->GetInputManagerPtr()->AddInputEvent("back", back);
 
             parameter.SetKeyIndex(sf::Keyboard::A);
-            gEngine->GetInputManager()->CreateNewInput(parameter, "left");
-            gEngine->GetInputManager()->AddInputEvent("left", left);
+            gEngine->GetInputManagerPtr()->CreateNewInput(parameter, "left");
+            gEngine->GetInputManagerPtr()->AddInputEvent("left", left);
 
             parameter.SetKeyIndex(sf::Keyboard::D);
-            gEngine->GetInputManager()->CreateNewInput(parameter, "right");
-            gEngine->GetInputManager()->AddInputEvent("right", right);
+            gEngine->GetInputManagerPtr()->CreateNewInput(parameter, "right");
+            gEngine->GetInputManagerPtr()->AddInputEvent("right", right);
         }
 
     private:
@@ -85,6 +96,8 @@ namespace test
 
         float speed = 1.0f;
         glm::vec3 pos = glm::vec3(0);
+
+        vision::PointLight* light;
     };
 
 }

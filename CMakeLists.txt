@@ -27,6 +27,8 @@ src/Environment.cpp
 src/FrameBuffer.cpp
 src/Engine.cpp
 src/InputManager.cpp
+src/ShadowManager.cpp
+src/ShadowComponent.cpp
 )
 
 add_executable(Test 
@@ -34,6 +36,7 @@ add_executable(Test
     ${EngineFiles}
 )
 
+add_compile_options(-g)
 
 
 target_link_libraries(Test PUBLIC 

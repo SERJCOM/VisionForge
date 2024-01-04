@@ -126,7 +126,7 @@ void vision::System::Display()
 
             gameLoop(drawning);
 
-            //
+            
 
             
             glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
@@ -143,7 +143,7 @@ void vision::System::Display()
             shadow.setFloat("far_plane", far);
             shadow.setVec3("lightPos", lightPos);
 
-            engine_->GetInputManager()->Update();
+            
 
             for (auto &component : engine_->components_)
             {
@@ -151,10 +151,6 @@ void vision::System::Display()
             }
 
             
-
-            //glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-            //
 
             Drawning(GetWindow().getSize().x, GetWindow().getSize().y);
             main_buffer_->ClearBuffer();
@@ -173,6 +169,7 @@ void vision::System::Display()
 
             engine_->GetEnvironmentPtr()->GetLightManagerPtr()->Draw();
 
+            engine_->GetInputManagerPtr()->Update();
 
             for (auto &entity : engine_->entities_)
             {

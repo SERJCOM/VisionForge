@@ -56,7 +56,7 @@ void vision::Engine::SetGameClass(vision::IGameClass *game)
     game_class_->SetEnvironmentPtr(env_.get());
 }
 
-input::IInputManager *vision::Engine::GetInputManager()
+input::IInputManager *vision::Engine::GetInputManagerPtr()
 {
     return input_manager_.get();
 }

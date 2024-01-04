@@ -124,6 +124,7 @@ Mesh ModelComponent::processMesh(aiMesh *mesh, const aiScene *scene)
 
     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
     std::cout << "texture name: " << material->GetName().C_Str() << std::endl;
+    
     std::cout << "mesh name: " << mesh->mName.C_Str() << std::endl;
     if (_material != nullptr)
     {

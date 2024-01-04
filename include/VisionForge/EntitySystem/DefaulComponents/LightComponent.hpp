@@ -57,4 +57,27 @@ namespace vision
         float quadratic;
     };
 
+
+    class PointLightWithShadow : public Light
+    {
+        public:
+
+        PointLightWithShadow(){
+
+        }
+
+        virtual ~PointLightWithShadow() = default;
+
+        void Start() override {
+
+        }
+
+        void Update() override {
+            
+        }
+
+
+        private:
+    };
+
 }

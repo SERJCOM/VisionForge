@@ -63,5 +63,6 @@ namespace vision
 
     std::unique_ptr<FrameBuffer> CreateCommonFrameBuffer(int fbo = -1);
     std::unique_ptr<FrameBuffer> CreateTextureWrittingFrameBuffer();
+    
 
 }
