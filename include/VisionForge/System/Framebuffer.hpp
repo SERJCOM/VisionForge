@@ -30,6 +30,8 @@ namespace vision
                 glDeleteFramebuffers(1, &fbo);
         }
 
+        virtual void Init(){}
+
         virtual void UseBuffer(){
             glBindFramebuffer(GL_FRAMEBUFFER, fbo);
         }

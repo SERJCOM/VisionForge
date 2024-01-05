@@ -79,6 +79,12 @@ namespace vision
 		unsigned int depthMapFBO;
 
 
+		// std::vector<glm::mat4> shadowTransforms;
+
+		// glm::vec3 lightPos;
+
+		// float far ;
+
 		PointShadow p_shadow;
 
 		////////////////////////////

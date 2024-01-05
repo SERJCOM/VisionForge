@@ -12,6 +12,8 @@ public:
 
     ShadowManager();
 
+    // void Start();
+
     template<typename T>
     T* AddShadow();
 
