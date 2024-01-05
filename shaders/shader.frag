@@ -15,8 +15,8 @@ struct LIGHT{
 };
 
 struct LIGHT_POINT_SHADOW{
-	LIGHT light;
 	samplerCube depthmap;
+	float far_plane;
 };
 
 const float PI = 3.14159265359;
@@ -27,7 +27,7 @@ const int SHADOW_MAX = 8;
 uniform LIGHT point_light[16];
 uniform int len_point = 0;
 
-uniform LIGHT_POINT_SHADOW point_light_shadow[SHADOW_MAX];
+uniform LIGHT_POINT_SHADOW point_light_shadow;
 uniform int len_point_light_shadow = 0;
 
 uniform float far_plane;
@@ -54,7 +54,7 @@ uniform bool bool_texture_ao;
 uniform sampler2D texture_ao; // 5
 
 uniform sampler2D shadowMap; // 6
-uniform samplerCube depthMap; // для всенаправленных теней  // 0
+// uniform samplerCube depthMap; // для всенаправленных теней  // 0
 
 //========== P B R =================
 uniform samplerCube irradianceMap; // 1
@@ -90,10 +90,8 @@ float CookTorrance(vec3 _normal, vec3 _light, vec3 _view, float roughness_val);
 
 void main()
 {
-	vec3 normal;
-	vec3 camDir = normalize(cameraPos - PosFrag); // направление камеры
-	vec3 reflection = reflect(-camDir, normal);
 
+	vec3 normal;
 	
 
 	if(bool_texture_diffuse) albedo = pow(texture(texture_diffuse, TexCoords).rgb, vec3(2.2));
@@ -109,6 +107,9 @@ void main()
 	if(bool_texture_ao) ao = texture(texture_ao, TexCoords).r;
 
 
+
+	vec3 camDir = normalize(cameraPos - PosFrag); // направление камеры
+	vec3 reflection = reflect(-camDir, normal);
 
 
 	vec3 F0 = vec3(0.04); 
@@ -299,9 +300,9 @@ vec3 getNormalFromMap()
 float CubeShadowCalculation(vec3 fragPos,  vec3 lightPos){
 	vec3 fragToLight = fragPos - lightPos;
  
-    float closestDepth = texture(depthMap, fragToLight).r;
+    float closestDepth = texture(point_light_shadow.depthmap, fragToLight).r;
  
-    closestDepth *= far_plane;
+    closestDepth *= point_light_shadow.far_plane;
 
     float currentDepth = length(fragToLight);
  

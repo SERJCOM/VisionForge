@@ -3,27 +3,31 @@
 #include "VisionForge/EntitySystem/Components/ShadowInterface.hpp"
 #include "VisionForge/System/Shader.hpp"
 
+
+
 namespace vision{
 
 class PointShadow : public IShadow{
 public:
 
     PointShadow(){
-        
+
     }
+
+    void Init();
 
     void Prepare() override{
         glViewport(0, 0, width, height);
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        shadow.use();
+        shadow_shader.use();
 
         for(int i = 0; i < shadowTransforms.size(); i++){
-            shadow.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+            shadow_shader.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
         }
 
-        shadow.setFloat("far_plane", far);
-        shadow.setVec3("lightPos", pos_);
+        shadow_shader.setFloat("far_plane", far);
+        shadow_shader.setVec3("lightPos", pos_);
 
     }
 
@@ -33,11 +37,15 @@ public:
 
     void Start() override;
 
+    Shader& GetShader() {
+        return shadow_shader;
+    }
+
 private:
 
     void UpdateShadowTransform(); 
 
-    Shader shadow;
+    Shader shadow_shader;
     std::vector<glm::mat4> shadowTransforms;
     float aspect;
     glm::mat4 shadowProj ;

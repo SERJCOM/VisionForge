@@ -20,7 +20,6 @@ public:
 
     Shader(std::filesystem::path vertf, std::filesystem::path fragf)
     {
-
         InitShader(vertf, fragf);
     }
 

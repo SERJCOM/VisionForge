@@ -33,15 +33,18 @@ vision::System::System()
     current_path_ = current_path_.lexically_normal();
 
     shad_ = Shader(current_path_ / path("shader.vert"), current_path_ / path("shader.frag"));
-    shadow = Shader(current_path_ / path("shadow.vert"), current_path_ / path("shadow.frag"), current_path_ / path("shadow.geom"));
+    // shadow = Shader(current_path_ / path("shadow.vert"), current_path_ / path("shadow.frag"), current_path_ / path("shadow.geom"));
 
     projection_ = glm::perspective(glm::radians(60.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 0.1f, 1000.0f);
 
     current_shader_ = &shad_;
 
     shad_.use();
-    shad_.setInt("depthMap", 7);
+    shad_.setInt("point_light_shadow.depthmap", 7);
 
+    p_shadow.Init();
+
+    
 
 
     TestShadows();
@@ -130,18 +133,20 @@ void vision::System::Display()
 
             
             glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-            glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-            glClear(GL_DEPTH_BUFFER_BIT);
+            // glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+            // glClear(GL_DEPTH_BUFFER_BIT);
 
-            shadow.use();
-            for(int i = 0; i < shadowTransforms.size(); i++){
-                shadow.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
-            }
+            p_shadow.Prepare();
 
-            current_shader_ = &shadow;
+            // shadow.use();
+            // for(int i = 0; i < shadowTransforms.size(); i++){
+            //     shadow.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
+            // }
 
-            shadow.setFloat("far_plane", far);
-            shadow.setVec3("lightPos", lightPos);
+            current_shader_ = &p_shadow.GetShader();
+
+            // shadow.setFloat("far_plane", far);
+            // shadow.setVec3("lightPos", lightPos);
 
             
 
@@ -159,13 +164,15 @@ void vision::System::Display()
             UpdateShader();
 
             glActiveTexture(GL_TEXTURE7);
-            glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, p_shadow.GetShadowTexture());
 
 
-            shad_.setFloat("far_plane", far);
-            shad_.setVec3("lightPos", lightPos);
+            shad_.setFloat("point_light_shadow.far_plane", p_shadow.far);
+            shad_.setVec3("point_light_shadow.pos", p_shadow.GetObjectPosition());
 
             current_shader_ = &shad_;
+
+            // current_shader_->use();
 
             engine_->GetEnvironmentPtr()->GetLightManagerPtr()->Draw();
 

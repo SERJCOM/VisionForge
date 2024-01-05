@@ -12,6 +12,8 @@
 #include "VisionForge/EntitySystem/DefaulComponents/CameraComponent.hpp"
 #include "VisionForge/System/Framebuffer.hpp"
 
+#include "VisionForge/EntitySystem/DefaulComponents/ShadowComponent.hpp"
+
 namespace vision
 {
 
@@ -57,61 +59,27 @@ namespace vision
 
 		void TestShadows(){ // просто тест теней
 			
-			glGenTextures(1, &depthCubemap);
+			p_shadow.width = 1024;
+			p_shadow.height = 1024;
+			p_shadow.far = 25.0f;
+			p_shadow.SetObjectPosition(glm::vec3(-24, 2, -19));
+			p_shadow.Start();
 
-			
-			glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-			for (unsigned int i = 0; i < 6; ++i)
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 
-							SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);  
-
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);  
-
-			
 			glGenFramebuffers(1, &depthMapFBO);
 			glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
+			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, p_shadow.GetShadowTexture(), 0);
 			glDrawBuffer(GL_NONE);
 			glReadBuffer(GL_NONE);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);  
-
-			float aspect = (float)SHADOW_WIDTH/(float)SHADOW_HEIGHT;
-			float near = 1.0f;
-			far = 25.0f;
-			glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far); 
-
-			lightPos = glm::vec3(-24, 2, -19);
-
-			shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3( 1.0, 0.0, 0.0), glm::vec3(0.0,-1.0, 0.0)));
-shadowTransforms.push_back(shadowProj * 
-                 glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0,-1.0, 0.0)));
-shadowTransforms.push_back(shadowProj * 
-                 glm::lookAt(lightPos, lightPos + glm::vec3( 0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
-shadowTransforms.push_back(shadowProj * 
-                 glm::lookAt(lightPos, lightPos + glm::vec3( 0.0,-1.0, 0.0), glm::vec3(0.0, 0.0,-1.0)));
-shadowTransforms.push_back(shadowProj * 
-                 glm::lookAt(lightPos, lightPos + glm::vec3( 0.0, 0.0, 1.0), glm::vec3(0.0,-1.0, 0.0)));
-shadowTransforms.push_back(shadowProj * 
-                 glm::lookAt(lightPos, lightPos + glm::vec3( 0.0, 0.0,-1.0), glm::vec3(0.0,-1.0, 0.0)));
 		}
 
 	private:
 		///////////////////
-		const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
-		unsigned int depthCubemap;
+
 		unsigned int depthMapFBO;
 
-		Shader shadow;
 
-		std::vector<glm::mat4> shadowTransforms;
-
-		glm::vec3 lightPos;
-
-		float far ;
+		PointShadow p_shadow;
 
 		////////////////////////////
 

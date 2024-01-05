@@ -1,6 +1,16 @@
 #include "VisionForge/EntitySystem/DefaulComponents/ShadowComponent.hpp"
+#include <filesystem>
 
 using namespace vision;
+
+using namespace std::filesystem;
+
+void PointShadow::Init(){
+      auto current_path_ = std::filesystem::current_path() / path("..") / path("shaders");
+    current_path_ = current_path_.lexically_normal();
+    shadow_shader = Shader(current_path_ / path("shadow.vert"), current_path_ / path("shadow.frag"), current_path_ / path("shadow.geom"));
+    
+}
 
 void PointShadow::Start(){
     glGenTextures(1, &depth_map_);
@@ -24,7 +34,7 @@ void PointShadow::Start(){
 }
 
 void PointShadow::UpdateShadowTransform(){
-shadowTransforms.clear();
+// shadowTransforms.clear();
 
         shadowTransforms.push_back(shadowProj * glm::lookAt(pos_, pos_ + glm::vec3( 1.0, 0.0, 0.0), glm::vec3(0.0,-1.0, 0.0)));
 shadowTransforms.push_back(shadowProj * 
