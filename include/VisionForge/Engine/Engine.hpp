@@ -22,6 +22,7 @@ meanwhile the System module controls only visualization
 #include "VisionForge/Engine/GameClass.hpp"
 #include "VisionForge/Common/InputManager.hpp"
 #include "VisionForge/Engine/LightManager.hpp"
+#include "VisionForge/EntitySystem/VisualComponent.hpp"
 
 namespace vision
 {
@@ -54,7 +55,29 @@ namespace vision
 
         input::IInputManager* GetInputManagerPtr();
 
+        template<typename T>
+        void ProcessComponents(T func){
+            for(auto& comp : components_){
+                auto ptr = comp.get();
+                func(ptr);
+            }
+        }
 
+        template<typename T>
+        void ProcessVisualComponents(T func){
+            for(IComponent* comp : visual_components_){
+                func(static_cast<IVisualComponent*>(comp));
+            }
+        }
+
+
+        template<typename T>
+        void ProcessEntities(T func){
+            for(auto& comp : entities_){
+                auto ptr = comp.get();
+                func(ptr);
+            }
+        }
         
 
     private:
@@ -64,6 +87,7 @@ namespace vision
 
         std::vector<std::unique_ptr<IComponent>> components_;
         std::vector<std::unique_ptr<IEntity>> entities_;
+        std::vector<IComponent*> visual_components_;
         std::unordered_map<std::string, IEntity *> name_entity_;
 
 
@@ -75,10 +99,19 @@ namespace vision
     template <typename T>
     T *Engine::RegistrateComponent()
     {
-        components_.push_back(std::make_unique<T>());
+        auto t_ptr = std::make_unique<T>();
+
+        if(dynamic_cast<IVisualComponent*>(t_ptr.get())){
+            visual_components_.push_back(t_ptr.get());
+        }
+      
+        components_.push_back(std::move(t_ptr));
         components_.back()->SetEnginePtr(this);
         components_.back()->SetEnvironmentPtr(env_.get());
         components_.back()->Start();
+
+        
+
         return static_cast<T *>(components_.back().get());
     }
 

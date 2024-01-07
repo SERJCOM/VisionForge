@@ -13,16 +13,16 @@ ModelComponent::ModelComponent(const char *path)
     SetPath(path);
 }
 
-void ModelComponent::Draw()
+void ModelComponent::Draw(Shader& shader)
 {
     glm::mat4 modelMat = glm::mat4(1);
     modelMat = glm::scale(modelMat, GetObjectSize());
 
-    gEngine->GetSystemPtr()->GetCurrentShader()->setMat4("model", modelMat);
+    shader.setMat4("model", modelMat);
 
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
-        meshes[i].Draw(*gEngine->GetSystemPtr()->GetCurrentShader());
+        meshes[i].Draw(shader);
     }
 }
 

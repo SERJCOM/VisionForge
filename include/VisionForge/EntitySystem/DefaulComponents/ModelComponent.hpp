@@ -14,7 +14,7 @@
 #include <filesystem>
 
 #include "VisionForge/Engine/Material.hpp"
-#include "VisionForge/EntitySystem/Component.hpp"
+#include "VisionForge/EntitySystem/VisualComponent.hpp"
 #include "VisionForge/System/Shader.hpp"
 #include "VisionForge/Common/Texture.hpp"
 #include "VisionForge/Engine/Mesh.hpp"
@@ -31,7 +31,7 @@ namespace vision
         std::vector<glm::vec3> meshScale;
     };
 
-    class ModelComponent : public IComponent
+    class ModelComponent : public IVisualComponent
     {
     public:
         
@@ -47,10 +47,10 @@ namespace vision
 
         void Update() override
         {
-            Draw();
+            // Draw();
         }
 
-        void Draw();
+        void Draw(Shader& shader) override;
 
         void LoadModel();
 

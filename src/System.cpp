@@ -117,6 +117,10 @@ Shader *vision::System::GetCurrentShader()
 void vision::System::Display()
 {
     int drawning = 1;
+
+    
+
+
     while (true)
     {
         if (drawning == 0)
@@ -131,29 +135,14 @@ void vision::System::Display()
 
             
 
-            
             glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-            // glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-            // glClear(GL_DEPTH_BUFFER_BIT);
 
             p_shadow.Prepare();
 
-            // shadow.use();
-            // for(int i = 0; i < shadowTransforms.size(); i++){
-            //     shadow.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
-            // }
 
-            current_shader_ = &p_shadow.GetShader();
-
-            // shadow.setFloat("far_plane", far);
-            // shadow.setVec3("lightPos", lightPos);
-
-            
-
-            for (auto &component : engine_->components_)
-            {
-                component->Update();
-            }
+            engine_->ProcessVisualComponents([&](IVisualComponent* comp){
+                comp->Draw(p_shadow.GetShader());
+            });
 
             
 
@@ -170,22 +159,23 @@ void vision::System::Display()
             shad_.setFloat("point_light_shadow.far_plane", p_shadow.far);
             shad_.setVec3("point_light_shadow.pos", p_shadow.GetObjectPosition());
 
-            current_shader_ = &shad_;
-
-            // current_shader_->use();
+            shad_.use();
 
             engine_->GetEnvironmentPtr()->GetLightManagerPtr()->Draw();
 
             engine_->GetInputManagerPtr()->Update();
 
-            for (auto &entity : engine_->entities_)
-            {
+            engine_->ProcessVisualComponents([&](IVisualComponent* comp){
+                comp->Draw(shad_);
+            });
+
+            engine_->ProcessEntities([&](IEntity* entity){
                 entity->Update();
-            }
-            for (auto &component : engine_->components_)
-            {
-                component->Update();
-            }
+            });
+
+            engine_->ProcessComponents([&](IComponent* comp){
+                comp->Update();
+            });
 
             engine_->GetGameClassPtr()->Update();
 

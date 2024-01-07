@@ -67,9 +67,11 @@ namespace vision
 
 			glGenFramebuffers(1, &depthMapFBO);
 			glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, p_shadow.GetShadowTexture(), 0);
+			
 			glDrawBuffer(GL_NONE);
 			glReadBuffer(GL_NONE);
+
+			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, p_shadow.GetShadowTexture(), 0);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);  
 		}
 
@@ -78,12 +80,6 @@ namespace vision
 
 		unsigned int depthMapFBO;
 
-
-		// std::vector<glm::mat4> shadowTransforms;
-
-		// glm::vec3 lightPos;
-
-		// float far ;
 
 		PointShadow p_shadow;
 
