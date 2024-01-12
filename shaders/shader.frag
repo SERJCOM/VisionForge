@@ -15,6 +15,7 @@ struct LIGHT{
 };
 
 struct LIGHT_POINT_SHADOW{
+	vec3 pos;
 	samplerCube depthmap;
 	float far_plane;
 };
@@ -27,7 +28,7 @@ const int SHADOW_MAX = 8;
 uniform LIGHT point_light[16];
 uniform int len_point = 0;
 
-uniform LIGHT_POINT_SHADOW point_light_shadow;
+uniform LIGHT_POINT_SHADOW point_light_shadow[1];
 uniform int len_point_light_shadow = 0;
 
 uniform float far_plane;
@@ -75,7 +76,7 @@ float ao = 0.2;
 float CalcShadow(vec4 fragPosLight);
 
 // расчет всенаправленных теней
-float CubeShadowCalculation(vec3 fragPos, vec3 lightPos);
+float CubeShadowCalculation(vec3 fragPos, vec3 lightPos, int index);
 
 vec3 getNormalFromMap();
   
@@ -120,8 +121,8 @@ void main()
 
 
 	// debug
-	vec3 shadow_pos_d = vec3(-24, 2, -19);
-	vec3 brightness = vec3(10, 10, 10);
+	// vec3 shadow_pos_d = vec3(-24, 2, -19);
+	vec3 brightness = vec3(10000, 10000, 10000);
 
 
 	for(int i = 0; i < len_point; i++){
@@ -130,9 +131,9 @@ void main()
 		vec3 H = normalize(camDir + L);
 		float distance = length(point_light[i].pos - PosFrag);
 		float attenuation = 1.0 / (distance * distance);
-		vec3 radiance = point_light[i].color * attenuation ;
+		vec3 radiance = point_light[i].color * attenuation * brightness;
 		
-		float shadow = CubeShadowCalculation(PosFrag, shadow_pos_d) ;
+		
 
 		
 		float NDF = DistributionGGX(normal, H, roughness);        
@@ -147,14 +148,20 @@ void main()
 		vec3 kD = 1.0 - kS;
 		kD *= 1.0 - metallic;	 
 
-		float shadow_distance = length(shadow_pos_d - PosFrag);
-		float shadow_attenuation = 1.0 / (shadow_distance * shadow_distance);
-		vec3 shadow_color = (1 - shadow ) * shadow_attenuation *  point_light[i].color * brightness;
+		vec3 shadow_color = vec3(0, 0, 0);
+
+		for(int ii = 0; ii < len_point_light_shadow; ii++){
+			float shadow = CubeShadowCalculation(PosFrag, point_light[i].pos, ii) ;
+
+			shadow_color += (1 - shadow ) ;
+		}
 
 		float NdotL = max(dot(normal, L), 0.0);                
-		Lo += (kD * albedo / PI + specular) * radiance * NdotL + shadow_color; 
+		Lo += (kD * albedo / PI + specular) * (radiance ) * NdotL * shadow_color; 
 
-		// Lo += (kD * albedo / PI + specular) * radiance * NdotL ; 
+		// Lo +=   shadow_color * brightness; 
+
+		// index_point_shadow++;
 
 	}
 
@@ -186,9 +193,9 @@ void main()
 
 	color = color / (color + vec3(1.0));
 	color = pow(color, vec3(1.0/2.2)); 
-	
-
 	FragColor = vec4(color, 1.0);
+
+	// float shadow = CubeShadowCalculation(PosFrag, point_light_shadow[0].pos, i) ;
 
 
 	// FragColor = vec4(1.0, 0.5, 0.3, 1.0);
@@ -297,12 +304,12 @@ vec3 getNormalFromMap()
     return normalize(TBN * tangentNormal);
 }
 
-float CubeShadowCalculation(vec3 fragPos,  vec3 lightPos){
+float CubeShadowCalculation(vec3 fragPos,  vec3 lightPos, int index){
 	vec3 fragToLight = fragPos - lightPos;
  
-    float closestDepth = texture(point_light_shadow.depthmap, fragToLight).r;
+    float closestDepth = texture(point_light_shadow[index].depthmap, fragToLight).r;
  
-    closestDepth *= point_light_shadow.far_plane;
+    closestDepth *= point_light_shadow[index].far_plane;
 
     float currentDepth = length(fragToLight);
  

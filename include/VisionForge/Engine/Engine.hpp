@@ -55,6 +55,10 @@ namespace vision
 
         input::IInputManager* GetInputManagerPtr();
 
+       
+
+    private:
+
         template<typename T>
         void ProcessComponents(T func){
             for(auto& comp : components_){
@@ -78,9 +82,7 @@ namespace vision
                 func(ptr);
             }
         }
-        
 
-    private:
         std::unique_ptr<System> system_;
         std::unique_ptr<Environment> env_;
         std::unique_ptr<input::IInputManager> input_manager_;

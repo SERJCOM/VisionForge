@@ -1,11 +1,22 @@
-cmake_minimum_required(VERSION 3.0.0)
-project(Engine VERSION 0.1.0)
+cmake_minimum_required(VERSION 3.14.0)
+project(Engine 
+    VERSION 0.1.0
+    DESCRIPTION "Engine Core For VisionForge Engine"
+    LANGUAGES CXX
+    )
 
+set(IMGUI_DIR ${CMAKE_SOURCE_DIR}/libraries/imgui)
+add_subdirectory(${CMAKE_SOURCE_DIR}/libraries/imgui-sfml)
+
+# set(IMGUI_SFML_FIND_SFML OFF)
 add_subdirectory(${CMAKE_SOURCE_DIR}/libraries/SFML)
+
+
 add_subdirectory(${CMAKE_SOURCE_DIR}/libraries/assimp)
 add_subdirectory(${CMAKE_SOURCE_DIR}/libraries/jsoncpp)
 #add_subdirectory(${CMAKE_SOURCE_DIR}/libraries/glew/build/cmake)
 add_subdirectory(${CMAKE_SOURCE_DIR}/libraries/glm)
+
 
 
 find_package(OpenGL REQUIRED)
@@ -29,15 +40,21 @@ src/Engine.cpp
 src/InputManager.cpp
 src/ShadowManager.cpp
 src/ShadowComponent.cpp
+src/Common.cpp
 )
+
+
+#add_library(VisionForge::VisionForge ALIAS VisionForge)
+
 
 add_executable(Test 
     test/main.cpp
     ${EngineFiles}
 )
 
-add_compile_options(-g)
-
+add_executable(Gui test/GuiTest/main.cpp)
+target_link_libraries(Gui PUBLIC ImGui-SFML::ImGui-SFML sfml-graphics sfml-window OpenGL::GL  )
+target_include_directories(Gui PUBLIC ${CMAKE_SOURCE_DIR}/libraries/imgui-sfml ${SFML_INCLUDE_DIRS})
 
 target_link_libraries(Test PUBLIC 
     OpenGL::GL 
@@ -47,6 +64,7 @@ target_link_libraries(Test PUBLIC
     jsoncpp_lib
     #ReactPhysics3D::ReactPhysics3D
     ${GLEW_LIBRARIES}
+    ImGui-SFML::ImGui-SFML
 )
 
 
@@ -60,5 +78,6 @@ target_include_directories(Test
         ${CMAKE_SOURCE_DIR}/libraries
         ${CMAKE_SOURCE_DIR}/test
         ${SFML_INCLUDE_DIRS}
+        ${CMAKE_SOURCE_DIR}/libraries/imgui-sfml
 )
 

@@ -17,3 +17,9 @@
 [submodule "libraries/glm"]
 	path = libraries/glm
 	url = https://github.com/g-truc/glm.git
+[submodule "libraries/imgui-sfml"]
+	path = libraries/imgui-sfml
+	url = https://github.com/SFML/imgui-sfml.git
+[submodule "libraries/imgui"]
+	path = libraries/imgui
+	url = https://github.com/ocornut/imgui.git

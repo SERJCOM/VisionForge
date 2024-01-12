@@ -57,23 +57,7 @@ namespace vision
 
 		void Display();
 
-		void TestShadows(){ // просто тест теней
-			
-			p_shadow.width = 1024;
-			p_shadow.height = 1024;
-			p_shadow.far = 25.0f;
-			p_shadow.SetObjectPosition(glm::vec3(-24, 2, -19));
-			p_shadow.Start();
 
-			glGenFramebuffers(1, &depthMapFBO);
-			glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-			
-			glDrawBuffer(GL_NONE);
-			glReadBuffer(GL_NONE);
-
-			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, p_shadow.GetShadowTexture(), 0);
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);  
-		}
 
 	private:
 		///////////////////
@@ -81,7 +65,7 @@ namespace vision
 		unsigned int depthMapFBO;
 
 
-		PointShadow p_shadow;
+		
 
 		////////////////////////////
 

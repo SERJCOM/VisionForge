@@ -25,11 +25,20 @@ namespace test
             ConfMove();
 
             light = gEngine->GetEnvironmentPtr()->GetLightManagerPtr()->AddLight<vision::PointLight>();
-            light->SetObjectPosition(glm::vec3(10, 12, 20));
+            light->SetObjectPosition(glm::vec3(-24, 2, -19));
             light->color = glm::vec3(1, 1, 1);
             light->brightness = glm::vec3(10, 10, 10);
 
-            light->SetObjectPosition(glm::vec3(17, 27, 12));
+            // light->SetObjectPosition(glm::vec3(-24, 2, -19));
+
+
+            p_shadow = gEnv->GetShadowManager()->AddShadow<vision::PointShadow>(vision::ShadowType::POINT);			
+
+            p_shadow->width = 1024;
+            p_shadow->height = 1024;
+            p_shadow->far = 2500.0f;
+            p_shadow->SetObjectPosition(glm::vec3(-24, 2, -19));
+            p_shadow->Start();
         }
 
         void Update() override
@@ -37,6 +46,10 @@ namespace test
             using namespace vision;
 
             camera->SetObjectPosition(pos);
+
+            light->SetObjectPosition(pos);
+
+            p_shadow->SetObjectPosition(pos);
 
             std::cout << pos << std::endl;
 
@@ -97,6 +110,8 @@ namespace test
         float speed = 1.0f;
         glm::vec3 pos = glm::vec3(0);
 
+    
+        vision::PointShadow* p_shadow;
         vision::PointLight* light;
     };
 

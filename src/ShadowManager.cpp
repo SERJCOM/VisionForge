@@ -26,7 +26,7 @@ private:
 void vision::ShadowManager::Start(){
     framebuffer_->Init();
 
-    for(auto& i : shadows_){
+    for(auto& i : point_shadows_){
         i->Start();
     }
 
@@ -38,13 +38,8 @@ vision::ShadowManager::ShadowManager()
     framebuffer_ = std::make_unique<ShadowFrameBuffer>();
 }
 
-void vision::ShadowManager::PrepareShadows()
-{
-    for(auto& i : shadows_){
-        i->Start();
-    }
-}
 
-void vision::ShadowManager::UseShadows()
+void vision::ShadowManager::UseShadows(Shader& shader)
 {
+    ProccessPointShadows(shader);
 }

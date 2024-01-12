@@ -1,12 +1,15 @@
 #include "VisionForge/EntitySystem/DefaulComponents/ShadowComponent.hpp"
 #include <filesystem>
+#include "VisionForge/Engine/Engine.hpp"
 
 using namespace vision;
 
 using namespace std::filesystem;
 
-void PointShadow::Init(){
+int PointShadow::generator_index = 0;
 
+void PointShadow::Init(){
+	
 }
 
 void PointShadow::Start(){
@@ -21,8 +24,8 @@ void PointShadow::Start(){
 
 
 	for (unsigned int i = 0; i < 6; ++i)
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 
-						width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);  
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 
+					width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);  
 
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -34,6 +37,8 @@ void PointShadow::Start(){
 	shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far); 
 
 	UpdateShadowTransform();
+
+	generator_index++;
 }
 
 void PointShadow::UpdateShadowTransform(){
