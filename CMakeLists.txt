@@ -5,19 +5,15 @@ project(Engine
     LANGUAGES CXX
     )
 
-set(IMGUI_DIR ${CMAKE_SOURCE_DIR}/libraries/imgui)
-add_subdirectory(${CMAKE_SOURCE_DIR}/libraries/imgui-sfml)
 
-# set(IMGUI_SFML_FIND_SFML OFF)
 add_subdirectory(${CMAKE_SOURCE_DIR}/libraries/SFML)
-
-
 add_subdirectory(${CMAKE_SOURCE_DIR}/libraries/assimp)
 add_subdirectory(${CMAKE_SOURCE_DIR}/libraries/jsoncpp)
-#add_subdirectory(${CMAKE_SOURCE_DIR}/libraries/glew/build/cmake)
 add_subdirectory(${CMAKE_SOURCE_DIR}/libraries/glm)
 
 
+set(TGUI_BACKEND SFML_OPENGL3)
+add_subdirectory(${CMAKE_SOURCE_DIR}/libraries/TGUI)
 
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
@@ -44,17 +40,18 @@ src/Common.cpp
 )
 
 
+
 #add_library(VisionForge::VisionForge ALIAS VisionForge)
 
 
 add_executable(Test 
     test/main.cpp
     ${EngineFiles}
-)
+    )
 
-add_executable(Gui test/GuiTest/main.cpp)
-target_link_libraries(Gui PUBLIC ImGui-SFML::ImGui-SFML sfml-graphics sfml-window OpenGL::GL  )
-target_include_directories(Gui PUBLIC ${CMAKE_SOURCE_DIR}/libraries/imgui-sfml ${SFML_INCLUDE_DIRS})
+# add_executable(Gui test/GuiTest/main.cpp)
+# target_link_libraries(Gui PUBLIC ImGui-SFML::ImGui-SFML sfml-graphics sfml-window OpenGL::GL )
+# target_include_directories(Gui PUBLIC ${CMAKE_SOURCE_DIR}/libraries/imgui-sfml ${SFML_INCLUDE_DIRS})
 
 target_link_libraries(Test PUBLIC 
     OpenGL::GL 
@@ -64,7 +61,7 @@ target_link_libraries(Test PUBLIC
     jsoncpp_lib
     #ReactPhysics3D::ReactPhysics3D
     ${GLEW_LIBRARIES}
-    ImGui-SFML::ImGui-SFML
+    TGUI::TGUI 
 )
 
 
@@ -78,6 +75,5 @@ target_include_directories(Test
         ${CMAKE_SOURCE_DIR}/libraries
         ${CMAKE_SOURCE_DIR}/test
         ${SFML_INCLUDE_DIRS}
-        ${CMAKE_SOURCE_DIR}/libraries/imgui-sfml
 )
 

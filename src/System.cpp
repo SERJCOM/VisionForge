@@ -10,7 +10,6 @@
 
 
 
-
 vision::System::System()
 {
     using namespace std::filesystem;
@@ -23,7 +22,7 @@ vision::System::System()
     settings.minorVersion = 3;
 
     window_.create(sf::VideoMode({1080, 720}), "OpenGL", sf::Style::Default, settings);
-    window_.setActive();
+    window_.setActive(true);
     window_.setFramerateLimit(60);
 
     
@@ -46,6 +45,8 @@ vision::System::System()
     // shad_.setInt("point_light_shadow.depthmap", 7);
 
     // p_shadow.Init();
+
+    // ImGui::SFML::Init(window_ , {1080, 720});
 
 }
 
@@ -134,6 +135,7 @@ void vision::System::Display()
 
             gameLoop(drawning);
 
+
             engine_->GetInputManagerPtr()->Update();
 
             engine_->ProcessEntities([&](IEntity* entity){
@@ -152,20 +154,12 @@ void vision::System::Display()
                 });
             });
 
-            
-
             Drawning(GetWindow().getSize().x, GetWindow().getSize().y);
             main_buffer_->ClearBuffer();
 
             UpdateMatrix();
             UpdateShader();
 
-            // glActiveTexture(GL_TEXTURE7);
-            // glBindTexture(GL_TEXTURE_CUBE_MAP, p_shadow.GetShadowTexture());
-
-
-            // shad_.setFloat("point_light_shadow.far_plane", p_shadow.far);
-            // shad_.setVec3("point_light_shadow.pos", p_shadow.GetObjectPosition());
 
             manager->UseShadows(shad_);
 
@@ -182,9 +176,10 @@ void vision::System::Display()
             Environment* env = engine_->GetEnvironmentPtr();
             env->GetSkyBoxPtr()->DrawSkyBox(view_, projection_);
 
+            
+
             window_.display();
 
-            // std::cout << "=======================" << std::endl;
         }
         catch (...)
         {

@@ -3,6 +3,7 @@
 #include <functional>
 #include <memory>
 #include <SFML/Window.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <filesystem>
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -35,6 +36,9 @@ namespace vision
 		void SetGameLoop(std::function<void(int &drawning)> loop);
 
 		sf::Window &GetWindow();
+		sf::RenderWindow& GetRenderWindow(){
+			return window_;
+		}
 
 		std::filesystem::path GetCurrentPath() const;
 
@@ -62,10 +66,7 @@ namespace vision
 	private:
 		///////////////////
 
-		unsigned int depthMapFBO;
-
-
-		
+		// unsigned int depthMapFBO;		
 
 		////////////////////////////
 
@@ -73,7 +74,7 @@ namespace vision
 
 		void UpdateShader();
 
-		sf::Window window_;
+		sf::RenderWindow window_;
 
 		Shader shad_;
 
