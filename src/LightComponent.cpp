@@ -1,8 +1,12 @@
-// #include "VisionForge/EntitySystem/DefaulComponents/LightComponent.hpp"
+#include "VisionForge/Engine/Environment.hpp"
+#include "VisionForge/EntitySystem/DefaulComponents/LightComponent.hpp"
 
-// namespace vision
-// {
+using namespace vision;
 
-//     int LightComponent::id_ = 0;
-
-// }
+void PointLightWithShadow::Start()
+{
+    p_shadow = gEnv->GetShadowManager()->AddShadow<vision::PointShadow>(vision::ShadowType::POINT);
+    p_shadow->width = 1024;
+    p_shadow->height = 1024;
+    p_shadow->far = 250.0f;
+}

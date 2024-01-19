@@ -1,12 +1,19 @@
 #include "VisionForge/Engine/Engine.hpp"
 
-
+#include <spdlog/spdlog.h>
+#include "spdlog/sinks/basic_file_sink.h" // support for basic file logging
 
 
 using namespace vision;
 
 vision::Engine::Engine()
 {
+    auto my_logger = spdlog::basic_logger_mt("basic_logger", "logs/basic.txt");
+
+    spdlog::set_default_logger(my_logger);
+
+    spdlog::info("Engine::Engine()");
+
     system_ = std::make_unique<System>();
     system_->SetEnginePtr(this);
 
@@ -17,12 +24,16 @@ vision::Engine::Engine()
 
 void vision::Engine::Display()
 {
+    spdlog::info("Engine::Display()");
+
     if(game_class_ == nullptr){
         std::cerr << "ERROR!!! Missing main class" << std::endl;
+        spdlog::critical("Engine::Display() -> ERROR!!! Missing main class");
         assert(false);
     }
 
     game_class_->Start();
+    system_->Start();
     system_->Display();
 }
 

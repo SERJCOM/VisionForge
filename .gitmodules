@@ -20,3 +20,6 @@
 [submodule "libraries/TGUI"]
 	path = libraries/TGUI
 	url = https://github.com/texus/TGUI.git
+[submodule "libraries/spdlog"]
+	path = libraries/spdlog
+	url = https://github.com/gabime/spdlog.git

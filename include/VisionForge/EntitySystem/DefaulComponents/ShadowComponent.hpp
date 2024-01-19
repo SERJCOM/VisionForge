@@ -26,6 +26,8 @@ public:
 
         shadow_shader.use();
 
+        UpdateShadowTransform();
+
         for(int i = 0; i < shadowTransforms.size(); i++){
             shadow_shader.setMat4("shadowMatrices[" + std::to_string(i) + "]", shadowTransforms[i]);
         }

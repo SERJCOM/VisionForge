@@ -7,6 +7,7 @@
 
 #include "VisionForge/System/Shader.hpp"
 #include "VisionForge/EntitySystem/Component.hpp"
+#include "VisionForge/EntitySystem/DefaulComponents/ShadowComponent.hpp"
 
 namespace vision
 {
@@ -14,7 +15,7 @@ namespace vision
     enum class LightType
     {
         POINT,
-        
+
     };
 
     class Light : public IComponent
@@ -22,7 +23,6 @@ namespace vision
     public:
         Light() = default;
         virtual ~Light() = default;
-
 
         glm::vec3 color = glm::vec3(1.0, 1.0, 1.0);
         glm::vec3 ambient;
@@ -57,27 +57,24 @@ namespace vision
         float quadratic;
     };
 
-
     class PointLightWithShadow : public Light
     {
-        public:
-
-        PointLightWithShadow(){
-
+    public:
+        PointLightWithShadow()
+        {
         }
 
         virtual ~PointLightWithShadow() = default;
 
-        void Start() override {
+        void Start() override;
 
+        void Update() override
+        {
+            p_shadow->SetObjectPosition(GetObjectPosition());
         }
 
-        void Update() override {
-            
-        }
-
-
-        private:
+    protected:
+        vision::PointShadow *p_shadow;
     };
 
 }

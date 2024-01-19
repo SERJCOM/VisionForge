@@ -148,21 +148,17 @@ void main()
 		vec3 kD = 1.0 - kS;
 		kD *= 1.0 - metallic;	 
 
-		vec3 shadow_color = vec3(0, 0, 0);
-
-		for(int ii = 0; ii < len_point_light_shadow; ii++){
-			float shadow = CubeShadowCalculation(PosFrag, point_light[i].pos, ii) ;
-
-			shadow_color += (1 - shadow ) ;
-		}
 
 		float NdotL = max(dot(normal, L), 0.0);                
-		Lo += (kD * albedo / PI + specular) * (radiance ) * NdotL * shadow_color; 
+		Lo += (kD * albedo / PI + specular) * (radiance ) * NdotL ; 
 
-		// Lo +=   shadow_color * brightness; 
 
-		// index_point_shadow++;
+	}
 
+	vec3 shadow_color = vec3(0, 0, 0);
+	for(int i = 0; i < len_point_light_shadow; i++){
+		float shadow = CubeShadowCalculation(PosFrag, point_light_shadow[i].pos, i) ;
+		shadow_color += (1 - shadow ) ;
 	}
 
 	//======================= 
@@ -188,7 +184,7 @@ void main()
 
 	vec3 ambient = (kD * diffuse  + specular )   * ao  ;
 	
-    vec3 color = ambient  + Lo ;
+    vec3 color = ambient  + Lo * shadow_color  ;
 
 
 	color = color / (color + vec3(1.0));

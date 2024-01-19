@@ -20,25 +20,16 @@ namespace test
         void Start() override
         {
             camera = gEngine->RegistrateComponent<vision::CameraComponent>();
-            // Update();
 
             ConfMove();
 
-            light = gEngine->GetEnvironmentPtr()->GetLightManagerPtr()->AddLight<vision::PointLight>();
+
+            light = gEngine->GetEnvironmentPtr()->GetLightManagerPtr()->AddLight<vision::PointLightWithShadow>();
             light->SetObjectPosition(glm::vec3(-24, 2, -19));
             light->color = glm::vec3(1, 1, 1);
             light->brightness = glm::vec3(10, 10, 10);
 
-            // light->SetObjectPosition(glm::vec3(-24, 2, -19));
 
-
-            p_shadow = gEnv->GetShadowManager()->AddShadow<vision::PointShadow>(vision::ShadowType::POINT);			
-
-            p_shadow->width = 1024;
-            p_shadow->height = 1024;
-            p_shadow->far = 2500.0f;
-            p_shadow->SetObjectPosition(glm::vec3(-24, 2, -19));
-            p_shadow->Start();
         }
 
         void Update() override
@@ -47,13 +38,11 @@ namespace test
 
             camera->SetObjectPosition(pos);
 
-            light->SetObjectPosition(pos);
-
-            p_shadow->SetObjectPosition(pos);
+            light->SetObjectPosition(glm::vec3(-3, 5, 70 - i));
 
             std::cout << pos << std::endl;
 
-            
+            i = i + 0.1;            
         }
 
         void ProcessEvent(vision::GameEvents event) override
@@ -110,9 +99,9 @@ namespace test
         float speed = 1.0f;
         glm::vec3 pos = glm::vec3(0);
 
-    
-        vision::PointShadow* p_shadow;
-        vision::PointLight* light;
+        vision::PointLightWithShadow* light;
+
+        float i = 0;
     };
 
 }

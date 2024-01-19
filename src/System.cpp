@@ -8,10 +8,14 @@
 #include "VisionForge/Engine/Engine.hpp"
 
 
+#include <spdlog/spdlog.h>
 
 
 vision::System::System()
 {
+    spdlog::info("System::System()");
+
+
     using namespace std::filesystem;
 
     sf::ContextSettings settings;
@@ -26,7 +30,6 @@ vision::System::System()
     window_.setFramerateLimit(60);
 
     
-
     main_buffer_ = vision::CreateCommonFrameBuffer(0);
 
     Init();
@@ -42,11 +45,6 @@ vision::System::System()
     current_shader_ = &shad_;
 
     shad_.use();
-    // shad_.setInt("point_light_shadow.depthmap", 7);
-
-    // p_shadow.Init();
-
-    // ImGui::SFML::Init(window_ , {1080, 720});
 
 }
 
@@ -117,11 +115,9 @@ void vision::System::Display()
 {
     int drawning = 1;
 
-    
-
     ShadowManager* manager = engine_->GetEnvironmentPtr()->GetShadowManager();
 
-    manager->Start();
+    // manager->Start();
 
     while (true)
     {
@@ -132,9 +128,6 @@ void vision::System::Display()
 
         try
         {
-
-            gameLoop(drawning);
-
 
             engine_->GetInputManagerPtr()->Update();
 
@@ -176,7 +169,7 @@ void vision::System::Display()
             Environment* env = engine_->GetEnvironmentPtr();
             env->GetSkyBoxPtr()->DrawSkyBox(view_, projection_);
 
-            
+            gameLoop(drawning);
 
             window_.display();
 
@@ -188,8 +181,16 @@ void vision::System::Display()
     }
 }
 
+void vision::System::Start()
+{
+    ShadowManager* manager = engine_->GetEnvironmentPtr()->GetShadowManager();
+    manager->Start();   
+}
+void vision::System::Render()
+{
+}
 
-void vision::System::UpdateMatrix()
+void vision::System::UpdateMatrix() 
 {
     view_ = main_camera_->GetViewMatrix();
 }

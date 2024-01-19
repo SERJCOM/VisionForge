@@ -59,16 +59,13 @@ namespace vision
 
 		Shader * GetCurrentShader();
 
-		void Display();
+		virtual void Display();
 
-
+		virtual void Start();
 
 	private:
-		///////////////////
 
-		// unsigned int depthMapFBO;		
-
-		////////////////////////////
+		void Render();
 
 		void UpdateMatrix();
 
