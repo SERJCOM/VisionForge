@@ -51,7 +51,7 @@ int main()
 
         // runExample(gui);
 
-        gui.draw();
+        // gui.draw();
 
     };
 

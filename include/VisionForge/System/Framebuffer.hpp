@@ -58,7 +58,7 @@ namespace vision
         protected:
 
 
-        unsigned int fbo = 0;
+        unsigned int fbo ;
 
     };
 

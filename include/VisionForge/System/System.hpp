@@ -71,6 +71,10 @@ namespace vision
 
 		void UpdateShader();
 
+		void UsePostProcessing(int texture);
+
+		void InitPostProcessing();
+
 		sf::RenderWindow window_;
 
 		Shader shad_;
@@ -87,6 +91,11 @@ namespace vision
 		vision::CameraComponent *main_camera_;
 
 		std::unique_ptr<FrameBuffer> main_buffer_;
+
+		// post processing 
+		unsigned int quadVAO, quadVBO;
+
+		Shader post_processing_;
 	};
 
 }

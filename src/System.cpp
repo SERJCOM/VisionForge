@@ -7,14 +7,11 @@
 #include "VisionForge/System/System.hpp"
 #include "VisionForge/Engine/Engine.hpp"
 
-
 #include <spdlog/spdlog.h>
-
 
 vision::System::System()
 {
     spdlog::info("System::System()");
-
 
     using namespace std::filesystem;
 
@@ -29,10 +26,13 @@ vision::System::System()
     window_.setActive(true);
     window_.setFramerateLimit(60);
 
-    
-    main_buffer_ = vision::CreateCommonFrameBuffer(0);
-
     Init();
+
+    InitPostProcessing();
+
+    main_buffer_ = vision::CreateCommonFrameBuffer(-1);
+
+    
 
     current_path_ = std::filesystem::current_path() / path("..") / path("shaders");
     current_path_ = current_path_.lexically_normal();
@@ -44,8 +44,9 @@ vision::System::System()
 
     current_shader_ = &shad_;
 
-    shad_.use();
 
+
+    shad_.use();
 }
 
 void vision::System::Init()
@@ -62,7 +63,6 @@ void vision::System::TurnOnCullFace()
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 }
-
 
 void vision::System::Drawning(int x, int y)
 {
@@ -110,12 +110,11 @@ Shader *vision::System::GetCurrentShader()
     return current_shader_;
 }
 
-
 void vision::System::Display()
 {
     int drawning = 1;
 
-    ShadowManager* manager = engine_->GetEnvironmentPtr()->GetShadowManager();
+    ShadowManager *manager = engine_->GetEnvironmentPtr()->GetShadowManager();
 
     // manager->Start();
 
@@ -131,21 +130,17 @@ void vision::System::Display()
 
             engine_->GetInputManagerPtr()->Update();
 
-            engine_->ProcessEntities([&](IEntity* entity){
-                entity->Update();
-            });
+            engine_->ProcessEntities([&](IEntity *entity)
+                                     { entity->Update(); });
 
-            engine_->ProcessComponents([&](IComponent* comp){
-                comp->Update();
-            });
+            engine_->ProcessComponents([&](IComponent *comp)
+                                       { comp->Update(); });
 
             engine_->GetGameClassPtr()->Update();
 
-            manager->PrepareShadows([&](Shader& shader){
-                engine_->ProcessVisualComponents([&](IVisualComponent* comp){
-                    comp->Draw(shader);
-                });
-            });
+            manager->PrepareShadows([&](Shader &shader)
+                                    { engine_->ProcessVisualComponents([&](IVisualComponent *comp)
+                                                                       { comp->Draw(shader); }); });
 
             Drawning(GetWindow().getSize().x, GetWindow().getSize().y);
             main_buffer_->ClearBuffer();
@@ -153,26 +148,21 @@ void vision::System::Display()
             UpdateMatrix();
             UpdateShader();
 
-
             manager->UseShadows(shad_);
 
             engine_->GetEnvironmentPtr()->GetLightManagerPtr()->Draw();
 
-            
+            engine_->ProcessVisualComponents([&](IVisualComponent *comp)
+                                             { comp->Draw(shad_); });
 
-            engine_->ProcessVisualComponents([&](IVisualComponent* comp){
-                comp->Draw(shad_);
-            });
-
-
-
-            Environment* env = engine_->GetEnvironmentPtr();
+            Environment *env = engine_->GetEnvironmentPtr();
             env->GetSkyBoxPtr()->DrawSkyBox(view_, projection_);
+
+            UsePostProcessing(main_buffer_->GetTexture());
 
             gameLoop(drawning);
 
             window_.display();
-
         }
         catch (...)
         {
@@ -183,20 +173,21 @@ void vision::System::Display()
 
 void vision::System::Start()
 {
-    ShadowManager* manager = engine_->GetEnvironmentPtr()->GetShadowManager();
-    manager->Start();   
+    ShadowManager *manager = engine_->GetEnvironmentPtr()->GetShadowManager();
+    manager->Start();
 }
 void vision::System::Render()
 {
 }
 
-void vision::System::UpdateMatrix() 
+void vision::System::UpdateMatrix()
 {
     view_ = main_camera_->GetViewMatrix();
 }
 
 void vision::System::UpdateShader()
 {
+    // main_buffer_->UseBuffer();
     shad_.use();
     shad_.setMat4("projection", projection_);
     shad_.setMat4("view", view_);
@@ -206,4 +197,55 @@ void vision::System::UpdateShader()
 void vision::System::SetProjectionMatrix(glm::mat4 projection)
 {
     projection_ = projection;
+}
+
+
+
+void vision::System::UsePostProcessing(int texture)
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, 1080, 720);
+    glDisable(GL_DEPTH_TEST);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    post_processing_.use();
+    glBindVertexArray(quadVAO);
+    post_processing_.setInt("screenTexture", 1);
+    post_processing_.SetTexture(1, texture, "screenTexture");
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    glEnable(GL_DEPTH_TEST);
+
+}
+
+
+
+void vision::System::InitPostProcessing(){
+
+    float quadVertices[] = {
+    -1.0f, 1.0f, 0.0f, 1.0f,
+    -1.0f, -1.0f, 0.0f, 0.0f,
+    1.0f, -1.0f, 1.0f, 0.0f,
+
+    -1.0f, 1.0f, 0.0f, 1.0f,
+    1.0f, -1.0f, 1.0f, 0.0f,
+    1.0f, 1.0f, 1.0f, 1.0f
+    };
+
+    using namespace std::filesystem;
+    current_path_ = std::filesystem::current_path() / path("..") / path("shaders");
+    current_path_ = current_path_.lexically_normal();
+    post_processing_ = Shader(current_path_ / path("postproc.vert"), current_path_ / path("postproc.frag"));
+
+    
+    glGenVertexArrays(1, &quadVAO);
+    glGenBuffers(1, &quadVBO);
+    glBindVertexArray(quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 }

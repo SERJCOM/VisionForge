@@ -2,13 +2,48 @@
 
 using namespace vision;
 
-std::unique_ptr<FrameBuffer> vision::CreateCommonFrameBuffer(int fbo)
+class CommonFrameBuffer : public FrameBuffer
 {
-    if(fbo == -1){
-        return std::make_unique<FrameBuffer>();
+public:
+    CommonFrameBuffer() : FrameBuffer()
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1080, 720, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+
+        glGenRenderbuffers(1, &rbo);
+        glBindRenderbuffer(GL_RENDERBUFFER, rbo); 
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 1080, 720);  
+        glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
     }
 
-    return std::make_unique<FrameBuffer>(fbo);
+    int GetTexture() override {
+        return texture;
+    }
+
+private:
+
+unsigned int texture;
+unsigned int rbo;
+};
+
+std::unique_ptr<FrameBuffer> vision::CreateCommonFrameBuffer(int fbo)
+{
+    // if (fbo == -1)
+    // {
+    //     return std::make_unique<CommonFrameBuffer>();
+    // }
+
+    return std::make_unique<CommonFrameBuffer>();
 }
 
 class TextureWRFramebuffer : public FrameBuffer

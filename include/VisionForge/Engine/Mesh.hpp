@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <assimp/mesh.h>
 
+
 #include "VisionForge/System/Shader.hpp"
 #include "VisionForge/EntitySystem/Component.hpp"
 #include "VisionForge/Engine/Object.hpp"
@@ -49,5 +50,11 @@ namespace vision
 
         void setupMesh();
     };
+
+    // class SimpleMesh{
+    //     public:
+
+    //     SimpleMesh(std::vector<float>& vector)
+    // };
 
 }
