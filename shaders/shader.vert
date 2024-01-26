@@ -18,7 +18,7 @@ out vec3 PosFrag; // position of the fragment without matrix projection and view
 out vec2 TexCoords; // texture coordinates 
 out vec4 fragPosLight; // position of the fragment from the side of the shadow source
 
- 
+
 void main()
 {
     gl_Position = projection * view * model * vec4(pos, 1.0);

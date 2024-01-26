@@ -40,8 +40,14 @@ void Start() override{
     model->AddMaterial(&mat );
     model->LoadModel();
 
-    
 
+    // house = gEngine->RegistrateComponent<vision::ModelComponent>();
+
+    // house->SetPath(dir_path / path("../house/D_House.FBX"));
+    // house->LoadModel();
+    
+    // house->SetObjectPosition(glm::vec3(-2, 6, 0.83));
+    // house->SetObjectSize(glm::vec3(0.1, 0.1, 0.1));
 
     // room = gEngine->RegistrateComponent<vision::ModelComponent>();
     // room->SetPath(dir_path / path("dimaMap") / path("untitled.obj"));
@@ -75,7 +81,7 @@ private:
 vision::ModelComponent* model;
 vision::ModelComponent* room;
 
-
+vision::ModelComponent* house;
 double i = 0;
 
 };

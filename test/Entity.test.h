@@ -38,7 +38,7 @@ namespace test
 
             camera->SetObjectPosition(pos);
 
-            light->SetObjectPosition(glm::vec3(-3, 5, 70 - i));
+            // light->SetObjectPosition(glm::vec3(-3, 5, 70 - i));
 
             std::cout << pos << std::endl;
 

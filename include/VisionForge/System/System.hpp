@@ -15,6 +15,8 @@
 
 #include "VisionForge/EntitySystem/DefaulComponents/ShadowComponent.hpp"
 
+#include "VisionForge/EntitySystem/VisualComponent.hpp"
+
 namespace vision
 {
 
@@ -75,6 +77,12 @@ namespace vision
 
 		void InitPostProcessing();
 
+		void InitGodRaysTexture(){
+			god_rays_buffer_ = CreateTextureWrittingFrameBuffer(1080, 720);
+		}
+
+
+
 		sf::RenderWindow window_;
 
 		Shader shad_;
@@ -96,6 +104,13 @@ namespace vision
 		unsigned int quadVAO, quadVBO;
 
 		Shader post_processing_;
+
+		// god rays 
+
+		unsigned int texture_god_rays;
+		std::unique_ptr<FrameBuffer> god_rays_buffer_;
+
+		std::unique_ptr<IVisualComponent> visc;
 	};
 
 }

@@ -5,10 +5,12 @@
 #include <sstream>
 #include <GL/glew.h>
 #include <spdlog/spdlog.h>
+#include <string>
 
 Shader::Shader(std::filesystem::path vertf, std::filesystem::path fragf)
-{
-    spdlog::info("Shader::Shader() : vert, frag");
+{   
+    std::string message = "Shader::Shader() => vert :" + std::string(vertf.c_str()) + ", frag:" +   std::string(fragf.c_str());
+    spdlog::info(message);
     InitShader(vertf, fragf);
 }
 

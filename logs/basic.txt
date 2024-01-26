@@ -1,0 +1,78 @@
+[2024-01-19 23:36:32.611] [basic_logger] [info] Engine::Engine()
+[2024-01-19 23:36:32.703] [basic_logger] [info] System::System()
+[2024-01-19 23:36:32.749] [basic_logger] [info] Shader::Shader() : vert, frag
+[2024-01-19 23:36:32.759] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.759] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.759] [basic_logger] [critical] ERROR::PROGRAM_LINKING_ERROR of type: 
+ error: linking with uncompiled/unspecialized shadererror: linking with uncompiled/unspecialized shader
+[2024-01-19 23:36:32.761] [basic_logger] [info] Shader::Shader() : vert, frag
+[2024-01-19 23:36:32.761] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.762] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.762] [basic_logger] [critical] ERROR::PROGRAM_LINKING_ERROR of type: 
+ error: linking with uncompiled/unspecialized shadererror: linking with uncompiled/unspecialized shader
+[2024-01-19 23:36:32.764] [basic_logger] [info] Engine::Display()
+[2024-01-19 23:36:32.766] [basic_logger] [info] Shader::Shader() : vert, frag
+[2024-01-19 23:36:32.766] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.766] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.766] [basic_logger] [critical] ERROR::PROGRAM_LINKING_ERROR of type: 
+ error: linking with uncompiled/unspecialized shadererror: linking with uncompiled/unspecialized shader
+[2024-01-19 23:36:32.766] [basic_logger] [info] Shader::Shader() : vert, frag
+[2024-01-19 23:36:32.766] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.766] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.766] [basic_logger] [critical] ERROR::PROGRAM_LINKING_ERROR of type: 
+ error: linking with uncompiled/unspecialized shadererror: linking with uncompiled/unspecialized shader
+[2024-01-19 23:36:32.777] [basic_logger] [info] Shader::Shader() : vert, frag
+[2024-01-19 23:36:32.777] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.777] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.777] [basic_logger] [critical] ERROR::PROGRAM_LINKING_ERROR of type: 
+ error: linking with uncompiled/unspecialized shadererror: linking with uncompiled/unspecialized shader
+[2024-01-19 23:36:32.778] [basic_logger] [info] Shader::Shader() : vert, frag
+[2024-01-19 23:36:32.778] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.778] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.778] [basic_logger] [critical] ERROR::PROGRAM_LINKING_ERROR of type: 
+ error: linking with uncompiled/unspecialized shadererror: linking with uncompiled/unspecialized shader
+[2024-01-19 23:36:32.780] [basic_logger] [info] Shader::Shader() : vert, frag
+[2024-01-19 23:36:32.780] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.781] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.781] [basic_logger] [critical] ERROR::PROGRAM_LINKING_ERROR of type: 
+ error: linking with uncompiled/unspecialized shadererror: linking with uncompiled/unspecialized shader
+[2024-01-19 23:36:32.781] [basic_logger] [info] Shader::Shader() : vert, frag, geom
+[2024-01-19 23:36:32.781] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.781] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.781] [basic_logger] [critical] ERROR::SHADER_COMPILATION_ERROR of type: 
+ 0:1(1): error: syntax error, unexpected end of file
+
+[2024-01-19 23:36:32.781] [basic_logger] [critical] ERROR::PROGRAM_LINKING_ERROR of type: 
+ error: linking with uncompiled/unspecialized shadererror: linking with uncompiled/unspecialized shadererror: linking with uncompiled/unspecialized shader

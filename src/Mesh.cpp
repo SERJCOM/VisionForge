@@ -23,7 +23,7 @@ void Mesh::Draw(Shader &shader)
 
     SetMatrix(shader);
 
-    glActiveTexture(GL_TEXTURE0);
+    // glActiveTexture(GL_TEXTURE0);
 
     unsigned int diffuseNr = 1;
     for (unsigned int i = 0; i < textures.size(); i++)
@@ -38,7 +38,7 @@ void Mesh::Draw(Shader &shader)
         glUniform1i(glGetUniformLocation(shader.ID, sBool.c_str()), 1);
     }
 
-    shader.BindSSBO();
+    // shader.BindSSBO();
 
     glBindVertexArray(VAO);
     glDrawElementsInstanced(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0, 1);

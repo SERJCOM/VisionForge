@@ -9,6 +9,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include "VisionForge/EntitySystem/DefaulComponents/ModelComponent.hpp"
+
 vision::System::System()
 {
     spdlog::info("System::System()");
@@ -30,9 +32,17 @@ vision::System::System()
 
     InitPostProcessing();
 
-    main_buffer_ = vision::CreateCommonFrameBuffer(-1);
+    InitGodRaysTexture();
 
-    
+    auto component = std::make_unique<ModelComponent>(std::filesystem::current_path() / path("ball.fbx"));
+    component->LoadModel();
+
+    visc = std::move(component);
+    visc->SetObjectPosition(glm::vec3(-112, 100,  -250));
+    visc->SetObjectSize(glm::vec3(10, 10, 10));
+
+
+    main_buffer_ = vision::CreateCommonFrameBuffer(-1);
 
     current_path_ = std::filesystem::current_path() / path("..") / path("shaders");
     current_path_ = current_path_.lexically_normal();
@@ -43,8 +53,6 @@ vision::System::System()
     projection_ = glm::perspective(glm::radians(60.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 0.1f, 1000.0f);
 
     current_shader_ = &shad_;
-
-
 
     shad_.use();
 }
@@ -142,21 +150,42 @@ void vision::System::Display()
                                     { engine_->ProcessVisualComponents([&](IVisualComponent *comp)
                                                                        { comp->Draw(shader); }); });
 
-            Drawning(GetWindow().getSize().x, GetWindow().getSize().y);
-            main_buffer_->ClearBuffer();
 
             UpdateMatrix();
             UpdateShader();
 
+            god_rays_buffer_->UseBuffer();
+            god_rays_buffer_->ClearBuffer();
+
+            shad_.setInt("mode_render", 1);
+            engine_->ProcessVisualComponents([&](IVisualComponent *comp){
+                comp->Draw(shad_); 
+            });
+
+            shad_.setInt("mode_render", 2);            
+            visc->Draw(shad_);
+
+
+            Drawning(GetWindow().getSize().x, GetWindow().getSize().y);
+            main_buffer_->ClearBuffer();
+            
+
+            // shad_.use();
             manager->UseShadows(shad_);
 
             engine_->GetEnvironmentPtr()->GetLightManagerPtr()->Draw();
 
+            shad_.setInt("mode_render", 0);
             engine_->ProcessVisualComponents([&](IVisualComponent *comp)
-                                             { comp->Draw(shad_); });
+                                             {
+                comp->Draw(shad_); });
+
+            visc->Draw(shad_);
 
             Environment *env = engine_->GetEnvironmentPtr();
             env->GetSkyBoxPtr()->DrawSkyBox(view_, projection_);
+
+
 
             UsePostProcessing(main_buffer_->GetTexture());
 
@@ -199,10 +228,12 @@ void vision::System::SetProjectionMatrix(glm::mat4 projection)
     projection_ = projection;
 }
 
-
-
 void vision::System::UsePostProcessing(int texture)
 {
+    glm::vec4 sunpos = projection_ * view_ *  glm::vec4(-112, 100,  -250, 1.0);
+
+    glm::vec3 normsunpos = glm::vec3(sunpos.x / sunpos.w, sunpos.y / sunpos.w, sunpos.z / sunpos.w);
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, 1080, 720);
     glDisable(GL_DEPTH_TEST);
@@ -211,41 +242,42 @@ void vision::System::UsePostProcessing(int texture)
 
     post_processing_.use();
     glBindVertexArray(quadVAO);
-    post_processing_.setInt("screenTexture", 1);
-    post_processing_.SetTexture(1, texture, "screenTexture");
+    post_processing_.setInt("screenTexture", 15);
+    post_processing_.SetTexture(15, texture, "screenTexture");
+
+    post_processing_.setInt("godRaysSampler", 16);
+    post_processing_.SetTexture(16,  god_rays_buffer_->GetTexture(), "godRaysSampler");
+
+    post_processing_.setVec3("sunPos", normsunpos);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glEnable(GL_DEPTH_TEST);
-
 }
 
-
-
-void vision::System::InitPostProcessing(){
+void vision::System::InitPostProcessing()
+{
 
     float quadVertices[] = {
-    -1.0f, 1.0f, 0.0f, 1.0f,
-    -1.0f, -1.0f, 0.0f, 0.0f,
-    1.0f, -1.0f, 1.0f, 0.0f,
+        -1.0f, 1.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, 0.0f, 0.0f,
+        1.0f, -1.0f, 1.0f, 0.0f,
 
-    -1.0f, 1.0f, 0.0f, 1.0f,
-    1.0f, -1.0f, 1.0f, 0.0f,
-    1.0f, 1.0f, 1.0f, 1.0f
-    };
+        -1.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, -1.0f, 1.0f, 0.0f,
+        1.0f, 1.0f, 1.0f, 1.0f};
 
     using namespace std::filesystem;
     current_path_ = std::filesystem::current_path() / path("..") / path("shaders");
     current_path_ = current_path_.lexically_normal();
     post_processing_ = Shader(current_path_ / path("postproc.vert"), current_path_ / path("postproc.frag"));
 
-    
     glGenVertexArrays(1, &quadVAO);
     glGenBuffers(1, &quadVBO);
     glBindVertexArray(quadVAO);
     glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(2 * sizeof(float)));
 }

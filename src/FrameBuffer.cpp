@@ -9,14 +9,16 @@ public:
     {
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
+        textures.push_back(0);
+
+        glGenTextures(1, &textures[0]);
+        glBindTexture(GL_TEXTURE_2D, textures[0]);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1080, 720, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textures[0], 0);
 
         glGenRenderbuffers(1, &rbo);
         glBindRenderbuffer(GL_RENDERBUFFER, rbo); 
@@ -27,22 +29,24 @@ public:
     }
 
     int GetTexture() override {
-        return texture;
+        return textures[0];
+    }
+
+    std::vector<unsigned int> GetTextures() override{
+        return textures;
     }
 
 private:
 
-unsigned int texture;
+
+
+std::vector<unsigned int> textures;
+
 unsigned int rbo;
 };
 
 std::unique_ptr<FrameBuffer> vision::CreateCommonFrameBuffer(int fbo)
 {
-    // if (fbo == -1)
-    // {
-    //     return std::make_unique<CommonFrameBuffer>();
-    // }
-
     return std::make_unique<CommonFrameBuffer>();
 }
 
@@ -87,7 +91,7 @@ public:
 
     void ClearBuffer() override
     {
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
@@ -104,7 +108,7 @@ public:
     }
 };
 
-std::unique_ptr<FrameBuffer> vision::CreateTextureWrittingFrameBuffer()
+std::unique_ptr<FrameBuffer> vision::CreateTextureWrittingFrameBuffer(int width, int height)
 {
-    return std::unique_ptr<FrameBuffer>();
+    return std::make_unique<TextureWRFramebuffer>(width, height);
 }

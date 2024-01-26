@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <memory>
 #include <cassert>
+#include <vector>
 
 namespace vision
 {
@@ -55,6 +56,11 @@ namespace vision
             assert(false);
         }
 
+        virtual std::vector<unsigned int> GetTextures(){
+            std::cerr << "This method is not supported" << std::endl;
+            assert(false);
+        }
+
         protected:
 
 
@@ -64,7 +70,7 @@ namespace vision
 
 
     std::unique_ptr<FrameBuffer> CreateCommonFrameBuffer(int fbo = -1);
-    std::unique_ptr<FrameBuffer> CreateTextureWrittingFrameBuffer();
+    std::unique_ptr<FrameBuffer> CreateTextureWrittingFrameBuffer(int width, int height);
     
 
 }
