@@ -17,25 +17,25 @@ using filesystem::path;
 
 int main()
 {
-    Engine engine;
+    Engine* engine = Engine::GetInstance();
 
-    System *system = engine.GetSystemPtr();
+    System *system = engine->GetSystemPtr();
 
     GameClass game;
-    engine.SetGameClass(&game);
+    engine->SetGameClass(&game);
 
     sf::Clock deltaClock;
 
-    tgui::Gui gui;
-    gui.setWindow(system->GetWindow());
+    // tgui::Gui gui;
+    // gui.setWindow(system->GetWindow());
 
     bool running = true;
     auto loop = [&](int &drawning)    
     {
         sf::Event event;
-        while (engine.GetSystemPtr()->GetWindow().pollEvent(event))
+        while (engine->GetSystemPtr()->GetWindow().pollEvent(event))
         {
-            gui.handleEvent(event);
+            // gui.handleEvent(event);
             if (event.type == sf::Event::Closed)
             {
                 drawning = 0;
@@ -55,9 +55,9 @@ int main()
 
     };
 
-    engine.GetSystemPtr()->SetGameLoop(loop);
+    engine->GetSystemPtr()->SetGameLoop(loop);
 
-    engine.Display();
+    engine->Display();
 
     return 0;
 }

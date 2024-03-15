@@ -8,6 +8,8 @@
 #include "VisionForge/Engine/LightManager.hpp"
 #include "VisionForge/Engine/ShadowManager.hpp"
 
+#include "VisionForge/Engine/PostProc/Blur.hpp"
+
 namespace vision
 {
 
@@ -24,10 +26,14 @@ namespace vision
 
         ShadowManager* GetShadowManager();
 
+        post::Blur* GetBlurManager();
+
     private:
         std::unique_ptr<Skybox> skybox_;
         std::unique_ptr<LightManager> light_manager_;
         std::unique_ptr<ShadowManager> shadow_manager_;
+
+        std::unique_ptr<post::Blur> blur_;
 
         Shader* main_shader_ = nullptr;
 

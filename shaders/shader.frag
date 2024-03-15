@@ -1,6 +1,14 @@
 #version 430 core
 
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 SunColor;
+layout (location = 2) out vec4 BrightColor;
+
+layout (location = 3) out vec4 gPosition;
+layout (location = 4) out vec4 gNormal;
+layout (location = 5) out vec4 gAlbedoSpec;
+
+
 
 in vec3 colorOut;
 in vec3 NormalOut;
@@ -31,28 +39,32 @@ uniform int len_point = 0;
 uniform LIGHT_POINT_SHADOW point_light_shadow[1];
 uniform int len_point_light_shadow = 0;
 
-uniform float far_plane;
-uniform vec3 lightPos;
 
 uniform vec3 cameraPos;
 
-uniform int mode_render = 0;
+uniform int mode_render = 0; // мод для рендеринга 
 
+uniform int diffuse_mode;
+uniform vec3 diffuse_u;
 uniform bool bool_texture_diffuse;
 uniform sampler2D texture_diffuse; // 0
+
 
 uniform bool bool_texture_normal;
 uniform sampler2D texture_normal; // 1
 
+uniform float metallic_u;
 uniform bool bool_texture_metalic;
 uniform sampler2D texture_metalic; // 2
 
 uniform bool bool_texture_specular;
 uniform sampler2D texture_specular; // 3
 
+uniform float roughness_u;
 uniform bool bool_texture_roughness;
 uniform sampler2D texture_roughness; // 4
 
+uniform float ao_u;
 uniform bool bool_texture_ao;
 uniform sampler2D texture_ao; // 5
 
@@ -66,9 +78,10 @@ uniform sampler2D brdfLUT;		   // 7
 
 // данные материала для PBR
 vec3 albedo = vec3(0.9, 0.9, 0.9);
-float metallic = 1.0;
-float roughness = 0.1;
-float ao = 0.2;
+float metallic = 0.0;
+float roughness = 1.0;
+float ao = 0.1;
+
 
 // расчет ортогональной тени
 float CalcShadow(vec4 fragPosLight);
@@ -90,108 +103,119 @@ void main()
 
 	if (mode_render == 1)
 	{
-		FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+		SunColor = vec4(0.0, 0.0, 0.0, 1.0);
 	}
 	else if (mode_render == 2)
 	{
-		FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+		SunColor = vec4(1.0, 1.0, 1.0, 1.0);
 	}
-	else if (mode_render == 0)
+	
+
+	vec3 normal;
+
+	if (bool_texture_diffuse)
+		albedo = pow(texture(texture_diffuse, TexCoords).rgb, vec3(2.2));
+	if (bool_texture_metalic)
+		metallic = texture(texture_metalic, TexCoords).r;
+	if (bool_texture_normal)
+	{
+		normal = getNormalFromMap();
+	}
+	else
+	{
+		normal = normalize(NormalOut);
+	}
+
+	if (bool_texture_roughness)
+		roughness = texture(texture_roughness, TexCoords).r;
+	if (bool_texture_ao)
+		ao = texture(texture_ao, TexCoords).r;
+
+	vec3 camDir = normalize(cameraPos - PosFrag); // направление камеры
+	vec3 reflection = reflect(-camDir, normal);
+
+	vec3 F0 = vec3(0.04);
+	F0 = mix(F0, albedo, metallic);
+
+	// Уравнение отражения
+	vec3 Lo = vec3(0.0);
+
+	// debug
+	// vec3 shadow_pos_d = vec3(-24, 2, -19);
+	// vec3 brightness = vec3(1, 1, 1);
+
+	// LIGHT test_light[1];
+	// test_light[0].color = vec3(1, 1, 0);
+	// test_light[0].pos = vec3(10, 10, 10);
+	// test_light[0].brightness = vec3(100, 100, 100);
+	
+
+	for (int i = 0; i < len_point; i++)
 	{
 
-		vec3 normal;
+		vec3 L = normalize(point_light[i].pos - PosFrag);
+		vec3 H = normalize(camDir + L + vec3(0.1, 0.1, 0.1));
+		float distance = length(point_light[i].pos - PosFrag) + 0.001;
+		float attenuation = 1.0 / (distance * distance + 0.001);
+		vec3 radiance = point_light[i].color * attenuation * point_light[i].brightness;
 
-		if (bool_texture_diffuse)
-			albedo = pow(texture(texture_diffuse, TexCoords).rgb, vec3(2.2));
-		if (bool_texture_metalic)
-			metallic = texture(texture_metalic, TexCoords).r;
-		if (bool_texture_normal)
-		{
-			normal = getNormalFromMap();
-		}
-		else
-		{
-			normal = normalize(NormalOut);
-		}
+		float NDF = DistributionGGX(normal, H, roughness);
+		float G = GeometrySmith(normal, camDir, L, roughness);
+		vec3 F = fresnelSchlick(max(dot(H, camDir), 0.0), F0);
 
-		if (bool_texture_roughness)
-			roughness = texture(texture_roughness, TexCoords).r;
-		if (bool_texture_ao)
-			ao = texture(texture_ao, TexCoords).r;
-
-		vec3 camDir = normalize(cameraPos - PosFrag); // направление камеры
-		vec3 reflection = reflect(-camDir, normal);
-
-		vec3 F0 = vec3(0.04);
-		F0 = mix(F0, albedo, metallic);
-
-		// Уравнение отражения
-		vec3 Lo = vec3(0.0);
-
-		// debug
-		// vec3 shadow_pos_d = vec3(-24, 2, -19);
-		vec3 brightness = vec3(10000, 10000, 10000);
-
-		for (int i = 0; i < len_point; i++)
-		{
-
-			vec3 L = normalize(point_light[i].pos - PosFrag);
-			vec3 H = normalize(camDir + L);
-			float distance = length(point_light[i].pos - PosFrag);
-			float attenuation = 1.0 / (distance * distance);
-			vec3 radiance = point_light[i].color * attenuation * brightness;
-
-			float NDF = DistributionGGX(normal, H, roughness);
-			float G = GeometrySmith(normal, camDir, L, roughness);
-			vec3 F = fresnelSchlick(max(dot(H, camDir), 0.0), F0);
-
-			vec3 nominator = NDF * G * F;
-			float denominator = 4 * max(dot(normal, camDir), 0.0) * max(dot(normal, L), 0.0) + 0.001;
-			vec3 specular = nominator / denominator;
-
-			vec3 kS = F;
-			vec3 kD = 1.0 - kS;
-			kD *= 1.0 - metallic;
-
-			float NdotL = max(dot(normal, L), 0.0);
-			Lo += (kD * albedo / PI + specular) * (radiance)*NdotL;
-		}
-
-		vec3 shadow_color = vec3(0, 0, 0);
-		for (int i = 0; i < len_point_light_shadow; i++)
-		{
-			float shadow = CubeShadowCalculation(PosFrag, point_light_shadow[i].pos, i);
-			shadow_color += (1 - shadow);
-		}
-
-		//=======================
-
-		vec3 F = fresnelSchlickRoughness(max(dot(normal, camDir), 0.0), F0, roughness);
+		vec3 nominator = NDF * G * F;
+		float denominator = 4 * max(dot(normal, camDir), 0.0) * max(dot(normal, L), 0.0) + 0.001;
+		vec3 specular = nominator / denominator;
 
 		vec3 kS = F;
 		vec3 kD = 1.0 - kS;
 		kD *= 1.0 - metallic;
 
-		vec3 irradiance = texture(irradianceMap, normal).rgb;
-		vec3 diffuse = irradiance * albedo;
-
-		const float MAX_REFLECTION_LOD = 4.0;
-		vec3 prefilteredColor = textureLod(prefilterMap, reflection, roughness * MAX_REFLECTION_LOD).rgb;
-		vec2 brdf = texture(brdfLUT, vec2(max(dot(normal, camDir), 0.0), roughness)).rg;
-		vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
-
-		vec3 ambient = (kD * diffuse + specular) * ao;
-
-		vec3 color = ambient + Lo * shadow_color;
-
-		color = color / (color + vec3(1.0));
-		color = pow(color, vec3(1.0 / 2.2));
-		FragColor = vec4(color, 1.0);
+		float NdotL = max(dot(normal, L), 0.0);
+		Lo += (kD * albedo / PI + specular) * (radiance) * NdotL;
 	}
 
-	// float shadow = CubeShadowCalculation(PosFrag, point_light_shadow[0].pos, i) ;
+	vec3 shadow_color = vec3(0, 0, 0);
+	for (int i = 0; i < len_point_light_shadow; i++)
+	{
+		float shadow = CubeShadowCalculation(PosFrag, point_light_shadow[i].pos, i);
+		shadow_color += (1 - shadow);
+	}
 
-	// FragColor = vec4(1.0, 0.5, 0.3, 1.0);
+	//=======================
+
+	vec3 F = fresnelSchlickRoughness(max(dot(normal, camDir), 0.0), F0, roughness);
+
+	vec3 kS = F;
+	vec3 kD = 1.0 - kS;
+	kD *= 1.0 - metallic;
+
+	vec3 irradiance = texture(irradianceMap, normal).rgb;
+	vec3 diffuse = irradiance * albedo;
+
+	const float MAX_REFLECTION_LOD = 4.0;
+	vec3 prefilteredColor = textureLod(prefilterMap, reflection, roughness * MAX_REFLECTION_LOD).rgb;
+	vec2 brdf = texture(brdfLUT, vec2(max(dot(normal, camDir), 0.0), roughness)).rg;
+	vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
+
+	vec3 ambient =  (kD * diffuse + specular) * ao ;
+
+	vec3 color = ambient + Lo ;
+
+	FragColor = vec4(color, 1.0);
+
+	// if (any(isnan(FragColor))) FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+
+    if(dot(color, vec3(0.1, 0.1, 0.1)) > 1.0)
+        BrightColor = vec4(color, 1.0);
+    else
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+
+	gPosition = vec4(PosFrag, 0.0);
+	gNormal = vec4(normal, 0.0);
+	gAlbedoSpec.rgb = FragColor.rgb;
+	gAlbedoSpec.a = specular.r;
 }
 
 //=========================================================================

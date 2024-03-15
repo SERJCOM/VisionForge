@@ -36,6 +36,9 @@ src/ShadowManager.cpp
 src/ShadowComponent.cpp
 src/Common.cpp
 src/Shader.cpp
+src/Blur.cpp
+src/Sun.cpp
+src/PostProcessing.cpp
 )
 
 option(MYLIB_INSTALL "Generate target for installing mylib" ${is_top_level})

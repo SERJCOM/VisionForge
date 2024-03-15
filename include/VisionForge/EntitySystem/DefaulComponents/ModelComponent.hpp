@@ -15,10 +15,8 @@
 
 #include "VisionForge/Engine/Material.hpp"
 #include "VisionForge/EntitySystem/VisualComponent.hpp"
-#include "VisionForge/System/Shader.hpp"
-#include "VisionForge/Common/Texture.hpp"
-#include "VisionForge/Engine/Mesh.hpp"
-#include "VisionForge/Engine/Engine.hpp"
+
+
 
 namespace vision
 {

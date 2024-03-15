@@ -29,12 +29,22 @@ namespace vision
         {
             std::string path;
             int type;
+            glm::vec3 color;
         };
 
         void AddNewMaterial(std::string path, Type type, std::string name)
         {
             sMaterials mat;
             mat.path = path;
+            mat.type = type;
+
+            _materials.insert(std::pair{name, mat});
+        }
+
+        void AddNewMaterial(glm::vec3 color, Type type, std::string name)
+        {
+            sMaterials mat;
+            mat.color = color;
             mat.type = type;
 
             _materials.insert(std::pair{name, mat});

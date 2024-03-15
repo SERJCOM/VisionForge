@@ -24,10 +24,10 @@ namespace test
             ConfMove();
 
 
-            light = gEngine->GetEnvironmentPtr()->GetLightManagerPtr()->AddLight<vision::PointLightWithShadow>();
-            light->SetObjectPosition(glm::vec3(-24, 2, -19));
-            light->color = glm::vec3(1, 1, 1);
-            light->brightness = glm::vec3(10, 10, 10);
+            light = gEngine->GetEnvironmentPtr()->GetLightManagerPtr()->AddLight<vision::PointLight>();
+            light->SetObjectPosition(glm::vec3(10, 10, 10));
+            light->color = glm::vec3(208 / 255, 24 / 255, 236 / 255);
+            light->brightness = glm::vec3(100, 100, 100);
 
 
         }
@@ -38,9 +38,9 @@ namespace test
 
             camera->SetObjectPosition(pos);
 
-            // light->SetObjectPosition(glm::vec3(-3, 5, 70 - i));
+            light->SetObjectPosition(camera->GetObjectPosition());
 
-            std::cout << pos << std::endl;
+            // std::cout << pos << std::endl;
 
             i = i + 0.1;            
         }
@@ -99,7 +99,7 @@ namespace test
         float speed = 1.0f;
         glm::vec3 pos = glm::vec3(0);
 
-        vision::PointLightWithShadow* light;
+        vision::PointLight* light;
 
         float i = 0;
     };

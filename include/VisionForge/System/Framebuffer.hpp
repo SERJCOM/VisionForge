@@ -42,7 +42,7 @@ namespace vision
         }
 
         virtual void ClearBuffer(){
-            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
@@ -50,15 +50,20 @@ namespace vision
             return fbo;
         }
 
-        virtual int GetTexture()
+        virtual unsigned int &GetTexture()
         {
             std::cerr << "This method is not supported" << std::endl;
-            assert(false);
+            // assert(false);
         }
 
         virtual std::vector<unsigned int> GetTextures(){
             std::cerr << "This method is not supported" << std::endl;
-            assert(false);
+            // assert(false);
+        }
+
+        virtual unsigned int &GetTextureByName(std::string_view name){
+            std::cerr << "This method is not supported" << std::endl;
+            // assert(false);
         }
 
         protected:

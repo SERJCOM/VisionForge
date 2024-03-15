@@ -17,6 +17,8 @@
 
 #include "VisionForge/EntitySystem/VisualComponent.hpp"
 
+#include "VisionForge/Engine/PostProc/Blur.hpp"
+
 namespace vision
 {
 
@@ -26,30 +28,31 @@ namespace vision
 	private:
 		std::function<void(int &drawning)> gameLoop;
 
-	public:
 		System();
 
-		void Init();
+		static System* system_ptr_;
+
+	public:
+		
+		static System* GetInstance();
+
+		void Init(); //
 
 		void TurnOnCullFace();
 
-		void Drawning(int x, int y);
+		void Drawning(int x, int y); //
 
 		void SetGameLoop(std::function<void(int &drawning)> loop);
 
 		sf::Window &GetWindow();
-		sf::RenderWindow& GetRenderWindow(){
+		sf::RenderWindow &GetRenderWindow()
+		{
 			return window_;
 		}
 
 		std::filesystem::path GetCurrentPath() const;
 
 		void SetMainCamera(vision::CameraComponent *main_camera);
-
-		void SetEnginePtr(Engine *eng)
-		{
-			engine_ = eng;
-		}
 
 		void SetProjectionMatrix(glm::mat4 projection);
 
@@ -59,14 +62,13 @@ namespace vision
 
 		Shader &GetMainShader();
 
-		Shader * GetCurrentShader();
+		Shader *GetCurrentShader();
 
 		virtual void Display();
 
 		virtual void Start();
 
 	private:
-
 		void Render();
 
 		void UpdateMatrix();
@@ -77,19 +79,13 @@ namespace vision
 
 		void InitPostProcessing();
 
-		void InitGodRaysTexture(){
-			god_rays_buffer_ = CreateTextureWrittingFrameBuffer(1080, 720);
-		}
-
-
-
 		sf::RenderWindow window_;
 
 		Shader shad_;
 
-		Shader* current_shader_ = nullptr;
+		Shader *current_shader_ = nullptr;
 
-		Engine *engine_ = nullptr;
+		// Engine *engine_ = nullptr;
 
 		std::filesystem::path current_path_;
 
@@ -100,15 +96,12 @@ namespace vision
 
 		std::unique_ptr<FrameBuffer> main_buffer_;
 
-		// post processing 
+		// post processing
 		unsigned int quadVAO, quadVBO;
 
 		Shader post_processing_;
 
-		// god rays 
-
-		unsigned int texture_god_rays;
-		std::unique_ptr<FrameBuffer> god_rays_buffer_;
+		post::Blur blur;
 
 		std::unique_ptr<IVisualComponent> visc;
 	};

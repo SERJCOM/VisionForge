@@ -10,6 +10,7 @@
 #include <spdlog/spdlog.h>
 
 #include "VisionForge/EntitySystem/DefaulComponents/ModelComponent.hpp"
+// #include "System.hpp"
 
 vision::System::System()
 {
@@ -25,22 +26,21 @@ vision::System::System()
     settings.minorVersion = 3;
 
     window_.create(sf::VideoMode({1080, 720}), "OpenGL", sf::Style::Default, settings);
-    window_.setActive(true);
+    window_.setActive();
     window_.setFramerateLimit(60);
 
     Init();
 
-    InitPostProcessing();
+    // InitPostProcessing();
 
-    InitGodRaysTexture();
+    blur.ConfigureBlur(1080, 720);
 
-    auto component = std::make_unique<ModelComponent>(std::filesystem::current_path() / path("ball.fbx"));
-    component->LoadModel();
+    // auto component = std::make_unique<ModelComponent>(std::filesystem::current_path() / path("ball.fbx"));
+    // component->LoadModel();
 
-    visc = std::move(component);
-    visc->SetObjectPosition(glm::vec3(-112, 100,  -250));
-    visc->SetObjectSize(glm::vec3(10, 10, 10));
-
+    // visc = std::move(component);
+    // visc->SetObjectPosition(glm::vec3(-112, 100, -250));
+    // visc->SetObjectSize(glm::vec3(10, 10, 10));
 
     main_buffer_ = vision::CreateCommonFrameBuffer(-1);
 
@@ -48,7 +48,6 @@ vision::System::System()
     current_path_ = current_path_.lexically_normal();
 
     shad_ = Shader(current_path_ / path("shader.vert"), current_path_ / path("shader.frag"));
-    // shadow = Shader(current_path_ / path("shadow.vert"), current_path_ / path("shadow.frag"), current_path_ / path("shadow.geom"));
 
     projection_ = glm::perspective(glm::radians(60.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 0.1f, 1000.0f);
 
@@ -58,18 +57,19 @@ vision::System::System()
 }
 
 void vision::System::Init()
+
 {
     glewInit();
     glEnable(GL_TEXTURE_CUBE_MAP);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+    // glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
     glEnable(GL_MULTISAMPLE);
 }
 
 void vision::System::TurnOnCullFace()
 {
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    // glEnable(GL_CULL_FACE);
+    // glCullFace(GL_BACK);
 }
 
 void vision::System::Drawning(int x, int y)
@@ -122,9 +122,7 @@ void vision::System::Display()
 {
     int drawning = 1;
 
-    ShadowManager *manager = engine_->GetEnvironmentPtr()->GetShadowManager();
-
-    // manager->Start();
+    ShadowManager *manager = Engine::GetInstance()->GetEnvironmentPtr()->GetShadowManager();
 
     while (true)
     {
@@ -136,58 +134,46 @@ void vision::System::Display()
         try
         {
 
-            engine_->GetInputManagerPtr()->Update();
+            Engine::GetInstance()->GetInputManagerPtr()->Update();
 
-            engine_->ProcessEntities([&](IEntity *entity)
+            Engine::GetInstance()->ProcessEntities([&](IEntity *entity)
                                      { entity->Update(); });
 
-            engine_->ProcessComponents([&](IComponent *comp)
+            Engine::GetInstance()->ProcessComponents([&](IComponent *comp)
                                        { comp->Update(); });
 
-            engine_->GetGameClassPtr()->Update();
+            Engine::GetInstance()->GetGameClassPtr()->Update();
 
             manager->PrepareShadows([&](Shader &shader)
-                                    { engine_->ProcessVisualComponents([&](IVisualComponent *comp)
+                                    { Engine::GetInstance()->ProcessVisualComponents([&](IVisualComponent *comp)
                                                                        { comp->Draw(shader); }); });
-
 
             UpdateMatrix();
             UpdateShader();
 
-            god_rays_buffer_->UseBuffer();
-            god_rays_buffer_->ClearBuffer();
-
-            shad_.setInt("mode_render", 1);
-            engine_->ProcessVisualComponents([&](IVisualComponent *comp){
-                comp->Draw(shad_); 
-            });
-
-            shad_.setInt("mode_render", 2);            
-            visc->Draw(shad_);
-
-
             Drawning(GetWindow().getSize().x, GetWindow().getSize().y);
             main_buffer_->ClearBuffer();
-            
 
-            // shad_.use();
             manager->UseShadows(shad_);
 
-            engine_->GetEnvironmentPtr()->GetLightManagerPtr()->Draw();
+            Engine::GetInstance()->GetEnvironmentPtr()->GetLightManagerPtr()->Draw();
 
-            shad_.setInt("mode_render", 0);
-            engine_->ProcessVisualComponents([&](IVisualComponent *comp)
-                                             {
-                comp->Draw(shad_); });
+            // shad_.setInt("mode_render", 2);
+            // visc->Draw(shad_);
 
-            visc->Draw(shad_);
+            // shad_.setInt("mode_render", 1);
 
-            Environment *env = engine_->GetEnvironmentPtr();
+            Engine::GetInstance()->GetPostProcessingPtr()->Update(shad_);
+
+            Engine::GetInstance()->ProcessVisualComponents([&](IVisualComponent *comp)
+                                             { comp->Draw(shad_); });
+
+            Environment *env = Engine::GetInstance()->GetEnvironmentPtr();
             env->GetSkyBoxPtr()->DrawSkyBox(view_, projection_);
 
+            // UsePostProcessing(main_buffer_->GetTexture());
 
-
-            UsePostProcessing(main_buffer_->GetTexture());
+            Engine::GetInstance()->GetPostProcessingPtr()->UsePostProcessing(main_buffer_.get(), projection_, view_);
 
             gameLoop(drawning);
 
@@ -202,7 +188,7 @@ void vision::System::Display()
 
 void vision::System::Start()
 {
-    ShadowManager *manager = engine_->GetEnvironmentPtr()->GetShadowManager();
+    ShadowManager *manager = Engine::GetInstance()->GetEnvironmentPtr()->GetShadowManager();
     manager->Start();
 }
 void vision::System::Render()
@@ -230,9 +216,11 @@ void vision::System::SetProjectionMatrix(glm::mat4 projection)
 
 void vision::System::UsePostProcessing(int texture)
 {
-    glm::vec4 sunpos = projection_ * view_ *  glm::vec4(-112, 100,  -250, 1.0);
+    glm::vec4 sunpos = projection_ * view_ * glm::vec4(-112, 100, -250, 1.0);
 
     glm::vec3 normsunpos = glm::vec3(sunpos.x / sunpos.w, sunpos.y / sunpos.w, sunpos.z / sunpos.w);
+
+    blur.BlurTexture(main_buffer_->GetTextures()[2]);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, 1080, 720);
@@ -242,11 +230,15 @@ void vision::System::UsePostProcessing(int texture)
 
     post_processing_.use();
     glBindVertexArray(quadVAO);
+
+    post_processing_.setInt("bloomBlur", 1);
+    post_processing_.SetTexture(1, main_buffer_->GetTextures()[2], "bloomBlur");
+
     post_processing_.setInt("screenTexture", 15);
     post_processing_.SetTexture(15, texture, "screenTexture");
 
     post_processing_.setInt("godRaysSampler", 16);
-    post_processing_.SetTexture(16,  god_rays_buffer_->GetTexture(), "godRaysSampler");
+    post_processing_.SetTexture(16, main_buffer_->GetTextures()[1], "godRaysSampler");
 
     post_processing_.setVec3("sunPos", normsunpos);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -280,4 +272,15 @@ void vision::System::InitPostProcessing()
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(2 * sizeof(float)));
+}
+
+vision::System *vision::System::system_ptr_ = nullptr;
+
+vision::System *vision::System::GetInstance()
+{
+    if(system_ptr_ == nullptr){
+        system_ptr_ = new System();
+    }
+
+    return system_ptr_;
 }

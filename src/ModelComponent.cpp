@@ -1,5 +1,11 @@
 #include "VisionForge/EntitySystem/DefaulComponents/ModelComponent.hpp"
 #include "VisionForge/Common/Timer.hpp"
+#include "VisionForge/Engine/Engine.hpp"
+#include "VisionForge/System/Shader.hpp"
+#include "VisionForge/Common/Texture.hpp"
+#include "VisionForge/Engine/Mesh.hpp"
+
+#include <exception>
 
 using namespace vision;
 
@@ -38,6 +44,8 @@ void ModelComponent::AddMaterial(Material *mat)
 
 void ModelComponent::SetPath(std::filesystem::path path)
 {
+    if(!std::filesystem::exists(path))
+        throw std::domain_error("No such file or directory: " + std::string(path.c_str()));
     this->path = path.c_str();
 }
 

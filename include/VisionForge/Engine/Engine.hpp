@@ -23,6 +23,7 @@ meanwhile the System module controls only visualization
 #include "VisionForge/Common/InputManager.hpp"
 #include "VisionForge/Engine/LightManager.hpp"
 #include "VisionForge/EntitySystem/VisualComponent.hpp"
+#include "VisionForge/Engine/PostProcessing.hpp"
 
 namespace vision
 {
@@ -33,7 +34,7 @@ namespace vision
 
     public:
 
-        Engine();
+        // Engine();
 
         void Display();
 
@@ -51,13 +52,26 @@ namespace vision
 
         IGameClass* GetGameClassPtr();
 
+        PostProcessingManager* GetPostProcessingPtr();
+
         void SetGameClass(IGameClass* game);
 
         input::IInputManager* GetInputManagerPtr();
 
-       
+        void operator=(const Engine& engine) = delete;
+        Engine(Engine& other) = delete;
+
+        static Engine* GetInstance();
+
+    protected:
+
+        Engine();
+
+        static Engine* engine_ptr_;
 
     private:
+
+        
 
         template<typename T>
         void ProcessComponents(T func){
@@ -83,9 +97,10 @@ namespace vision
             }
         }
 
-        std::unique_ptr<System> system_;
+        // System* system_;
         std::unique_ptr<Environment> env_;
         std::unique_ptr<input::IInputManager> input_manager_;
+        std::unique_ptr<PostProcessingManager> post_processing_manager_;
 
         std::vector<std::unique_ptr<IComponent>> components_;
         std::vector<std::unique_ptr<IEntity>> entities_;
@@ -94,6 +109,9 @@ namespace vision
 
 
         IGameClass* game_class_ = nullptr;
+
+
+        
     };
 
 

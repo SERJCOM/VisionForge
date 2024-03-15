@@ -2,7 +2,7 @@
 
 #include <spdlog/spdlog.h>
 #include "spdlog/sinks/basic_file_sink.h" // support for basic file logging
-
+// #include "Engine.hpp"
 
 using namespace vision;
 
@@ -14,10 +14,12 @@ vision::Engine::Engine()
 
     spdlog::info("Engine::Engine()");
 
-    system_ = std::make_unique<System>();
-    system_->SetEnginePtr(this);
+    // system_ = System::GetInstance();
+    // system_->SetEnginePtr(this);
 
     env_ = std::make_unique<Environment>(&GetSystemPtr()->GetMainShader());
+
+    post_processing_manager_ = std::make_unique<PostProcessingManager>();
 
     input_manager_ = input::CreateBasicInputManager();
 }
@@ -26,15 +28,18 @@ void vision::Engine::Display()
 {
     spdlog::info("Engine::Display()");
 
-    if(game_class_ == nullptr){
+    if (game_class_ == nullptr)
+    {
         std::cerr << "ERROR!!! Missing main class" << std::endl;
         spdlog::critical("Engine::Display() -> ERROR!!! Missing main class");
         assert(false);
     }
 
     game_class_->Start();
-    system_->Start();
-    system_->Display();
+    post_processing_manager_->Start();
+    
+    System::GetInstance()->Start();
+    System::GetInstance()->Display();
 }
 
 IEntity *vision::Engine::GetEntity(std::string_view name) const
@@ -49,7 +54,7 @@ IEntity *vision::Engine::GetEntity(std::string_view name) const
 
 System *vision::Engine::GetSystemPtr()
 {
-    return system_.get();
+    return System::GetInstance();
 }
 Environment *vision::Engine::GetEnvironmentPtr()
 {
@@ -60,6 +65,7 @@ IGameClass *vision::Engine::GetGameClassPtr()
 {
     return game_class_;
 }
+
 void vision::Engine::SetGameClass(vision::IGameClass *game)
 {
     game_class_ = game;
@@ -70,4 +76,21 @@ void vision::Engine::SetGameClass(vision::IGameClass *game)
 input::IInputManager *vision::Engine::GetInputManagerPtr()
 {
     return input_manager_.get();
+}
+
+
+Engine* Engine::engine_ptr_ = nullptr;
+
+vision::Engine *vision::Engine::GetInstance()
+{
+    if(!engine_ptr_){
+        engine_ptr_ = new Engine();
+    }
+
+    return engine_ptr_;
+}
+
+
+PostProcessingManager* Engine::GetPostProcessingPtr(){
+    return post_processing_manager_.get();
 }

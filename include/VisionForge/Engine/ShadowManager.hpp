@@ -6,6 +6,7 @@
 #include <vector>
 #include <functional>
 #include <string>
+#include <algorithm>
 
 #include "VisionForge/Common/Common.hpp"
 
@@ -29,11 +30,12 @@ public:
     
     void PrepareShadows(std::function<void(Shader& shader)> func){
 
+
         framebuffer_->UseBuffer();
 
-        
 
-        for(int i = 0; i < MAX_SHADOWS; i++){
+
+        for(int i = 0; i < std::min(point_shadows_.size(), (size_t)MAX_SHADOWS); i++){
             glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, point_shadows_[i]->GetShadowTexture(), 0);
 
             point_shadows_[i]->Prepare();
