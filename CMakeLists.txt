@@ -17,7 +17,7 @@ find_package(GLEW REQUIRED)
 find_package(glm REQUIRED)
 find_package(spdlog REQUIRED)
 
-
+find_package(glfw3  REQUIRED)
 
 
 set(EngineFiles 
@@ -41,6 +41,24 @@ src/Sun.cpp
 src/PostProcessing.cpp
 )
 
+set(ImGuiFiles
+imgui/imconfig.h
+imgui/imgui_demo.cpp
+imgui/imgui_draw.cpp
+imgui/imgui_impl_glfw.cpp
+imgui/imgui_impl_glfw.h
+imgui/imgui_impl_opengl3.cpp
+imgui/imgui_impl_opengl3.h
+imgui/imgui_internal.h
+imgui/imgui_widgets.cpp
+imgui/imgui.cpp
+imgui/imgui.h
+imgui/imstb_rectpack.h
+imgui/imstb_textedit.h
+imgui/imstb_truetype.h
+imgui/imgui_tables.cpp
+)
+
 option(MYLIB_INSTALL "Generate target for installing mylib" ${is_top_level})
 include(cmake/utils.cmake)
 include(GNUInstallDirs)
@@ -52,17 +70,19 @@ set_if_undefined(VISIONFORGE_INSTALL_CMAKEDIR
 
 message(STATUS ${CMAKE_INSTALL_LIBDIR})
 
-add_library(VisionForge STATIC ${EngineFiles})
+add_library(VisionForge STATIC ${EngineFiles} ${ImGuiFiles})
 
 target_link_libraries(VisionForge PUBLIC 
     OpenGL::GL 
     glm::glm
-    SFML::Graphics SFML::Window SFML::Audio SFML::Network
+    SFML::Graphics SFML::Audio SFML::Network
     jsoncpp_lib
     assimp::assimp
     ${GLEW_LIBRARIES}
-    TGUI::TGUI 
+
     spdlog::spdlog
+
+    glfw
     )
 
 
@@ -74,6 +94,7 @@ target_include_directories(VisionForge PUBLIC
     $<BUILD_INTERFACE:${SFML_INCLUDE_DIRS}>
     
     $<INSTALL_INTERFACE:include>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/imgui>
 )
 
 target_link_directories(VisionForge PUBLIC 
@@ -84,18 +105,20 @@ ${SFML_INCLUDE_DIRS}
 add_executable(Test 
     test/main.cpp
     ${EngineFiles}
+    ${ImGuiFiles}
     )
 
 
 target_link_libraries(Test PUBLIC 
     OpenGL::GL 
     glm::glm
-    SFML::Graphics SFML::Window SFML::Audio SFML::Network
+    SFML::Graphics SFML::Audio SFML::Network
     jsoncpp_lib
     assimp::assimp
     ${GLEW_LIBRARIES}
-    TGUI::TGUI 
     spdlog::spdlog
+
+    glfw
 )
 
 
@@ -109,6 +132,7 @@ target_include_directories(Test
         ${CMAKE_SOURCE_DIR}/libraries
         ${CMAKE_SOURCE_DIR}/test
         ${SFML_INCLUDE_DIRS}
+        ${CMAKE_SOURCE_DIR}/imgui
 )
 
 # if(MYLIB_INSTALL AND NOT CMAKE_SKIP_INSTALL_RULES)

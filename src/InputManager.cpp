@@ -1,8 +1,12 @@
 #include "VisionForge/Common/InputManager.hpp"
 
 #include <unordered_map>
-#include <SFML/Window/Keyboard.hpp>
+// #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
+
+// #include "VisionForge/Common/Common.hpp"
+#include "VisionForge/System/System.hpp"
+
 
 using namespace vision;
 using namespace std;
@@ -43,7 +47,9 @@ public:
 
         for(auto&[device, names] : device_names_){
             if(device.GetDeviceType() == DeviceType::KEYBOARD){
-                if(sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(device.GetKeyIndex()))){
+                int state = glfwGetKey(System::GetInstance()->GetGLFWWindow(), device.GetKeyIndex());
+                if(state == GLFW_PRESS){
+                // if(sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(device.GetKeyIndex()))){
                     for(const auto& name : names){
                         if(name_func_.count(name) == 0){
                             std::cerr << name + " is not located in name_func_" << std::endl;

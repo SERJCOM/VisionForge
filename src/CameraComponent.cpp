@@ -5,13 +5,16 @@
 
 void vision::CameraComponent::Start()
 {
-    SetWindow(gEngine->GetSystemPtr()->GetWindow());
+    // SetWindow(gEngine->GetSystemPtr()->GetWindow());
+    SetWindow(*System::GetInstance()->GetGLFWWindow());
 }
 
 void vision::CameraComponent::Looking()
 {
 
-    window_->setMouseCursorVisible(false);
+    // window_->setMouseCursorVisible(false);
+    // glfwSetCursorPos(window_, )
+    // glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     float xoffset = -(lastX - xpos);
     float yoffset = -(ypos - lastY);
@@ -33,12 +36,14 @@ void vision::CameraComponent::Looking()
     direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     cameraFront = glm::normalize(direction);
 
-    sf::Vector2i localPosition = sf::Mouse::getPosition(*window_);
-    xpos = localPosition.x;
-    ypos = localPosition.y;
+    double local_pos_x, local_pos_y;
+    glfwGetCursorPos(window_, &local_pos_x, &local_pos_y);
+    xpos = local_pos_x;
+    ypos = local_pos_y;
 
     sf::Vector2i Position;
     Position.x = lastX;
     Position.y = lastY;
-    sf::Mouse::setPosition(Position, *window_);
+    // sf::Mouse::setPosition(Position, *window_);
+    // glfwSetCursorPos(window_, lastX, lastY);
 }

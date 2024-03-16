@@ -9,6 +9,8 @@
 
 #include <iostream>
 
+
+
 namespace test
 {
 
@@ -74,21 +76,21 @@ namespace test
             };
 
             vision::input::DeviceParametrs parameter;
-            parameter.SetKeyIndex(sf::Keyboard::W);
+            parameter.SetKeyIndex(GLFW_KEY_W);
             parameter.SetDeviceType(vision::input::DeviceType::KEYBOARD);
 
             gEngine->GetInputManagerPtr()->CreateNewInput(parameter, "forward");
             gEngine->GetInputManagerPtr()->AddInputEvent("forward", forward);
 
-            parameter.SetKeyIndex(sf::Keyboard::S);
+            parameter.SetKeyIndex(GLFW_KEY_S);
             gEngine->GetInputManagerPtr()->CreateNewInput(parameter, "back");
             gEngine->GetInputManagerPtr()->AddInputEvent("back", back);
 
-            parameter.SetKeyIndex(sf::Keyboard::A);
+            parameter.SetKeyIndex(GLFW_KEY_A);
             gEngine->GetInputManagerPtr()->CreateNewInput(parameter, "left");
             gEngine->GetInputManagerPtr()->AddInputEvent("left", left);
 
-            parameter.SetKeyIndex(sf::Keyboard::D);
+            parameter.SetKeyIndex(GLFW_KEY_D);
             gEngine->GetInputManagerPtr()->CreateNewInput(parameter, "right");
             gEngine->GetInputManagerPtr()->AddInputEvent("right", right);
         }

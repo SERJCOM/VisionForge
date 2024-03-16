@@ -2,12 +2,15 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <SFML/Window/Mouse.hpp>
-#include <SFML/Window/Keyboard.hpp>
-#include <SFML/Window/Window.hpp>
+// #include <SFML/Window/Mouse.hpp>
+// #include <SFML/Window/Keyboard.hpp>
+// #include <SFML/Window/Window.hpp>
 // #include "VisionForge/Engine/Engine.hpp"
 #include "VisionForge/EntitySystem/Component.hpp"
 #include "VisionForge/EntitySystem/Components/CameraInterface.hpp"
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 namespace vision
 {
@@ -25,18 +28,22 @@ namespace vision
 
 		CameraComponent() {}
 
-		void SetWindow(sf::Window &window)
+		void SetWindow(GLFWwindow& window)
 		{
 			window_ = &window;
 		}
 
-		CameraComponent(sf::Window &window) : window_(&window)
-		{
-			sf::Vector2i position;
-			position.x = 400;
-			position.y = 300;
 
-			sf::Mouse::setPosition(position, *window_);
+
+		CameraComponent(GLFWwindow &window) : window_(&window)
+		{
+			// sf::Vector2i position;
+			// position.x = 400;
+			// position.y = 300;
+
+			// sf::Mouse::setPosition(position, *window_);
+			int posx = 400, posy = 300;
+			glfwSetCursorPos(window_, posx, posy);
 		}
 
 
@@ -86,7 +93,8 @@ namespace vision
 		glm::mat4 view;
 
 	protected:
-		sf::Window *window_;
+		// sf::Window *window_;
+		GLFWwindow* window_;
 	};
 
 }

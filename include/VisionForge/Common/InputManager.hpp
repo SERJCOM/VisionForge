@@ -6,6 +6,9 @@
 #include <functional>
 #include <vector>
 
+// #include <GL/gl.h>
+// #include <GLFW/glfw3.h>
+
 /*
 Отвечает за центрилизованное управление вводом. Например ввод клавиатурой, геймпадом и тд
 */

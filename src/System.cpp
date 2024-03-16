@@ -1,10 +1,13 @@
-#include <GL/glew.h>
-#include <SFML/OpenGL.hpp>
+// #include <GL/glew.h>
+// #include <SFML/OpenGL.hpp>
 #include <cassert>
 #include <iostream>
 #include <utility>
 
+
+
 #include "VisionForge/System/System.hpp"
+
 #include "VisionForge/Engine/Engine.hpp"
 
 #include <spdlog/spdlog.h>
@@ -18,16 +21,25 @@ vision::System::System()
 
     using namespace std::filesystem;
 
-    sf::ContextSettings settings;
-    settings.depthBits = 24;
-    settings.stencilBits = 8;
-    settings.antialiasingLevel = 4;
-    settings.majorVersion = 4.6;
-    settings.minorVersion = 3;
+    // sf::ContextSettings settings;
+    // settings.depthBits = 24;
+    // settings.stencilBits = 8;
+    // settings.antialiasingLevel = 4;
+    // settings.majorVersion = 4.6;
+    // settings.minorVersion = 3;
 
-    window_.create(sf::VideoMode({1080, 720}), "OpenGL", sf::Style::Default, settings);
-    window_.setActive();
-    window_.setFramerateLimit(60);
+    // window_.create(sf::VideoMode({1080, 720}), "OpenGL", sf::Style::Default, settings);
+    // window_.setActive();
+    // window_.setFramerateLimit(60);
+
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4.4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    window_ = glfwCreateWindow(1080, 720, " OpenGL", NULL, NULL);
+    glfwMakeContextCurrent(window_);
+
 
     Init();
 
@@ -49,7 +61,10 @@ vision::System::System()
 
     shad_ = Shader(current_path_ / path("shader.vert"), current_path_ / path("shader.frag"));
 
-    projection_ = glm::perspective(glm::radians(60.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 0.1f, 1000.0f);
+    // projection_ = glm::perspective(glm::radians(60.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 0.1f, 1000.0f);
+
+    projection_ = glm::perspective(glm::radians(60.0f), (float)1080 / 720, 0.1f, 1000.0f);
+
 
     current_shader_ = &shad_;
 
@@ -72,6 +87,7 @@ void vision::System::TurnOnCullFace()
     // glCullFace(GL_BACK);
 }
 
+
 void vision::System::Drawning(int x, int y)
 {
     main_buffer_->UseBuffer();
@@ -85,7 +101,7 @@ void vision::System::SetGameLoop(std::function<void(int &drawning)> loop)
 
 sf::Window &vision::System::GetWindow()
 {
-    return window_;
+    // return window_;
 }
 
 std::filesystem::path vision::System::GetCurrentPath() const
@@ -134,6 +150,10 @@ void vision::System::Display()
         try
         {
 
+            if(glfwWindowShouldClose(window_)){
+                drawning = 0;
+            }
+
             Engine::GetInstance()->GetInputManagerPtr()->Update();
 
             Engine::GetInstance()->ProcessEntities([&](IEntity *entity)
@@ -150,8 +170,10 @@ void vision::System::Display()
 
             UpdateMatrix();
             UpdateShader();
-
-            Drawning(GetWindow().getSize().x, GetWindow().getSize().y);
+            
+            int window_size_x, window_size_y;
+            glfwGetWindowSize(window_, &window_size_x, &window_size_y);
+            Drawning(window_size_x, window_size_y);
             main_buffer_->ClearBuffer();
 
             manager->UseShadows(shad_);
@@ -177,13 +199,19 @@ void vision::System::Display()
 
             gameLoop(drawning);
 
-            window_.display();
+            // window_.display();
+
+            glfwSwapBuffers(window_);
+            glfwPollEvents();
         }
         catch (...)
         {
             std::cerr << "ERROR::UNKNOW ERROR!!!" << std::endl;
         }
+
     }
+
+    glfwTerminate();
 }
 
 void vision::System::Start()

@@ -4,6 +4,12 @@
 #include <memory>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
+// #include <glad/gl.h>
+
 #include <filesystem>
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -47,8 +53,13 @@ namespace vision
 		sf::Window &GetWindow();
 		sf::RenderWindow &GetRenderWindow()
 		{
+			// return window_;
+		}
+
+		GLFWwindow * GetGLFWWindow(){
 			return window_;
 		}
+
 
 		std::filesystem::path GetCurrentPath() const;
 
@@ -79,13 +90,13 @@ namespace vision
 
 		void InitPostProcessing();
 
-		sf::RenderWindow window_;
+		// sf::RenderWindow window_;
+		GLFWwindow* window_;
 
 		Shader shad_;
 
 		Shader *current_shader_ = nullptr;
 
-		// Engine *engine_ = nullptr;
 
 		std::filesystem::path current_path_;
 

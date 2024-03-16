@@ -5,10 +5,9 @@
 
 #include "GameClass.hpp"
 
-#include <TGUI/TGUI.hpp>
-#include <TGUI/Backend/SFML-OpenGL3.hpp>
 
-#include "login.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 using namespace std;
 using namespace vision;
@@ -24,34 +23,53 @@ int main()
     GameClass game;
     engine->SetGameClass(&game);
 
-    sf::Clock deltaClock;
-
-    // tgui::Gui gui;
-    // gui.setWindow(system->GetWindow());
-
+    
+    bool demo_window = true;
     bool running = true;
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+    ImGui::StyleColorsDark();
+
+    ImGui_ImplGlfw_InitForOpenGL(system->GetGLFWWindow(), true);
+    ImGui_ImplOpenGL3_Init("#version 150");
+
     auto loop = [&](int &drawning)    
     {
-        sf::Event event;
-        while (engine->GetSystemPtr()->GetWindow().pollEvent(event))
-        {
-            // gui.handleEvent(event);
-            if (event.type == sf::Event::Closed)
-            {
-                drawning = 0;
-            }
-        }
+    
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-        {
+        int state = glfwGetKey(system->GetGLFWWindow(), GLFW_KEY_ESCAPE);
+        if(state == GLFW_PRESS){
             drawning = 0;
         }
+        
 
         // glClear(GL_COLOR_BUFFER_BIT);
 
         // runExample(gui);
 
         // gui.draw();
+
+        
+        
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        if(demo_window)
+            ImGui::ShowDemoWindow(&demo_window);
+
+
+        ImGui::Render();
+        // glClear(GL_COLOR_BUFFER_BIT);
+
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        glfwMakeContextCurrent(system->GetGLFWWindow());
+
 
     };
 
