@@ -5,7 +5,8 @@
 
 void vision::post::Sun::Start()
 {
-    SetPath(GetBuildPath() / "ball.fbx");
+
+    SetPath(GetGameSdkPath() / "assets/models/ball.obj");
     LoadModel();
 
     SetObjectPosition(glm::vec3(100, 100, 100));

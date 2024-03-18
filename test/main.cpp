@@ -6,8 +6,8 @@
 #include "GameClass.hpp"
 
 
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include "VisionForge/imgui/imgui_impl_glfw.h"
+#include "VisionForge/imgui/imgui_impl_opengl3.h"
 
 using namespace std;
 using namespace vision;

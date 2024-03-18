@@ -83,3 +83,8 @@ void vision::PostProcessingManager::UsePostProcessing(FrameBuffer* buffer, glm::
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glEnable(GL_DEPTH_TEST);
 }
+void vision::PostProcessingManager::SetScreenResolution(int width, int height)
+{
+    screen_resolution_.width = width;
+    screen_resolution_.height = height;
+}

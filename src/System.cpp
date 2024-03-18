@@ -15,6 +15,15 @@
 #include "VisionForge/EntitySystem/DefaulComponents/ModelComponent.hpp"
 // #include "System.hpp"
 
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+    vision::Engine::GetInstance()->GetPostProcessingPtr()->SetScreenResolution(width, height);
+    // projection_ = glm::perspective(glm::radians(60.0f), (float)width / height, 0.1f, 1000.0f);
+}
+
+
 vision::System::System()
 {
     spdlog::info("System::System()");
@@ -40,12 +49,13 @@ vision::System::System()
     window_ = glfwCreateWindow(1080, 720, " OpenGL", NULL, NULL);
     glfwMakeContextCurrent(window_);
 
+    glfwSetFramebufferSizeCallback(window_, framebuffer_size_callback);
 
     Init();
 
     // InitPostProcessing();
 
-    blur.ConfigureBlur(1080, 720);
+    // blur.ConfigureBlur(1080, 720);
 
     // auto component = std::make_unique<ModelComponent>(std::filesystem::current_path() / path("ball.fbx"));
     // component->LoadModel();
@@ -56,10 +66,11 @@ vision::System::System()
 
     main_buffer_ = vision::CreateCommonFrameBuffer(-1);
 
-    current_path_ = std::filesystem::current_path() / path("..") / path("shaders");
-    current_path_ = current_path_.lexically_normal();
+    // current_path_ = std::filesystem::current_path() / path("..") / path("shaders");
+    // current_path_ = current_path_.lexically_normal();
 
-    shad_ = Shader(current_path_ / path("shader.vert"), current_path_ / path("shader.frag"));
+    // shad_ = Shader(current_path_ / path("shader.vert"), current_path_ / path("shader.frag"));
+    shad_ = Shader(GetShaderPath("shader.vert"), GetShaderPath("shader.frag"));
 
     // projection_ = glm::perspective(glm::radians(60.0f), (float)GetWindow().getSize().x / (float)GetWindow().getSize().y, 0.1f, 1000.0f);
 
@@ -134,6 +145,8 @@ Shader *vision::System::GetCurrentShader()
     return current_shader_;
 }
 
+
+
 void vision::System::Display()
 {
     int drawning = 1;
@@ -171,9 +184,8 @@ void vision::System::Display()
             UpdateMatrix();
             UpdateShader();
             
-            int window_size_x, window_size_y;
-            glfwGetWindowSize(window_, &window_size_x, &window_size_y);
-            Drawning(window_size_x, window_size_y);
+            
+            Drawning(GetWindowSize().first, GetWindowSize().second);
             main_buffer_->ClearBuffer();
 
             manager->UseShadows(shad_);

@@ -42,21 +42,21 @@ src/PostProcessing.cpp
 )
 
 set(ImGuiFiles
-imgui/imconfig.h
-imgui/imgui_demo.cpp
-imgui/imgui_draw.cpp
-imgui/imgui_impl_glfw.cpp
-imgui/imgui_impl_glfw.h
-imgui/imgui_impl_opengl3.cpp
-imgui/imgui_impl_opengl3.h
-imgui/imgui_internal.h
-imgui/imgui_widgets.cpp
-imgui/imgui.cpp
-imgui/imgui.h
-imgui/imstb_rectpack.h
-imgui/imstb_textedit.h
-imgui/imstb_truetype.h
-imgui/imgui_tables.cpp
+include/VisionForge/imgui/imconfig.h
+include/VisionForge/imgui/imgui_demo.cpp
+include/VisionForge/imgui/imgui_draw.cpp
+include/VisionForge/imgui/imgui_impl_glfw.cpp
+include/VisionForge/imgui/imgui_impl_glfw.h
+include/VisionForge/imgui/imgui_impl_opengl3.cpp
+include/VisionForge/imgui/imgui_impl_opengl3.h
+include/VisionForge/imgui/imgui_internal.h
+include/VisionForge/imgui/imgui_widgets.cpp
+include/VisionForge/imgui/imgui.cpp
+include/VisionForge/imgui/imgui.h
+include/VisionForge/imgui/imstb_rectpack.h
+include/VisionForge/imgui/imstb_textedit.h
+include/VisionForge/imgui/imstb_truetype.h
+include/VisionForge/imgui/imgui_tables.cpp
 )
 
 option(MYLIB_INSTALL "Generate target for installing mylib" ${is_top_level})
@@ -70,6 +70,18 @@ set_if_undefined(VISIONFORGE_INSTALL_CMAKEDIR
 
 message(STATUS ${CMAKE_INSTALL_LIBDIR})
 
+if(ENGINE_RELEASE)
+	add_definitions("-DCURRENT_DIRECTORY=\"${CMAKE_INSTALL_PREFIX}/include/VisionForge\"")
+    add_definitions("-DSHADERS_DIRECTORY=\"${CMAKE_INSTALL_PREFIX}/share/VisionForge/shaders\"")
+    add_definitions("-DGAMESDK_DIRECTORY=\"${CMAKE_INSTALL_PREFIX}/share/VisionForge/game_sdk\"")
+else()
+	add_definitions("-DCURRENT_DIRECTORY=\"${CMAKE_CURRENT_SOURCE_DIR}/\"")
+    add_definitions("-DSHADERS_DIRECTORY=\"${CMAKE_CURRENT_SOURCE_DIR}/shaders\"")
+    add_definitions("-DGAMESDK_DIRECTORY=\"${CMAKE_CURRENT_SOURCE_DIR}/game_sdk\"")
+endif()
+
+message(${CMAKE_INSTALL_PREFIX})
+
 add_library(VisionForge STATIC ${EngineFiles} ${ImGuiFiles})
 
 target_link_libraries(VisionForge PUBLIC 
@@ -79,11 +91,9 @@ target_link_libraries(VisionForge PUBLIC
     jsoncpp_lib
     assimp::assimp
     ${GLEW_LIBRARIES}
-
     spdlog::spdlog
-
     glfw
-    )
+)
 
 
 target_include_directories(VisionForge PUBLIC 
@@ -98,32 +108,15 @@ target_include_directories(VisionForge PUBLIC
 )
 
 target_link_directories(VisionForge PUBLIC 
-${GLEW_INCLUDE_DIRS}
-${SFML_INCLUDE_DIRS}
+    ${GLEW_INCLUDE_DIRS}
+    ${SFML_INCLUDE_DIRS}
 )
 
 add_executable(Test 
     test/main.cpp
     ${EngineFiles}
     ${ImGuiFiles}
-    )
-
-
-target_link_libraries(Test PUBLIC 
-    OpenGL::GL 
-    glm::glm
-    SFML::Graphics SFML::Audio SFML::Network
-    jsoncpp_lib
-    assimp::assimp
-    ${GLEW_LIBRARIES}
-    spdlog::spdlog
-
-    glfw
 )
-
-
-
-set_target_properties(Test PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 
 target_include_directories(Test               
     PUBLIC 
@@ -135,16 +128,29 @@ target_include_directories(Test
         ${CMAKE_SOURCE_DIR}/imgui
 )
 
-# if(MYLIB_INSTALL AND NOT CMAKE_SKIP_INSTALL_RULES)
+
+target_link_libraries(Test PUBLIC 
+    OpenGL::GL 
+    glm::glm
+    SFML::Graphics SFML::Audio SFML::Network
+    jsoncpp_lib
+    assimp::assimp
+    ${GLEW_LIBRARIES}
+    spdlog::spdlog
+    glfw
+)
+
+
+
+
+set_target_properties(Test PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
+
 
 include(CMakePackageConfigHelpers)
-
-# if(MYLIB_INSTALL AND NOT CMAKE_SKIP_INSTALL_RULES)
 
 configure_package_config_file(cmake/Config.cmake.in visionforge-config.cmake
     INSTALL_DESTINATION "${VISIONFORGE_INSTALL_CMAKEDIR}")
 
-# message()
 
 write_basic_package_version_file(visionforge-config-version.cmake
     COMPATIBILITY SameMajorVersion)
@@ -174,7 +180,18 @@ DESTINATION include
 USE_SOURCE_PERMISSIONS
 )
 
+install(FILES ${ImGuiFiles}
+DESTINATION include/VisionForge/imgui
+)
 
-# endif()
+install(DIRECTORY "game_sdk" 
+DESTINATION "share/VisionForge"
+USE_SOURCE_PERMISSIONS
+)
 
-# endif()
+install(DIRECTORY "shaders" 
+DESTINATION "share/VisionForge"
+USE_SOURCE_PERMISSIONS
+)
+
+

@@ -16,7 +16,7 @@ std::ostream& operator << (std::ostream& out, glm::vec3 vec);
 
 void RenderQuad();
 
-std::filesystem::path GetBuildPath();
+std::filesystem::path GetGameSdkPath();
 
 std::filesystem::path GetCurrentPath();
 

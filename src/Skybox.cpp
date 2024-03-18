@@ -5,6 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
+#include <VisionForge/Common/Common.hpp>
 
 using namespace std;
 using namespace vision;
@@ -99,7 +100,8 @@ void Skybox::LoadSkyBox(std::filesystem::path filepath)
 void Skybox::LoadRGBEfile(std::string path)
 {
 
-    skyboxShader = Shader(shader_path / filesystem::path("hdr.vert"), shader_path / filesystem::path("hdr.frag"));
+    // skyboxShader = Shader(shader_path / filesystem::path("hdr.vert"), shader_path / filesystem::path("hdr.frag"));
+    skyboxShader = Shader(GetShaderPath("hdr.vert"), GetShaderPath("hdr.frag"));
     skyboxShader.use();
     skyboxShader.setInt("environmentMap", 0);
 
@@ -155,7 +157,8 @@ void Skybox::DrawSkyBox(glm::mat4 view_camera, glm::mat4 projection)
 
 void Skybox::CreateHDRTexture()
 {
-    HDRShader = Shader(shader_path / filesystem::path("configHDR.vert"), shader_path / filesystem::path("configHDR.frag"));
+    // HDRShader = Shader(shader_path / filesystem::path("configHDR.vert"), shader_path / filesystem::path("configHDR.frag"));
+    HDRShader = Shader(GetShaderPath("configHDR.vert"), GetShaderPath("configHDR.frag"));
 
     glGenFramebuffers(1, &captureFBO);
     glGenRenderbuffers(1, &captureRBO);
@@ -220,7 +223,8 @@ void Skybox::CreateEnvironment()
     glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
 
-    HDRShader = Shader(shader_path / filesystem::path("configHDR.vert"), shader_path / filesystem::path("envir.frag"));
+    // HDRShader = Shader(shader_path / filesystem::path("configHDR.vert"), shader_path / filesystem::path("envir.frag"));
+    HDRShader = Shader(GetShaderPath("configHDR.vert"), GetShaderPath("envir.frag"));
     HDRShader.use();
 
     HDRShader.setInt("environmentMap", 0);
@@ -260,7 +264,8 @@ void Skybox::CreatePrefilterMap()
 
     glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-    prefilter = Shader(shader_path / filesystem::path("configHDR.vert"), shader_path / filesystem::path("prefilter.frag"));
+    // prefilter = Shader(shader_path / filesystem::path("configHDR.vert"), shader_path / filesystem::path("prefilter.frag"));
+    prefilter = Shader(GetShaderPath("configHDR.vert"), GetShaderPath("prefilter.frag"));
     prefilter.use();
     prefilter.setInt("environmentMap", 0);
     prefilter.setMat4("projection", captureProjection);
@@ -336,7 +341,9 @@ void Skybox::CreateBRDF()
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdfTexture, 0);
 
     glViewport(0, 0, 512, 512);
-    BRDF = Shader(shader_path / filesystem::path("brdf.vert"), shader_path / filesystem::path("brdf.frag"));
+    // BRDF = Shader(shader_path / filesystem::path("brdf.vert"), shader_path / filesystem::path("brdf.frag"));
+    BRDF = Shader(GetShaderPath("brdf.vert"), GetShaderPath("brdf.frag"));
+
     BRDF.use();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

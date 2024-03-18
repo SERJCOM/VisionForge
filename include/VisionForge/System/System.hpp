@@ -8,7 +8,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-// #include <glad/gl.h>
 
 #include <filesystem>
 #include "glm/glm.hpp"
@@ -78,6 +77,12 @@ namespace vision
 		virtual void Display();
 
 		virtual void Start();
+
+		std::pair<int, int> GetWindowSize() const {
+			int width, height;
+			glfwGetWindowSize(window_, &width, &height);
+			return {width, height};
+		}
 
 	private:
 		void Render();

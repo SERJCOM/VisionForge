@@ -1,6 +1,6 @@
 #include "VisionForge/Common/Common.hpp"
 #include <GL/glew.h>
-// #include "Common.hpp"
+
 
 
 namespace vision{
@@ -39,26 +39,45 @@ void RenderQuad(){
     glBindVertexArray(0);
 }
 
-std::filesystem::path GetBuildPath()
+std::filesystem::path GetGameSdkPath()
 {
-    return std::filesystem::current_path();
+    // return std::filesystem::current_path();
+
+     #ifdef GAMESDK_DIRECTORY
+        std::cout << "GAMESDK_DIRECTORY :" << GAMESDK_DIRECTORY << std::endl;
+        return GAMESDK_DIRECTORY;
+    #else 
+        throw std::exception("GAMESDK_DIRECTORY is not enabled");
+    #endif
 }
 
 std::filesystem::path GetCurrentPath()
 {
-    auto curpath = std::filesystem::current_path() / std::filesystem::path("..");
-    curpath.lexically_normal();
-    return curpath;
+    // auto curpath = std::filesystem::current_path() / std::filesystem::path("..");
+    // curpath.lexically_normal();
+    #ifdef CURRENT_DIRECTORY
+        std::cout << "CURRENT_DIRECTORY :" << CURRENT_DIRECTORY << std::endl;
+        return CURRENT_DIRECTORY;
+    #else 
+        throw std::exception("CURRENT_DIRECTORY is not enabled");
+    #endif
 }
 
 
 std::filesystem::path GetShaderPath(std::string file_name)
 {
-    using namespace std::filesystem;
-    auto shadpath = GetCurrentPath();
-    shadpath = path("..") / path("shaders") / path(file_name);
+    // using namespace std::filesystem;
+    // auto shadpath = GetCurrentPath();
+    // shadpath = path("..") / path("shaders") / path(file_name);
 
-    return  shadpath;
+    // return  shadpath;
+
+     #ifdef SHADERS_DIRECTORY
+        std::cout << "SHADERS_DIRECTORY :" << SHADERS_DIRECTORY << std::endl;
+        return std::string(SHADERS_DIRECTORY) + std::string("/") + file_name;
+    #else 
+        throw std::exception("SHADERS_DIRECTORY is not enabled");
+    #endif
 }
 
 

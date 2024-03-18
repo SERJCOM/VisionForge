@@ -11,6 +11,13 @@ class PostProcessingManager{
 public:
     PostProcessingManager() = default;
 
+    PostProcessingManager(int width, int height){
+        screen_resolution_.width = width;
+        screen_resolution_.height = height;
+    }
+
+
+
     void Start();
 
     void Update(Shader& default_shader);
@@ -21,14 +28,20 @@ public:
 
     void SetSunMode(bool mode);
 
-    void SetScreenResolution(int width, int heig);
+    void SetScreenResolution(int width, int height);
 
 
-private:
     struct ScreenResolution{
         int width;
         int height;
     };
+
+    ScreenResolution GetScreenResolution() const {
+        return screen_resolution_;
+    }
+
+private:
+    
 
     ScreenResolution screen_resolution_;
 
