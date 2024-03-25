@@ -36,8 +36,6 @@ namespace vision
 
     public:
 
-        // Engine();
-
         void Display();
 
         template <typename T>
